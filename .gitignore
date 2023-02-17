@@ -1,0 +1,10 @@
+*.log
+*.toc
+pygmentize
+*.lof
+*.lot
+*.fls
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk

@@ -701,6 +701,27 @@ This test creates a long living bot which is a bot that is not deleted after the
   \caption{NLP worker test with polling}
 \end{figure}
 
+\section{SSM Parameters}
+The next task for Bosco was to build the environment in the orchestrator using SSM parameters. 
+SSM parameters are credentials and secrets that are stored in AWS Systems Manager parameter store. 
+They can be encrypted and the service is easy and free to use. A few lines of code can retrieve the parameters from the store. 
+
+The steps to this task were as follows:
+\begin{itemize}
+\item The parameters were created in the SSM parameter store in the same format as the Frankenstein parameters.
+\item Code was added to the orchestrator to read the SSM parameters using the node module \textbf{aws-sdk}.
+\item A new policy was added to the cloud formation template in order to give IAM permissions to read from the parameter store
+\item The environment was built in the orchestrator.
+\item The logger was added as a parameter to cloud formation instead of being inputted in the test profile environment
+\item A new class Secrets was added in order to retrieve the SSM parameters from the parameter store. Later to be renamed EnvironmentResolver
+\item The documentation was updated
+\end{itemize}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=10cm,height=10cm,keepaspectratio]{./diagrams/ssm_params.png}
+  \caption{SSM Parameters created in AWS Systems Manager}
+\end{figure}
 
 \appendix
 \chapter{Methodology}

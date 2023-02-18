@@ -1,5 +1,11 @@
-
 \documentclass[12pt,a4paper,titlepage]{report}
+
+\usepackage{minted} % load the minted package
+\usepackage{tcolorbox} % load the tcolorbox package (which loads the fancyvrb package)
+
+% set up the minted package
+\usemintedstyle{borland} % set the code highlighting style
+\setminted{fontsize=\small} % set the code font size
 
 \usepackage{graphicx}
 \usepackage{subfig}
@@ -8,19 +14,47 @@
 \usepackage{parskip}
 \usepackage{microtype}
 \usepackage{fvextra}
-\usepackage{fancyvrb}
-\usepackage[cache=false]{minted}
 \usepackage[margin=2cm]{geometry}
 \usepackage{fancyhdr}
 \usepackage{xcolor}
+\usepackage{caption}
 \let\cleardoublepage\clearpage
 
+
+% Graphics and colour
+%
+
+\usepackage{graphicx}
+\graphicspath{{./diagrams/}}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+\definecolor{myOrange}{RGB}{241,85,44}
+\definecolor{myGray}{RGB}{106,100,100}
+
+% Page setup
+%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{15pt}
+
+\lhead{\rmfamily \textcolor{gray}{\AcademicTitle}}
+\rhead{\rmfamily \textcolor{gray}{\Report}}
+\lfoot{\rmfamily \textcolor{gray}{\Author (\StudentID)}}
+\rfoot{\rmfamily \thepage}
+
+\usepackage{parskip}
+\usepackage[bottom]{footmisc}
 % Document Info
 %
 \newcommand\AcademicTitle{Frankenstein Test-Suite Re-Architecture}
 \newcommand\CommericalTitle{Bosco}
 \newcommand\Author{Margaret McCarthy}
 \newcommand\StudentID{20095610}
+
 \newcommand\Date{March 2023}
 \newcommand\Report{Project Report}
 \newcommand\Stakeholder{ServisBOT Ltd.}
@@ -76,19 +110,42 @@ This project aims to design and implement a feature based test runner for Servis
 
 ServisBOT Ltd runs an online platform that creates chatbots which provide customer service by allowing end users to communicate with a business or service through a pop up messenger on a website. The technology is cloud based and mostly serverless which means it is provided over the internet rather than using storage on a physical computer or server. It has to be consistently monitored and so tests are run continuously to ensure any problems are detected and resolved immediately. Testing the code is crucial to the service they provide. It ensures a robust platform and gives customers confidence that the system is dependable.
 
-The components of a chatbot and each of its functions are broken down into micro services. These are created independent of one another but combined are the building blocks for the chatbot. There is a suite of tests which ServisBOT have called Frankenstein tests which run against these micro services. They run several times an hour, every hour. The tests use a software package called Testcafe which is an end to end testing service that uses messenger in a browser in order to run their tests. It simulates what a user would do by opening a browser and interacting with a chatbot. If the chatbot reacts in the expected way the test passes, otherwise the issue is investigated and resolved.
-
+\subsection{Frankenstein}
+The components of a chatbot and each of its functions are broken down into micro services. These are created independent of one another but combined are the building blocks for the chatbot. There is a suite of tests which ServisBOT have called Frankenstein tests which run against these micro services. They run several times an hour, every hour. 
+\subsection{TestCafe}
+The tests use a software package called Testcafe which is an end to end testing service that uses messenger in a browser in order to run their tests. It simulates what a user would do by opening a browser and interacting with a chatbot. If the chatbot reacts in the expected way the test passes, otherwise the issue is investigated and resolved.
+\subsection{EC2}
+The Frankenstein test suite is run on two EC2 instances in two different AWS regions. AWS Elastic Compute Cloud (EC2) is basically a virtual machine where developers can define the resources they need. For example, what regions the are to be run in. 
 \section{The Issue}
 
-The Frankenstein test suite is currently run on two EC2 instances in two different AWS regions and as such it causes a lot of contention for CPU and memory. When a test run is instigated all tests are competing for CPU usage because each EC2 instance is running thirty plus tests on one server which has limited memory.
+Running the tests causes a lot of contention for CPU and memory. When a test run is instigated all tests are competing for CPU usage because each EC2 instance is running thirty plus tests on one server which has limited memory.
 
-Also there are numerous problems with Testcafe. Testcafe has proven to be resource heavy, expensive and inefficient, causing slow CPU performance. Because of the competing resources some tests affect the performance of others. Debugging and monitoring of the tests is complex and the test suite does not scale. Scalability is essential in order to increase the number of tests according to the number of user interactions and alternatively to reduce the number of tests when interactions drop which would not only prove to be more cost effective but would mostly solve all the issues mentioned.
+Also there are numerous problems with Testcafe. 
+\begin{itemize}
+  \item Testcafe has proven to be resource heavy, expensive and inefficient, causing slow CPU performance. 
+  \item Because of the competing resources some tests affect the performance of others. 
+  \item Debugging and monitoring of the tests is complex.
+  \item The test suite does not scale. Scalability is essential in order to increase the number of tests according to the number of user interactions and alternatively to reduce the number of tests when interactions drop which would not only prove to be more cost effective but would mostly solve all the issues mentioned.
+\end{itemize}
+
+  \begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/frank_high_level.png}
+    \caption{High level view of Frankenstein}
+  \end{figure}
+  \clearpage
 
 \section{Purpose and Requirements for Bosco}
 
 This project aims to completely overhaul the existing test suite by migrating the tests from the EC2 instances to AWS Lambda functions. This would ensure each lambda, whether it runs one test or multiple tests, is run independently and is not competing for memory. It would mean the test suite could be scaled infinitely, would run faster and as a result would most likely be a lot more cost efficient. This has yet to be proven.
 
 In particular the migration will focus on an automation tool called Puppeteer which has been proven by ServisBOT to be more performant than Testcafe. The Puppeteer package includes its own browser whereas Testcafe launches an external browser which is slow and cumbersome. With Puppeteer there is more control over what the developer can test, it is more efficient, easier to debug and has a lot more functionality. It is widely chosen by developers now.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/bosco_high_level.png}
+  \caption{High level view of Bosco}
+\end{figure}
 
 \chapter{Research and Development}
 
@@ -117,7 +174,7 @@ The tests are run in AWS ECS and are run on a cron.
   \setlength\tabcolsep{6pt}
   \begin{tabular}{|c|c|}
     \hline \textbf
-    {Pros}& \textbf {Cons}\\
+    {Pros} & \textbf {Cons}\\
     \hline\hline
     Cross Browser Testing& Expensive\\
     \hline
@@ -135,7 +192,6 @@ The tests are run in AWS ECS and are run on a cron.
     \hline
   \end{tabular}
   \caption{Pros and Cons of Testcafe}
-  \label{table:testcafe:proscons}
 \end{table}
 
 \section{Cost Analysis of Frankenstein Tests}
@@ -144,7 +200,7 @@ The following cost analysis was carried out on Frankenstein. There is an EC2 ins
 
 \begin{figure}[ht]
   \centering
-  {\includegraphics[width=15cm]{./diagrams/frank_cost_analysis}}
+  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/frank_cost_analysis.png}
   \caption{Frankenstein Cost Analysis}
 \end{figure}
 
@@ -161,7 +217,7 @@ cases run independently of each other.
 
 \begin{figure}[ht]
   \centering
-  {\includegraphics[width=15cm]{./diagrams/mocha_test_result}}
+  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/mocha_test_result.png}
   \caption{Mocha Test Result Output}
 \end{figure}
 
@@ -279,7 +335,7 @@ passed if the text from the messenger returned the expected output text.
 
 \begin{figure}[h]
   \centering
-  {\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{./diagrams/simple_test}}
+  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{././diagrams/simple_test.png}
   \caption{Simple Test Expected Behaviour}
 \end{figure}
 \newpage
@@ -292,32 +348,27 @@ Once mocha was configured and run without errors the next step was to run the sc
 
 \begin{figure}
   \begin{tcolorbox}
-    \begin{minted}{js}
-
+    \begin{minted}[breaklines,frame=lines]{javascript}
     // simple-test.js
-    const puppeteer = require('puppeteer');
+    const puppeteer = require("puppeteer");
     const url = process.argv[2];
     if (!url) {
         throw "Please provide URL as a first argument";
     }
     async function run () {
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        await page.goto(url);
-        await page.screenshot({path: 'screenshot.png'});
-        browser.close();
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+      await page.goto(url);
+      await page.screenshot({path: "screenshot.png"});
+      browser.close();
     }
     run();
-
-  \end{minted}
-  \end{tcolorbox}
-  \caption{Simple test written with Puppeteer}
+\end{minted}
+\end{tcolorbox}
+\captionof{figure}{Simple test written with Puppeteer}
 \end{figure}
 
-However, there are problems running Puppeteer in a lambda. Lambda has a 50 MB limit on the zip file you can upload.
-Due to the fact that it installs Chromium, the Puppeteer package is significantly larger than 50 MB.
-This limit does not apply when uploaded from an S3 bucket but there are other issues.
-Linux including AWS Lambda does not include the necessary libraries required to allow Puppeteer to function.
+However, there are problems running Puppeteer in a lambda. Lambda has a 50 MB limit on the zip file you can upload. Due to the fact that it installs Chromium, the Puppeteer package is significantly larger than 50 MB. This limit does not apply when uploaded from an S3 bucket but there are other issues. Linux including AWS Lambda does not include the necessary libraries required to allow Puppeteer to function.
 
 \subsection{Node Modules}
 
@@ -353,10 +404,10 @@ step functions a workflow can be created through a series of lambda functions wi
 the workflow. They are based on a state machine and tasks where a state machine is a workflow and a task is a
 state in that workflow that another AWS service performs.
 
-\begin{figure}
+\begin{figure}[h]
   \centering
-  {\includegraphics[width=15cm]{./diagrams/possible_implementation}}
-  \caption{Bosco Planned Implementation}
+  \includegraphics[width=15cm]{./diagrams/possible_implementation}
+  \captionof{figure}{Bosco Planned Implementation}
 \end{figure}
 
 \section{State Transitions}
@@ -365,15 +416,15 @@ The Bosco test suite runs through 5 state transitions (Start, StartState, Map, D
 
 This experiment focuses on using the Inline Map state instead of the Distributed Map state. The Inline Map state is used for fewer than 40 parallel iterations while the Distributed Map state is used for larger workloads. The map state runs a lambda for each test, which runs in parallel with each other. The results of the tests are then outputted to the "Done" lambda, the next state, which processes and runs the tests. Finally, a state prints out the results and the End state completes the workflow.
 
-\begin{figure}
+\begin{figure}[h]
   \centering
-  {\includegraphics[width=5cm]{./diagrams/step_function}}
+  \includegraphics[width=5cm]{./diagrams/step_function}
   \caption{Bosco State Machine}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
   \centering
-  {\includegraphics[width=5cm]{./diagrams/state_machine}}
+  \includegraphics[width=5cm]{./diagrams/state_machine}
   \caption{Inline Map State for Bosco Step Function}
 \end{figure}
 
@@ -385,9 +436,9 @@ Comparisons were made between running the tests on cold lambdas as opposed to wa
 
 The cost of running the test suite in a state machine using AWS Step Functions is based on the number of state transitions. This cost analysis does not account for error handling, which may increase the cost due to retries. The cost per transition is \$0.000025 according to the AWS pricing calculator. The analysis is based on the current number of tests and the frequency they are run (three times an hour), which may vary for Bosco tests.
 
-\begin{figure}
+\begin{figure}[h]
   \centering
-  {\includegraphics[width=15cm]{./diagrams/sf_cost_analysis}}
+  \includegraphics[width=15cm]{./diagrams/sf_cost_analysis}
   \caption{Bosco Step Function Cost Analysis}
 \end{figure}
 
@@ -563,22 +614,20 @@ In addition the input to each iteration of the running state became the followin
   \caption{Running State Input including Shared Environment}
 \end{figure}
 
-\secton
-
 \appendix
 \chapter{Methodology}
 I am currently using Jira to track my sprints on the Bosco project. I am working in week long sprints for the implementation phase as this
 is better suited to the type of projec this is as this will be a live running system when it's complete and the urgency for it to be complete is high.
 
-\begin{figure}[ht]
+\begin{figure}[h]
   \centering
-  {\includegraphics[width=15cm]{./diagrams/sprints1.png}}
+  \includegraphics[width=15cm]{./diagrams/sprints1.png}
   \caption{R\&D Phase and Bosco Implementation Phase}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[h]
   \centering
-  {\includegraphics[width=15cm]{./diagrams/sprints2.png}}
+  \includegraphics[width=15cm]{./diagrams/sprints2.png}
   \caption{Bosco Dissemination Phase}
 \end{figure}
 

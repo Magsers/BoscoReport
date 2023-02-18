@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{  }\PYG{k}{async}\PYG{+w}{ }\PYG{n+nx}{goToPage}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{   }\PYG{k}{await}\PYG{+w}{ }\PYG{k}{this}\PYG{p}{.}\PYG{n+nx}{page}\PYG{p}{.}\PYG{k+kr}{goto}\PYG{p}{(}\PYG{k}{this}\PYG{p}{.}\PYG{n+nx}{url}\PYG{p}{,}
+\PYG{+w}{   }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{n+nx}{waitUntil}\PYG{o}{:}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}networkidle2\PYGZsq{}}\PYG{+w}{ }\PYG{p}{\PYGZcb{});}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

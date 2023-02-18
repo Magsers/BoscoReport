@@ -3,8 +3,6 @@ MAIN = Bosco
 default:
 	pdflatex --shell-escape $(MAIN)
 
-	pdflatex --shell-escape $(MAIN)
-
 b build: $(MAIN).pdf
 
 	pdflatex --shell-escape $(MAIN)

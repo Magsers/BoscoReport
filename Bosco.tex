@@ -4,7 +4,7 @@
 \usepackage{tcolorbox} % load the tcolorbox package (which loads the fancyvrb package)
 
 % set up the minted package
-\usemintedstyle{borland} % set the code highlighting style
+% \usemintedstyle{borland} % set the code highlighting style
 \setminted{fontsize=\small} % set the code font size
 
 \usepackage{graphicx}
@@ -149,13 +149,13 @@ In particular the migration will focus on an automation tool called Puppeteer wh
 
 \chapter{Research and Development}
 
-In order to determine the best approach, technologies and methodology for Bosco, it has been concluded that the research and analysis phase necessary for the implementation of this project will be the following :
+In order to determine the best approach, technologies and methodology for Bosco, it was concluded that the research and analysis phase necessary for the implementation of this project was the following:
 
 \begin{itemize}
   \item Review of Frankenstein and Testcafe
   \item Cost Analysis of Frankenstein
-  \item Research and analysis of possible testing frameworks for Bosco
-  \item Puppeteer review and comparison to Testcafe
+  \item Research into possible testing frameworks for Bosco
+  \item Puppeteer comparison to Testcafe
   \item Lambda vs EC2 comparison
   \item Possible implementations and modelling of Bosco
   \item Proof of Concept
@@ -176,17 +176,17 @@ The tests are run in AWS ECS and are run on a cron.
     \hline \textbf
     {Pros} & \textbf {Cons}\\
     \hline\hline
-    Cross Browser Testing& Expensive\\
+    Cross Browser Testing&Expensive\\
     \hline
     Open Source& Slow\\
     \hline
-    Easy Setup \& Installation                      & Difficult to debug\\
+    Easy Setup \& Installation& Difficult to debug\\
     \hline
     Built-In Waits& No browser control\\
     \hline
     Supports devices without extra software package & Simulated events leads to false positives\\
     \hline
-    UI End to End Testing \\
+    UI End to End Testing\\
     \hline
     Both client and server side debug \\
     \hline
@@ -235,19 +235,19 @@ library, there is no need to install and integrate additional libraries to be ab
   \setlength\tabcolsep{6pt}
   \begin{tabular}{|c|c|c}
     \hline \textbf
-    {Mocha}              & \textbf {Jest}               \\
+    {Mocha}              & \textbf {Jest}\\
     \hline\hline
-    Flexible configuration options & High Speed of Test Execution           \\
+    Flexible configuration options & High Speed of Test Execution\\
     \hline
-    Good Documentation             & Good Documentation                     \\
+    Good Documentation             & Good Documentation\\
     \hline
-    Ideal for back-end projects    & Test Runner included                   \\
+    Ideal for back-end projects    & Test Runner included\\
     \hline
-    Ad-hoc library choice          & Built in assertion and mocking library \\
+    Ad-hoc library choice          & Built in assertion and mocking library\\
     \hline
   \end{tabular}
   \caption{Mocha Vs Jest}
-  \label{table:mocha:jest}
+\label{table:mocha:jest}
 \end{table}
 
 \section{Review of Puppeteer}
@@ -271,15 +271,15 @@ to run their tests and by giving them the flexibility to leverage headless or he
   \item Scriptable web browser
   \item Installs Chrome in a working version automatically
   \item Thin wrapper
-  \item Bi-Directional (events) – automating things like console logs is easy
+  \item Bi-Directional (events) \- automating things like console logs is easy
   \item Maintained by Google.
   \item JavaScript first, so the code feels very natural
   \item Puppeteer also gives you direct access to the Chrome DevTools Protocol if you need it. Which can be very useful at times and in general it feels like there are fewer moving parts.
   \item Works with multiple tabs and frames. It has an intuitive API
-  \item Trusted Actions : This criterion means dispatching events by the user agent which allows for user agent behaviours like hovers.
+  \item Trusted Actions: This criterion means dispatching events by the user agent which allows for user agent behaviours like hovers.
   \item End to end tests are very fast in practice but people suffer misconceptions regarding the execution speed. Typically, it’s the website or web-app that are slow and the tests end up waiting for the web app to be ready most of the time.
-  \item Pro and Con : Stability which means how often tests fail after being authored other than when detecting a real application bug. Puppeteer wait for certain thing but has to waitFor manually for others.
-  \item Debugging : Can write and debug Javascript from an IDE.
+  \item Pro and Con: Stability which means how often tests fail after being authored other than when detecting a real application bug. Puppeteer wait for certain thing but has to waitFor manually for others.
+  \item Debugging: Can write and debug Javascript from an IDE.
 \end{itemize}
 
 \subsection{Cons of using Puppeteer}
@@ -324,21 +324,17 @@ When a lambda funciton is invoked, the code is run without the need to deploy or
 designed to deliver extremely short-term compute capability. AWS handles the back-end provisioning, loading, execution, scaling and unloading of the user's code.
 Lambdas only run when executed yet are always available. They scale dynamically in response to traffic.
 
+\section{Conclusion}
+// TODO
+
 \chapter{Initial Design Implementation}
 
 \section{Proof of Concept - Running Puppeteer on a Lambda}
 
-In order to prove it was possible to run Puppeteer tests on AWS Lambda, a basic end to end test was designed
+In order to prove it is possible to run Puppeteer tests on AWS Lambda, a basic end to end test was designed
 to run with Puppeteer. This automated a scenario whereby a browser, Chromium was launched with the url of the
 messenger page. After the page loaded, the messenger button was toggled and the chatbot would load. The test
 passed if the text from the messenger returned the expected output text.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{././diagrams/simple_test.png}
-  \caption{Simple Test Expected Behaviour}
-\end{figure}
-\newpage
 
 \subsection{Mocha}
 
@@ -346,9 +342,9 @@ The mocha test framework was added to the code as in reality Puppeteer is not a 
 Assertions are made using the Assert library package and logged to the console but it is not in essence a testing tool.
 Once mocha was configured and run without errors the next step was to run the script in a lambda.
 
-\begin{figure}
+\begin{figure}[h]
   \begin{tcolorbox}
-    \begin{minted}[breaklines,frame=lines]{javascript}
+    \begin{minted}[breaklines]{javascript}
     // simple-test.js
     const puppeteer = require("puppeteer");
     const url = process.argv[2];
@@ -368,11 +364,11 @@ Once mocha was configured and run without errors the next step was to run the sc
 \captionof{figure}{Simple test written with Puppeteer}
 \end{figure}
 
-However, there are problems running Puppeteer in a lambda. Lambda has a 50 MB limit on the zip file you can upload. Due to the fact that it installs Chromium, the Puppeteer package is significantly larger than 50 MB. This limit does not apply when uploaded from an S3 bucket but there are other issues. Linux including AWS Lambda does not include the necessary libraries required to allow Puppeteer to function.
+However, there are problems running Puppeteer in a lambda. Lambda has a 50 MB limit on the zip file you can upload. Due to the fact that it installs Chromium, the Puppeteer package is significantly larger than 50 MB\. This limit does not apply when uploaded from an S3 bucket but there are other issues. Linux including AWS Lambda does not include the necessary libraries required to allow Puppeteer to function.
 
 \subsection{Node Modules}
 
-There are work-arounds for this in the form of node modules, ‘puppeteer-core’ and ‘chrome-aws-lambda”.
+There are work-arounds for this in the form of node modules, \'puppeteer-core\' and \'chrome-aws-lambda\'.
 Both these modules installed allow for a version of Chromium that is built to run for AWS Lambda. Incorporating
 these ensures the tests run successfully. Unfortunately these modules need to be in parody with each other.
 
@@ -388,7 +384,7 @@ container is a standalone piece of software that packages up code and all its de
 A Docker container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
 Container images become containers at runtime. Containers isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.
 
-The puppeteer test runs locally using a Docker engine, then gets tagged and pushed to a container on a Lambda function named "puppeteer-container."
+The puppeteer test runs locally using a Docker engine, then gets tagged and pushed to a container on a Lambda function named \'puppeteer-container\'.
 This significantly speeds up the testing process, automating a browser in milliseconds compared to the previous method's average time of six seconds.
 The process provides more control over the testing environment and successfully runs the tests by targeting a number of tests through event handler parameters instead of hard coding.
 The results validate the feasibility of running tests in a Lambda using Puppeteer.
@@ -399,7 +395,7 @@ The process tests the use of Puppeteer and Mocha as an automation tool in a Lamb
 
 \section{Initial Stepfunction Research and Development}
 
-One possible infrastructure that is important to explore is the use of of step functions for the test suite. With
+One possible infrastructure that is important to explore is the use of of step functions for the test suite. With 
 step functions a workflow can be created through a series of lambda functions with each step being a state within
 the workflow. They are based on a state machine and tasks where a state machine is a workflow and a task is a
 state in that workflow that another AWS service performs.
@@ -412,9 +408,9 @@ state in that workflow that another AWS service performs.
 
 \section{State Transitions}
 
-The Bosco test suite runs through 5 state transitions (Start, StartState, Map, Done, End) plus an additional transition for each test run (Running). With three tests, there are 8 states as the "Running" state is executed three times. The first state is the "Start" state which initiates the run and then the "StartState" is invoked, creating an array of tests and passing the payload to the "Map" state.
+The Bosco test suite runs through 5 state transitions (Start, StartState, Map, Done, End) plus an additional transition for each test run (Running). With three tests, there are 8 states as the \"Running\" state is executed three times. The first state is the \"Start\" state which initiates the run and then the \"StartState\" is invoked, creating an array of tests and passing the payload to the \"Map\" state.
 
-This experiment focuses on using the Inline Map state instead of the Distributed Map state. The Inline Map state is used for fewer than 40 parallel iterations while the Distributed Map state is used for larger workloads. The map state runs a lambda for each test, which runs in parallel with each other. The results of the tests are then outputted to the "Done" lambda, the next state, which processes and runs the tests. Finally, a state prints out the results and the End state completes the workflow.
+This experiment focuses on using the Inline Map state instead of the Distributed Map state. The Inline Map state is used for fewer than 40 parallel iterations while the Distributed Map state is used for larger workloads. The map state runs a lambda for each test, which runs in parallel with each other. The results of the tests are then outputted to the \"Done\" lambda, the next state, which processes and runs the tests. Finally, a state prints out the results and the End state completes the workflow.
 
 \begin{figure}[h]
   \centering
@@ -464,13 +460,15 @@ created, one which clicks through the selectable list and another function whic
 clicking the list. A BrowserFactory class was created which has a function to create the browser.
 
 \section{Developer Dependencies}
-\textbf {ESLint} was also added to the project which is a linting tool that ensures all the code is formatted consistently
+\textbf{ESLint} was also added to the project which is a linting tool that ensures all the code is formatted consistently
 by anyone who makes changes to the code.  
 
-The npm package \textbf {loglevel} was added to replace the console.logs and a dependency check
+\textbf{loglevel} was added to replace the console.logs and a dependency check
 was added which checks for unused dependencies before commits.  Once the test was running without errors the work
 was committed, the code reviewed and the POC branch was merged into the master branch on the Bosco repository.
 
+\textbf{lambda-local}, a node module was used for testing purposes. This allowed for the running of the lamdas locally rather than having 
+to deploy each time they were to be tested. 
 
 \section{Context Test}
 The first actual Frankenstein test to be converted to Bosco was the Context test. This test sets the context from the url
@@ -484,7 +482,7 @@ The next task at hand is to convert the Conversation Engaged test. Whenever a us
 At first, it was believed that this test would be simple, but changes were requested after a pull request was submitted for review, including removing nested if statements and improving the code's formatting.
 
 This created a need to parse the exported goal JSON result. However, an error was encountered in the Servisbot CLI proxy, where the outputted JSON was not formatted correctly and could not be parsed. To work around this, the CSV output option was used instead of JSON and the csv-parse node module was imported.
-To test this, a temporary script named "proxy.mjs" was created to run the goals part of the test independently. It was discovered that csv-parse/sync needed to be imported instead of just csv-parse and that VSCode needed to be restarted as it was not running the code. After discussing the issue with colleagues and having them run the code on their machines, it was concluded that the problem was with VSCode and simply restarting it solved the issue.
+To test this, a temporary script named \"proxy.mjs\" was created to run the goals part of the test independently. It was discovered that csv-parse/sync needed to be imported instead of just csv-parse and that VSCode needed to be restarted as it was not running the code. After discussing the issue with colleagues and having them run the code on their machines, it was concluded that the problem was with VSCode and simply restarting it solved the issue.
 
 \section{Cloud Formation}
 The Bosco project will be deployed using Cloud Formation, a deployment tool.
@@ -497,7 +495,7 @@ The start function, the test runner which points to the image of the container a
 template will also contain the state machine definition. A YAML formatting extension from Redhat to format the YAML
 file is also necessary as it is not possible to deploy the YAML unless the format is accurate.
 
-To log into the ServisBOT cli a .env file containing authentication details can be added as a temporary solution.
+To log into the ServisBOT cli a \.env file containing authentication details can be added as a temporary solution.
 The environment variables will be read through AWS SSM eventually.
 
 \section{Environment Variables}
@@ -522,12 +520,12 @@ machine. What tests are run with what environment variables can be determined at
 
 \section{Refactor of State Machine to use a Shared Environment on Individual Test Instances }
 
-The state machine should then be refactored to use a shared environment instead of
+The state machine was then refactored to use a shared environment instead of
 passing the environment variables in with each test object. In the state machine definition there is an option to
 use an ItemSelector which allows the map to iterate over the ItemsPath but use the ItemSelector to add additional
 parameters.
 
-The updated definition of the state machine included the following extra parameters :
+The updated definition of the state machine included the following extra parameters:
 
 \begin{figure}[H]
   \begin{tcolorbox}
@@ -547,7 +545,7 @@ The updated definition of the state machine included the following extra paramet
   \caption{Definition of Map State including Test Profile}
 \end{figure}
 
-The input to the map state became the following :
+The input to the map state became the following:
 
 \begin{figure}[H]
   \begin{tcolorbox}
@@ -564,7 +562,7 @@ The input to the map state became the following :
   \caption{Input to one Iteration of Map State with just the Test Path}
 \end{figure}
 
-In addition the input to each iteration of the running state became the following :
+In addition the input to each iteration of the running state became the following:
 
 \begin{figure}[H]
   \begin{tcolorbox}
@@ -614,6 +612,96 @@ In addition the input to each iteration of the running state became the followin
   \caption{Running State Input including Shared Environment}
 \end{figure}
 
+\section{Test Profiles}
+One significant way in which Bosco will differ to Frankenstein is in the capability to run test profiles rather than 
+running all the tests, all the time, in all the regions. By creating a test profile it is possible to specify which 
+environment, region and frequency of the tests which Frankenstein does not have the ability to do. 
+
+A profiles folder was created with two different profiles for the adapters Venus and Mercury in the dev environment. Each profile 
+contained the test suite so the orchestrator needed to be updated in order to read the file paths from the JSON provided in the 
+event profile. The node module \textbf{file system\&(fs)} was used to read the contents of the profile, this was parsed to 
+a javascript object and a spreader operator was used to combine the contents of the profile and the contents of 
+the even inputted to the orchestrator and output these to the handler.
+
+\begin{figure}[H]
+  \begin{tcolorbox}
+    \begin{minted}[breaklines]{javascript}
+    const readProfile = fs.readFileSync(testProfile, (err, data) => {
+    if (err) throw err;
+      logger.info(data);
+    });
+    const profile = JSON.parse(readProfile);
+    const output = { ...profile, ...event };
+
+    \end{minted}
+  \end{tcolorbox}
+  \caption{Parsing a JSON string to a javascript object and use of the spreader (\dots) operator}
+\end{figure}
+
+Next the global environment variables were removed so instead of reading them from the input to the orchestrator they would 
+be passed from the profile to the tests. There was quite a lot of code build needed for this as Mocha is limiting in that it doesn't 
+allow the passing of parameters to the tests. 
+
+\subsection{Singleton Class: TestRunnerConfig}
+A singleton class was created to overcome this. A siingleton class is a class that can only have one instance of 
+itself. It is used when there is going to be no change or update to the object for the duration it is used. This would be the case with our tests as we would just be using the configuration for accessing the lightning page to run the tests.
+
+Initially the TestRunnerConfig took in the runnerEvent and created an instance of itself. It had getters to get different variables from the event which at the time were just the profile, testConfig, testSuite and environment. The tests ran but now the aim was to remove process.env to set the variables and use an Environment class that instead reads the environment variables from the TestRunnerConfig.
+
+An Environment object was created using the environment from the event. This could now be accessed in the tests by calling the getters from the Environment object.
+\begin{figure}[H]
+  \begin{tcolorbox}
+    \begin{minted}[breaklines]{javascript}
+const testRunnerConfig = TestRunnerConfig.getInstance();
+const environment = testRunnerConfig.getEnvironment();
+const params = {
+organization: environment.getOrganization(),
+username: environment.getUsername(),
+password: environment.getPassword(),
+region: environment.getSBRegion()
+};
+\end{minted}
+  \end{tcolorbox}
+  \caption{Replacing proccess.env with getters to an Environment class invoked by a singleton class, TestRunnerConfig}
+\end{figure}
+
+\section{Endpoint Proxy}
+
+Bosco needed to support both Mercury and Venus engagement adapters similar to Frankenstein. This is achieved through the endpoints whereby 
+each endpoint is suffixed by the test profile name. When the endpoint is created instead of creating it uniquely with the timestamp, middleware 
+in the form of an Endpoint proxy would instead suffix the endpoint with the profile and thereby point the tests to the url 
+containing the endpoint proxy. To prove the tests were making network calls to either Mercury or Venus, the tests were slowed down, run in headful mode and 
+the network tab examined. When the browser was talking to Venus there calls to \textbf{VendAnonConversation} and \textbf{ReadyForConversation} and when there were calls to Mercury, \textbf{graphql} calls were evident.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=15cm]{./diagrams/mercury_network_calls.png}
+  \caption{Mercury Network Calls}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=15cm]{./diagrams/venus_network_calls.png}
+  \caption{Venus Network Calls}
+\end{figure}
+
+\section{Creating a Test with a Secret}
+Many of the Frankenstein tests use secrets in order to run the tests. Secrets can be defined as secure documents containing access keys, api keys, api secrets or IDs to external systems. They can be created and stored in the ServisBOT system and then referenced by bots securely. This is how ServisBOT manage API keys for AWS.
+
+The test that was chosen was the NLP worker, Lex V2, intent-publish test. A \textbf{Lex} worker is a remotely managed NLP worker who takes input and sends it to a Lex bot for Natural Language Processing. A Lex bot is an Amazon bot, users use ServisBOT to access, manage and run their Lexbots. 
+\textbf{NLP} is a form of Artificial Intelligence that transforms text that a user submits into language that the computer programme can understand. In order for ServisBOT to classify utterances using a remote managed NLP, the correct API keys, access tokens or cross account roles need to be configured in the ServisBOT Secrets Vault.
+
+An AWS cross account role, ie a secret, is required in order to access Lex. An environment variable was created that the test could access called LEX\_V2\_CROSS\_ACCOUNT\_ROLE\_SECRET and to this was assigned the secret definition for dev in JSON format. 
+
+This test creates a long living bot which is a bot that is not deleted after the test but is created the first time the test is run and then reused for every test. The bot's variable intent is updated with the timestamp every time to ensure the bot is publishing successfully. When the bot is publishing its status is polled every 5 seconds and when published its status is SUCCEEDED and so the test starts.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=15cm]{./diagrams/nlp_worker_poll.png}
+  \caption{NLP worker test with polling}
+\end{figure}
+
+
 \appendix
 \chapter{Methodology}
 I am currently using Jira to track my sprints on the Bosco project. I am working in week long sprints for the implementation phase as this
@@ -630,6 +718,7 @@ is better suited to the type of projec this is as this will be a live running sy
   \includegraphics[width=15cm]{./diagrams/sprints2.png}
   \caption{Bosco Dissemination Phase}
 \end{figure}
+
 
 \chapter{Bibliography}
 

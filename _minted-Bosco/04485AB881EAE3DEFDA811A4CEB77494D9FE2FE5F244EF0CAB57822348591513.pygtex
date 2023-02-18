@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{testRunnerConfig}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nx}{TestRunnerConfig}\PYG{p}{.}\PYG{n+nx}{getInstance}\PYG{p}{();}
+\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{environment}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nx}{testRunnerConfig}\PYG{p}{.}\PYG{n+nx}{getEnvironment}\PYG{p}{();}
+\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{params}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{n+nx}{organization}\PYG{o}{:}\PYG{+w}{ }\PYG{n+nx}{environment}\PYG{p}{.}\PYG{n+nx}{getOrganization}\PYG{p}{(),}
+\PYG{n+nx}{username}\PYG{o}{:}\PYG{+w}{ }\PYG{n+nx}{environment}\PYG{p}{.}\PYG{n+nx}{getUsername}\PYG{p}{(),}
+\PYG{n+nx}{password}\PYG{o}{:}\PYG{+w}{ }\PYG{n+nx}{environment}\PYG{p}{.}\PYG{n+nx}{getPassword}\PYG{p}{(),}
+\PYG{n+nx}{region}\PYG{o}{:}\PYG{+w}{ }\PYG{n+nx}{environment}\PYG{p}{.}\PYG{n+nx}{getSBRegion}\PYG{p}{()}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

@@ -1,8 +1,0 @@
-const testRunnerConfig = TestRunnerConfig.getInstance();
-const environment = testRunnerConfig.getEnvironment();
-const params = {
-organization: environment.getOrganization(),
-username: environment.getUsername(),
-password: environment.getPassword(),
-region: environment.getSBRegion()
-};

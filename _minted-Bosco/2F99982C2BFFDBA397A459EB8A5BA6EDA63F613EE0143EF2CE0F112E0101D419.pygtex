@@ -1,0 +1,42 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{ }\PYG{n+nt}{\PYGZdq{}testConfig\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n+nt}{\PYGZdq{}endpoint\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{   }\PYG{n+nt}{\PYGZdq{}create\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n+nt}{\PYGZdq{}AutoFailover\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{k+kc}{true}
+\PYG{+w}{   }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{ }\PYG{p}{\PYGZcb{},}
+\PYG{+w}{ }\PYG{n+nt}{\PYGZdq{}environment\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{p}{[}
+\PYG{+w}{  }\PYG{p}{\PYGZob{}}
+\PYG{+w}{   }\PYG{n+nt}{\PYGZdq{}name\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}ORGANIZATION\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{   }\PYG{n+nt}{\PYGZdq{}value\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}some\PYGZhy{}organization\PYGZdq{}}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{},}
+\PYG{+w}{  }\PYG{p}{\PYGZob{}}
+\PYG{+w}{   }\PYG{n+nt}{\PYGZdq{}name\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}USERNAME\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{   }\PYG{n+nt}{\PYGZdq{}value\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}some\PYGZhy{}username\PYGZdq{}}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{},}
+\PYG{+w}{  }\PYG{p}{\PYGZob{}}
+\PYG{+w}{   }\PYG{n+nt}{\PYGZdq{}name\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}PASSWORD\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{   }\PYG{n+nt}{\PYGZdq{}value\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}some\PYGZhy{}password\PYGZdq{}}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{},}
+\PYG{+w}{  }\PYG{p}{\PYGZob{}}
+\PYG{+w}{   }\PYG{n+nt}{\PYGZdq{}name\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}SERVISBOT\PYGZus{}REGION\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{   }\PYG{n+nt}{\PYGZdq{}value\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}eu\PYGZhy{}private\PYGZhy{}3\PYGZdq{}}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{},}
+\PYG{+w}{  }\PYG{p}{\PYGZob{}}
+\PYG{+w}{   }\PYG{n+nt}{\PYGZdq{}name\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}LOG\PYGZus{}LEVEL\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{   }\PYG{n+nt}{\PYGZdq{}value\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}INFO\PYGZdq{}}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{ }\PYG{p}{],}
+\PYG{+w}{ }\PYG{n+nt}{\PYGZdq{}testSuite\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n+nt}{\PYGZdq{}tests\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{p}{[}
+\PYG{+w}{   }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n+nt}{\PYGZdq{}path\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}goals/puppeteer\PYGZhy{}conversation\PYGZhy{}engaged.js\PYGZdq{}}
+\PYG{+w}{   }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{  }\PYG{p}{]}
+\PYG{+w}{ }\PYG{p}{\PYGZcb{},}
+\PYG{+w}{ }\PYG{n+nt}{\PYGZdq{}profile\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}eu\PYGZhy{}private\PYGZhy{}3\PYGZhy{}venus\PYGZdq{}}
+\PYG{p}{\PYGZcb{}}
+
+\end{Verbatim}

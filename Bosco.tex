@@ -1,12 +1,12 @@
 \documentclass[12pt,a4paper,titlepage]{report}
 
-\usepackage{minted} % load the minted package
 \usepackage{tcolorbox} % load the tcolorbox package (which loads the fancyvrb package)
-
+\usepackage{minted}
 % set up the minted package
-% \usemintedstyle{borland} % set the code highlighting style
+\usemintedstyle{borland} % set the code highlighting style
 \setminted{fontsize=\small} % set the code font size
-
+\usepackage[backend=biber]{biblatex}
+\addbibresource{references.bib}
 \usepackage{graphicx}
 \usepackage{subfig}
 \usepackage{float}
@@ -18,15 +18,20 @@
 \usepackage{fancyhdr}
 \usepackage{xcolor}
 \usepackage{caption}
+
 \let\cleardoublepage\clearpage
 
+% Referencing
+%
+%
+\addbibresource{references.bib}
 
 % Graphics and colour
 %
 
 \usepackage{graphicx}
 \graphicspath{{./diagrams/}}
-\usepackage{xcolor}
+\usepackage{xcolor} 
 \usepackage{tcolorbox}
 
 \definecolor{myOrange}{RGB}{241,85,44}
@@ -69,25 +74,25 @@
 % title page 
 \thispagestyle{empty}
 \begin{center}
-  \mbox{}\vfill
-  {\fontsize{18pt}{20pt}\selectfont \bfseries \AcademicTitle}
-  \vfill
-  {\fontsize{14pt}{20pt}\selectfont \bfseries\itshape \CommericalTitle}
-  \vfill
-  {\fontsize{12pt}{20pt}\selectfont \bfseries \Report}
-  \vfill
-  {\fontsize{14pt}{20pt}\selectfont \bfseries \Author}
-  \vfill
-  {\fontsize{14pt}{20pt}\selectfont \bfseries \Stakeholder}
-  \vfill
-  {\fontsize{14pt}{20pt}\selectfont \bfseries \StudentID}
-  \vfill
-  {\fontsize{14pt}{20pt}\selectfont \bfseries \Reader}
-  \vfill
-  {\fontsize{14pt}{20pt}\selectfont \bfseries \Course}
-  \vfill
-  {\fontsize{14pt}{20pt}\selectfont \bfseries \University}
-  \vfill
+ \mbox{}\vfill
+ {\fontsize{17pt}{20pt}\selectfont \bfseries \AcademicTitle}
+ \vfill
+ {\fontsize{14pt}{20pt}\selectfont \bfseries\itshape \CommericalTitle}
+ \vfill
+ {\fontsize{12pt}{20pt}\selectfont \bfseries \Report}
+ \vfill
+ {\fontsize{14pt}{20pt}\selectfont \bfseries \Author}
+ \vfill
+ {\fontsize{14pt}{20pt}\selectfont \bfseries \Stakeholder}
+ \vfill
+ {\fontsize{14pt}{20pt}\selectfont \bfseries \StudentID}
+ \vfill
+ {\fontsize{14pt}{20pt}\selectfont \bfseries \Reader}
+ \vfill
+ {\fontsize{14pt}{20pt}\selectfont \bfseries \Course}
+ \vfill
+ {\fontsize{14pt}{20pt}\selectfont \bfseries \University}
+ \vfill
 \end{center}
 \clearpage
 
@@ -122,18 +127,18 @@ Running the tests causes a lot of contention for CPU and memory. When a test run
 
 Also there are numerous problems with Testcafe. 
 \begin{itemize}
-  \item Testcafe has proven to be resource heavy, expensive and inefficient, causing slow CPU performance. 
-  \item Because of the competing resources some tests affect the performance of others. 
-  \item Debugging and monitoring of the tests is complex.
-  \item The test suite does not scale. Scalability is essential in order to increase the number of tests according to the number of user interactions and alternatively to reduce the number of tests when interactions drop which would not only prove to be more cost effective but would mostly solve all the issues mentioned.
+ \item Testcafe has proven to be resource heavy, expensive and inefficient, causing slow CPU performance. 
+ \item Because of the competing resources some tests affect the performance of others. 
+ \item Debugging and monitoring of the tests is complex.
+ \item The test suite does not scale. Scalability is essential in order to increase the number of tests according to the number of user interactions and alternatively to reduce the number of tests when interactions drop which would not only prove to be more cost effective but would mostly solve all the issues mentioned.
 \end{itemize}
 
-  \begin{figure}[ht]
-    \centering
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/frank_high_level.png}
-    \caption{High level view of Frankenstein}
-  \end{figure}
-  \clearpage
+ \begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/frank_high_level.png}
+  \caption{High level view of Frankenstein}
+ \end{figure}
+ \clearpage
 
 \section{Purpose and Requirements for Bosco}
 
@@ -142,9 +147,9 @@ This project aims to completely overhaul the existing test suite by migrating th
 In particular the migration will focus on an automation tool called Puppeteer which has been proven by ServisBOT to be more performant than Testcafe. The Puppeteer package includes its own browser whereas Testcafe launches an external browser which is slow and cumbersome. With Puppeteer there is more control over what the developer can test, it is more efficient, easier to debug and has a lot more functionality. It is widely chosen by developers now.
 
 \begin{figure}[ht]
-  \centering
-  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/bosco_high_level.png}
-  \caption{High level view of Bosco}
+ \centering
+ \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/bosco_high_level.png}
+ \caption{High level view of Bosco}
 \end{figure}
 
 \chapter{Research and Development}
@@ -152,15 +157,15 @@ In particular the migration will focus on an automation tool called Puppeteer wh
 In order to determine the best approach, technologies and methodology for Bosco, it was concluded that the research and analysis phase necessary for the implementation of this project was the following:
 
 \begin{itemize}
-  \item Review of Frankenstein and Testcafe
-  \item Cost Analysis of Frankenstein
-  \item Research into possible testing frameworks for Bosco
-  \item Puppeteer comparison to Testcafe
-  \item Lambda vs EC2 comparison
-  \item Possible implementations and modelling of Bosco
-  \item Proof of Concept
-  \item Additional requirements for implementing Bosco
-  \item Scope of the project
+ \item Review of Frankenstein and Testcafe
+ \item Cost Analysis of Frankenstein
+ \item Research into possible testing frameworks for Bosco
+ \item Puppeteer comparison to Testcafe
+ \item Lambda vs EC2 comparison
+ \item Possible implementations and modelling of Bosco
+ \item Proof of Concept
+ \item Additional requirements for implementing Bosco
+ \item Scope of the project
 \end{itemize}
 
 \section{Review of Frankenstein and Testcafe}
@@ -169,29 +174,29 @@ which features of a system are up and working and which are down.
 The tests are run in AWS ECS and are run on a cron.
 
 \begin{table}[H]
-  \centering
-  \small
-  \setlength\tabcolsep{6pt}
-  \begin{tabular}{|c|c|}
-    \hline \textbf
-    {Pros} & \textbf {Cons}\\
-    \hline\hline
-    Cross Browser Testing&Expensive\\
-    \hline
-    Open Source& Slow\\
-    \hline
-    Easy Setup \& Installation& Difficult to debug\\
-    \hline
-    Built-In Waits& No browser control\\
-    \hline
-    Supports devices without extra software package & Simulated events leads to false positives\\
-    \hline
-    UI End to End Testing\\
-    \hline
-    Both client and server side debug \\
-    \hline
-  \end{tabular}
-  \caption{Pros and Cons of Testcafe}
+ \centering
+ \small
+ \setlength\tabcolsep{6pt}
+ \begin{tabular}{|c|c|}
+  \hline \textbf
+  {Pros} & \textbf {Cons}\\
+  \hline\hline
+  Cross Browser Testing&Expensive\\
+  \hline
+  Open Source& Slow\\
+  \hline
+  Easy Setup \& Installation& Difficult to debug\\
+  \hline
+  Built-In Waits& No browser control\\
+  \hline
+  Supports devices without extra software package & Simulated events leads to false positives\\
+  \hline
+  UI End to End Testing\\
+  \hline
+  Both client and server side debug \\
+  \hline
+ \end{tabular}
+ \caption{Pros and Cons of Testcafe}
 \end{table}
 
 \section{Cost Analysis of Frankenstein Tests}
@@ -199,9 +204,9 @@ The tests are run in AWS ECS and are run on a cron.
 The following cost analysis was carried out on Frankenstein. There is an EC2 instance running the tests in the EU and the US costing ServisBOT about \$20 per day each. This costs the company almost \$15,000 a year to run tests.
 
 \begin{figure}[ht]
-  \centering
-  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/frank_cost_analysis.png}
-  \caption{Frankenstein Cost Analysis}
+ \centering
+ \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/frank_cost_analysis.png}
+ \caption{Frankenstein Cost Analysis}
 \end{figure}
 
 \section{Research and Analysis of Possible Testing Frameworks for Bosco}
@@ -216,9 +221,9 @@ results in the terminal window. Mocha also cleans the state of the software bein
 cases run independently of each other.
 
 \begin{figure}[ht]
-  \centering
-  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/mocha_test_result.png}
-  \caption{Mocha Test Result Output}
+ \centering
+ \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/mocha_test_result.png}
+ \caption{Mocha Test Result Output}
 \end{figure}
 
 \subsection{Jest}
@@ -230,23 +235,23 @@ library, there is no need to install and integrate additional libraries to be ab
 \subsection{Mocha vs Jest}
 
 \begin{table}[H]
-  \centering
-  \small
-  \setlength\tabcolsep{6pt}
-  \begin{tabular}{|c|c|c}
-    \hline \textbf
-    {Mocha}              & \textbf {Jest}\\
-    \hline\hline
-    Flexible configuration options & High Speed of Test Execution\\
-    \hline
-    Good Documentation             & Good Documentation\\
-    \hline
-    Ideal for back-end projects    & Test Runner included\\
-    \hline
-    Ad-hoc library choice          & Built in assertion and mocking library\\
-    \hline
-  \end{tabular}
-  \caption{Mocha Vs Jest}
+ \centering
+ \small
+ \setlength\tabcolsep{6pt}
+ \begin{tabular}{|c|c|c}
+  \hline \textbf
+  {Mocha}       & \textbf {Jest}\\
+  \hline\hline
+  Flexible configuration options & High Speed of Test Execution\\
+  \hline
+  Good Documentation       & Good Documentation\\
+  \hline
+  Ideal for back-end projects  & Test Runner included\\
+  \hline
+  Ad-hoc library choice     & Built in assertion and mocking library\\
+  \hline
+ \end{tabular}
+ \caption{Mocha Vs Jest}
 \label{table:mocha:jest}
 \end{table}
 
@@ -265,33 +270,33 @@ to run their tests and by giving them the flexibility to leverage headless or he
 \subsection{Pros of using Puppeteer}
 
 \begin{itemize}
-  \item Simple to set up.
-  \item Good documentation. Small community but lots of tutorials at this point.
-  \item Promise based.
-  \item Scriptable web browser
-  \item Installs Chrome in a working version automatically
-  \item Thin wrapper
-  \item Bi-Directional (events) \- automating things like console logs is easy
-  \item Maintained by Google.
-  \item JavaScript first, so the code feels very natural
-  \item Puppeteer also gives you direct access to the Chrome DevTools Protocol if you need it. Which can be very useful at times and in general it feels like there are fewer moving parts.
-  \item Works with multiple tabs and frames. It has an intuitive API
-  \item Trusted Actions: This criterion means dispatching events by the user agent which allows for user agent behaviours like hovers.
-  \item End to end tests are very fast in practice but people suffer misconceptions regarding the execution speed. Typically, it’s the website or web-app that are slow and the tests end up waiting for the web app to be ready most of the time.
-  \item Pro and Con: Stability which means how often tests fail after being authored other than when detecting a real application bug. Puppeteer wait for certain thing but has to waitFor manually for others.
-  \item Debugging: Can write and debug Javascript from an IDE.
+ \item Simple to set up.
+ \item Good documentation. Small community but lots of tutorials at this point.
+ \item Promise based.
+ \item Scriptable web browser
+ \item Installs Chrome in a working version automatically
+ \item Thin wrapper
+ \item Bi-Directional (events) \- automating things like console logs is easy
+ \item Maintained by Google.
+ \item JavaScript first, so the code feels very natural
+ \item Puppeteer also gives you direct access to the Chrome DevTools Protocol if you need it. Which can be very useful at times and in general it feels like there are fewer moving parts.
+ \item Works with multiple tabs and frames. It has an intuitive API
+ \item Trusted Actions: This criterion means dispatching events by the user agent which allows for user agent behaviours like hovers.
+ \item End to end tests are very fast in practice but people suffer misconceptions regarding the execution speed. Typically, it’s the website or web-app that are slow and the tests end up waiting for the web app to be ready most of the time.
+ \item Pro and Con: Stability which means how often tests fail after being authored other than when detecting a real application bug. Puppeteer wait for certain thing but has to waitFor manually for others.
+ \item Debugging: Can write and debug Javascript from an IDE.
 \end{itemize}
 
 \subsection{Cons of using Puppeteer}
 \begin{itemize}
-  \item Limited cross-browser support—only Chrome and Firefox
-  \item Feels like an automation framework and not a test framework—you often have to re-implement testing-related tools
-  \item Grids (running concurrently) in production are often a challenge
-  \item The automatic browser set up downloads Chromium and not Chrome and there are subtle differences between the two.
-  \item Smarter Locators : No support for selecting elements in multiple ways
-  \item Does not support parallelism, grids and infrastructure. Usually people build their own but this is due to change soon.
-  \item Does not support self healing tests and automatically improving tests.
-  \item Does not support Autonomous testing which is testing without code or user intervention.
+ \item Limited cross-browser support—only Chrome and Firefox
+ \item Feels like an automation framework and not a test framework—you often have to re-implement testing-related tools
+ \item Grids (running concurrently) in production are often a challenge
+ \item The automatic browser set up downloads Chromium and not Chrome and there are subtle differences between the two.
+ \item Smarter Locators : No support for selecting elements in multiple ways
+ \item Does not support parallelism, grids and infrastructure. Usually people build their own but this is due to change soon.
+ \item Does not support self healing tests and automatically improving tests.
+ \item Does not support Autonomous testing which is testing without code or user intervention.
 \end{itemize}
 
 \subsection{Testcafe Vs Puppeteer}
@@ -305,11 +310,11 @@ supports mobile, remote and cloud browsers (UI or headless). It is also free and
 \clearpage
 
 \begin{figure}{h}
-  \centering
-  \subfloat[\centering Npm Downloads]{{\includegraphics[width=5cm]{./diagrams/npm_pupp_tc}}}
-  \qquad
-  \subfloat[\centering GitHub stars]{{\includegraphics[width=5cm]{./diagrams/github_stars}}}
-  \caption{NPM statistics}
+ \centering
+ \subfloat[\centering Npm Downloads]{{\includegraphics[width=5cm]{./diagrams/npm_pupp_tc}}}
+ \qquad
+ \subfloat[\centering GitHub stars]{{\includegraphics[width=5cm]{./diagrams/github_stars}}}
+ \caption{NPM statistics}
 \end{figure}
 
 \section{EC2 vs Lambda comparison}
@@ -343,22 +348,22 @@ Assertions are made using the Assert library package and logged to the console b
 Once mocha was configured and run without errors the next step was to run the script in a lambda.
 
 \begin{figure}[h]
-  \begin{tcolorbox}
-    \begin{minted}[breaklines]{javascript}
-    // simple-test.js
-    const puppeteer = require("puppeteer");
-    const url = process.argv[2];
-    if (!url) {
-        throw "Please provide URL as a first argument";
-    }
-    async function run () {
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-      await page.goto(url);
-      await page.screenshot({path: "screenshot.png"});
-      browser.close();
-    }
-    run();
+ \begin{tcolorbox}
+  \begin{minted}[breaklines]{javascript}
+  // simple-test.js
+  const puppeteer = require("puppeteer");
+  const url = process.argv[2];
+  if (!url) {
+    throw "Please provide URL as a first argument";
+  }
+  async function run () {
+   const browser = await puppeteer.launch();
+   const page = await browser.newPage();
+   await page.goto(url);
+   await page.screenshot({path: "screenshot.png"});
+   browser.close();
+  }
+  run();
 \end{minted}
 \end{tcolorbox}
 \captionof{figure}{Simple test written with Puppeteer}
@@ -401,9 +406,9 @@ the workflow. They are based on a state machine and tasks where a state machine 
 state in that workflow that another AWS service performs.
 
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=15cm]{./diagrams/possible_implementation}
-  \captionof{figure}{Bosco Planned Implementation}
+ \centering
+ \includegraphics[width=15cm]{./diagrams/possible_implementation}
+ \captionof{figure}{Bosco Planned Implementation}
 \end{figure}
 
 \section{State Transitions}
@@ -413,15 +418,15 @@ The Bosco test suite runs through 5 state transitions (Start, StartState, Map, D
 This experiment focuses on using the Inline Map state instead of the Distributed Map state. The Inline Map state is used for fewer than 40 parallel iterations while the Distributed Map state is used for larger workloads. The map state runs a lambda for each test, which runs in parallel with each other. The results of the tests are then outputted to the \"Done\" lambda, the next state, which processes and runs the tests. Finally, a state prints out the results and the End state completes the workflow.
 
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=5cm]{./diagrams/step_function}
-  \caption{Bosco State Machine}
+ \centering
+ \includegraphics[width=5cm]{./diagrams/step_function}
+ \caption{Bosco State Machine}
 \end{figure}
 
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=5cm]{./diagrams/state_machine}
-  \caption{Inline Map State for Bosco Step Function}
+ \centering
+ \includegraphics[width=5cm]{./diagrams/state_machine}
+ \caption{Inline Map State for Bosco Step Function}
 \end{figure}
 
 \subsection{Cold vs Warm Lambdas}
@@ -433,9 +438,9 @@ Comparisons were made between running the tests on cold lambdas as opposed to wa
 The cost of running the test suite in a state machine using AWS Step Functions is based on the number of state transitions. This cost analysis does not account for error handling, which may increase the cost due to retries. The cost per transition is \$0.000025 according to the AWS pricing calculator. The analysis is based on the current number of tests and the frequency they are run (three times an hour), which may vary for Bosco tests.
 
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=15cm]{./diagrams/sf_cost_analysis}
-  \caption{Bosco Step Function Cost Analysis}
+ \centering
+ \includegraphics[width=15cm]{./diagrams/sf_cost_analysis}
+ \caption{Bosco Step Function Cost Analysis}
 \end{figure}
 
 \chapter{Bosco Implementation}
@@ -444,15 +449,15 @@ The cost of running the test suite in a state machine using AWS Step Functions i
 The implementation of Bosco has begun after finalizing the proof of concept. The first step involves refactoring the Frankenstein Lightning page, which serves as the source for all selectors and functions related to the Messenger page. To avoid duplication, a constructor was created and a function was added to launch the browser and open the Messenger page.
 
 \begin{figure}[H]
-  \begin{tcolorbox}
-    \begin{minted}{js}
-  async goToPage() {
-   await this.page.goto(this.url, 
-   { waitUntil: 'networkidle2' });
-  }
+ \begin{tcolorbox}
+  \begin{minted}{js}
+ async goToPage() {
+  await this.page.goto(this.url, 
+  { waitUntil: 'networkidle2' });
+ }
 \end{minted}
-  \end{tcolorbox}
-  \caption{Example of a Lightning function}
+ \end{tcolorbox}
+ \caption{Example of a Lightning function}
 \end{figure}
 
 With this starting point the interaction node test was refactored to use the Lightning page. Two functions were
@@ -528,88 +533,88 @@ parameters.
 The updated definition of the state machine included the following extra parameters:
 
 \begin{figure}[H]
-  \begin{tcolorbox}
-    \begin{minted}{json}
+ \begin{tcolorbox}
+  \begin{minted}{json}
 
-  "Next": "Done",
-  "ItemsPath": "\$.testSuite",
-  "ItemSelector": {
-    "testSuite.\$": "\$\$.Map.Item.Value",
-    "environment.\$": "\$.environment",
-    "profile.\$": "\$.profile",
-    "testConfig.\$": "\$.testConfig"
+ "Next": "Done",
+ "ItemsPath": "\$.testSuite",
+ "ItemSelector": {
+  "testSuite.\$": "\$\$.Map.Item.Value",
+  "environment.\$": "\$.environment",
+  "profile.\$": "\$.profile",
+  "testConfig.\$": "\$.testConfig"
 
 }
 \end{minted}
-  \end{tcolorbox}
-  \caption{Definition of Map State including Test Profile}
+ \end{tcolorbox}
+ \caption{Definition of Map State including Test Profile}
 \end{figure}
 
 The input to the map state became the following:
 
 \begin{figure}[H]
-  \begin{tcolorbox}
-    \begin{minted}{json}
+ \begin{tcolorbox}
+  \begin{minted}{json}
 {
-  "tests": [
-    {
-      "path": "goals/puppeteer-conversation-engaged.js"
-    }
-  ]
+ "tests": [
+  {
+   "path": "goals/puppeteer-conversation-engaged.js"
+  }
+ ]
 }
 \end{minted}
-  \end{tcolorbox}
-  \caption{Input to one Iteration of Map State with just the Test Path}
+ \end{tcolorbox}
+ \caption{Input to one Iteration of Map State with just the Test Path}
 \end{figure}
 
 In addition the input to each iteration of the running state became the following:
 
 \begin{figure}[H]
-  \begin{tcolorbox}
-    \begin{minted}{json}
+ \begin{tcolorbox}
+  \begin{minted}{json}
 {
-  "testConfig": {
-    "endpoint": {
-      "create": {
-        "AutoFailover": true
-      }
-    }
+ "testConfig": {
+  "endpoint": {
+   "create": {
+    "AutoFailover": true
+   }
+  }
+ },
+ "environment": [
+  {
+   "name": "ORGANIZATION",
+   "value": "some-organization"
   },
-  "environment": [
-    {
-      "name": "ORGANIZATION",
-      "value": "some-organization"
-    },
-    {
-      "name": "USERNAME",
-      "value": "some-username"
-    },
-    {
-      "name": "PASSWORD",
-      "value": "some-password"
-    },
-    {
-      "name": "SERVISBOT_REGION",
-      "value": "eu-private-3"
-    },
-    {
-      "name": "LOG_LEVEL",
-      "value": "INFO"
-    }
-  ],
-  "testSuite": {
-    "tests": [
-      {
-        "path": "goals/puppeteer-conversation-engaged.js"
-      }
-    ]
+  {
+   "name": "USERNAME",
+   "value": "some-username"
   },
-  "profile": "eu-private-3-venus"
+  {
+   "name": "PASSWORD",
+   "value": "some-password"
+  },
+  {
+   "name": "SERVISBOT_REGION",
+   "value": "eu-private-3"
+  },
+  {
+   "name": "LOG_LEVEL",
+   "value": "INFO"
+  }
+ ],
+ "testSuite": {
+  "tests": [
+   {
+    "path": "goals/puppeteer-conversation-engaged.js"
+   }
+  ]
+ },
+ "profile": "eu-private-3-venus"
 }
 
 \end{minted}
-  \end{tcolorbox}
-  \caption{Running State Input including Shared Environment}
+ \end{tcolorbox}
+ \caption{Running State Input including Shared Environment}
 \end{figure}
 
 \section{Test Profiles}
@@ -624,18 +629,17 @@ a javascript object and a spreader operator was used to combine the contents of 
 the even inputted to the orchestrator and output these to the handler.
 
 \begin{figure}[H]
-  \begin{tcolorbox}
-    \begin{minted}[breaklines]{javascript}
-    const readProfile = fs.readFileSync(testProfile, (err, data) => {
-    if (err) throw err;
-      logger.info(data);
-    });
-    const profile = JSON.parse(readProfile);
-    const output = { ...profile, ...event };
-
-    \end{minted}
-  \end{tcolorbox}
-  \caption{Parsing a JSON string to a javascript object and use of the spreader (\dots) operator}
+ \begin{tcolorbox}
+  \begin{minted}[breaklines]{javascript}
+  const readProfile = fs.readFileSync(testProfile, (err, data) => {
+  if (err) throw err;
+   logger.info(data);
+  });
+  const profile = JSON.parse(readProfile);
+  const output = { ...profile, ...event };
+  \end{minted}
+ \end{tcolorbox}
+ \caption{Parsing a JSON string to a javascript object and use of the spreader (\dots) operator}
 \end{figure}
 
 Next the global environment variables were removed so instead of reading them from the input to the orchestrator they would 
@@ -650,8 +654,8 @@ Initially the TestRunnerConfig took in the runnerEvent and created an instance o
 
 An Environment object was created using the environment from the event. This could now be accessed in the tests by calling the getters from the Environment object.
 \begin{figure}[H]
-  \begin{tcolorbox}
-    \begin{minted}[breaklines]{javascript}
+ \begin{tcolorbox}
+  \begin{minted}[breaklines]{javascript}
 const testRunnerConfig = TestRunnerConfig.getInstance();
 const environment = testRunnerConfig.getEnvironment();
 const params = {
@@ -661,8 +665,8 @@ password: environment.getPassword(),
 region: environment.getSBRegion()
 };
 \end{minted}
-  \end{tcolorbox}
-  \caption{Replacing proccess.env with getters to an Environment class invoked by a singleton class, TestRunnerConfig}
+ \end{tcolorbox}
+ \caption{Replacing proccess.env with getters to an Environment class invoked by a singleton class, TestRunnerConfig}
 \end{figure}
 
 \section{Endpoint Proxy}
@@ -674,15 +678,15 @@ containing the endpoint proxy. To prove the tests were making network calls to e
 the network tab examined. When the browser was talking to Venus there calls to \textbf{VendAnonConversation} and \textbf{ReadyForConversation} and when there were calls to Mercury, \textbf{graphql} calls were evident.
 
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=15cm]{./diagrams/mercury_network_calls.png}
-  \caption{Mercury Network Calls}
+ \centering
+ \includegraphics[width=15cm]{./diagrams/mercury_network_calls.png}
+ \caption{Mercury Network Calls}
 \end{figure}
 
 \begin{figure}[ht]
-  \centering
-  \includegraphics[width=15cm]{./diagrams/venus_network_calls.png}
-  \caption{Venus Network Calls}
+ \centering
+ \includegraphics[width=15cm]{./diagrams/venus_network_calls.png}
+ \caption{Venus Network Calls}
 \end{figure}
 
 \section{Creating a Test with a Secret}
@@ -696,9 +700,9 @@ An AWS cross account role, ie a secret, is required in order to access Lex. An e
 This test creates a long living bot which is a bot that is not deleted after the test but is created the first time the test is run and then reused for every test. The bot's variable intent is updated with the timestamp every time to ensure the bot is publishing successfully. When the bot is publishing its status is polled every 5 seconds and when published its status is SUCCEEDED and so the test starts.
 
 \begin{figure}[ht]
-  \centering
-  \includegraphics[width=15cm]{./diagrams/nlp_worker_poll.png}
-  \caption{NLP worker test with polling}
+ \centering
+ \includegraphics[width=15cm]{./diagrams/nlp_worker_poll.png}
+ \caption{NLP worker test with polling}
 \end{figure}
 
 \section{SSM Parameters}
@@ -717,95 +721,159 @@ The steps to this task were as follows:
 \end{itemize}
 
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=8cm,height=8cm,keepaspectratio]{./diagrams/ssm_params.png}
-  \caption{SSM Parameters created in AWS Systems Manager}
+ \centering
+ \includegraphics[width=8cm,height=8cm,keepaspectratio]{./diagrams/ssm_params.png}
+ \caption{SSM Parameters created in AWS Systems Manager}
 \end{figure}
 
+\section{Eventbridge Rules (CRON) }
 
+Like Frankenstein, Bosco needs to run on a scheduled event. WS Eventbridge allows developers to trigger evAents on a CRON which is `a command to an operating system or server for a job that is to be executed at a specified time`. 
+To trigger the state macine to run different profiles at different times, in different regions the cloud formation file needed to be updates. 
+\begin{itemize}
+ \item First the rule defaults were added to the cloudformation
+ \item The CRON rules were then added 
+  \begin{tcolorbox}
+   \begin{minted}[fontsize=\footnotesize, breaklines]{yaml}
+   ScheduleMercuryExpression: { Type: String, Default: "cron(0,20,40 * * * ? *)" } # run at 0,20,40 past the hour
+   ScheduleVenusExpression: { Type: String, Default: "cron(10,30,50 * * * ? *)" } # run at 10,30,50 past the hour
+   ScheduleHourlyExpression: { Type: String, Default: "cron(0 * * * ? *)" } # run at 0 past the hour
+   \end{minted}
+  \end{tcolorbox}
+
+ \item The triggers were added.
+ \begin{tcolorbox}
+  \begin{minted}[fontsize=\footnotesize, breaklines]{yaml}
+   EuMercuryTriggerEnabled: !Equals [ !Ref MercuryEuRunnerEnabled, "true" ]
+   EuVenusTriggerEnabled: !Equals [ !Ref VenusEuRunnerEnabled, "true" ]
+   EuHourlyTriggerEnabled: !Equals [ !Ref HourlyEuRunnerEnabled, "true" ]
+  \end{minted}
+ \end{tcolorbox}
+ \item The schedule rules were added
+ \item A new Sceduled Event IAM role to execute the state machine was added with a special policy that allows the execution of the state machine. 
+ 
+ \begin{tcolorbox}
+  \begin{minted}[fontsize=\footnotesize, breaklines]{yaml}
+    ScheduledEventIAMRole:
+        Policies:
+          - PolicyName: StateMachineExecutionPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action: "states:StartExecution"
+                  Resource:
+                    - !Ref ImportBoscoStateMachine
+  \end{minted}
+ \end{tcolorbox}
+\end{itemize}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=15cm]{./diagrams/state_machine_cron_executions.png}
+  \caption{R\&D Phase and Bosco Implementation Phase}
+ \end{figure}
 
 \appendix
 \chapter{Methodology}
-I am currently using Jira to track my sprints on the Bosco project. I am working in week long sprints for the implementation phase as this
-is better suited to the type of projec this is as this will be a live running system when it's complete and the urgency for it to be complete is high.
+Jira was used to keep track the sprints on the Bosco project. Week long sprints were the chosen method for the implementation phase as this
+was better suited to the type of project as the urgency to have it complete is high.
+
+Once the cloud formation file was deployed successfully, it was possible to observe the timed events executing successfully. You can see from the following table 
+that each execution is now given a unique ID and runs at regular intervals past the hour. The working CRON instigated time machine was showcased to the team and they were 
+queried on whether they would liked the introdcution of a profile that ran hourly as opposed to every twenty minutes. The team agreed that the tests were already running too 
+frequently and costing a lot. Bosco will have more control over what tests are run, in what regions and how frequently through the test profiles, therefore giving ServisBOT 
+much more control over their testing suite and providing flexibility and control that Frankenstein seriously lacks in.
+
+The projcet was broken into three Epics:
+
+\begin{itemize}
+  \item Bosco Research and Dessign
+  \item Bosco Implementation
+  \item Bosco Dissemination Phase
+\end{itemize}
+\section{Research and Design}\subsection*{0.1.0}
+Research and Design was carried out over a number of weeks starting in December with the main focus on the following:
+\begin{itemize}
+\item Review Puppeteer
+\item Review Lambda
+\item Initial Step Function R\&D
+\item Cost Analysis
+\item Proof of Concept
+\end{itemize}
+
+\section{Implementation}\subsection*{0.2.0}
+The implementation of Bosco was carried out in one week sprints as was required by the project supervisor in ServisBOT. 
+\subsection*{0.2.1}
+\begin{itemize}
+\item Add two Frankenstein tests to Bosco
+\item Step Function Lambda code moved to Bosco
+\end{itemize}
+
+\subsection*{0.2.2}
+\begin{itemize}
+\item Cloudformation
+\end{itemize}
+
+\subsection*{0.2.3}
+\begin{itemize}
+\item Bosco environment variables for tests
+\item Refactor state machine to use a shared environment
+\end{itemize}
+
+\subsection*{0.2.4}
+\begin{itemize}
+\item Test profiles and overrides
+\end{itemize}
+
+\subsection*{0.2.5}
+\begin{itemize}
+\item Create a test with a secret
+\end{itemize}
 
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=15cm]{./diagrams/sprints1.png}
-  \caption{R\&D Phase and Bosco Implementation Phase}
+ \centering
+ \includegraphics[width=15cm]{./diagrams/sprints1.png}
+ \caption{R\&D Phase and Bosco Implementation Phase}
 \end{figure}
 
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=15cm]{./diagrams/sprints2.png}
-  \caption{Bosco Dissemination Phase}
+ \centering
+ \includegraphics[width=15cm]{./diagrams/sprints2.png}
+ \caption{Bosco Dissemination Phase}
 \end{figure}
 
 
 \chapter{Bibliography}
 
-https://www.opsramp.com/guides/aws-monitoring-tool/cloudwatch-synthetics/
-https://www.functionize.com/automated-testing/assertion
-https://jestjs.io
-https://www.browserstack.com/guide/unit-testing-for-nodejs-using-mocha-and-chai
-https://www.tricentis.com/blog/bdd-behavior-driven-development
-https://www.pluralsight.com/blog/software-development/tdd-vs-bdd
-https://www.testim.io/blog/puppeteer-selenium-playwright-cypress-how-to-choose/
-https://www.testim.io/blog/webinar-summary-is-ai-taking-over-front-end-testing/
-https://aws.amazon.com/blogs/architecture/field-notes-scaling-browser-automation-with-puppeteer-on-aws-lambda-with-container-image-support/
-https://moiva.io/
-https://docs.aws.amazon.com/AmazonCloudWatch/
-https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html
-https://oxylabs.io/blog/puppeteer-on-aws-lambda
-https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/
-https://www.npmjs.com/package/chrome-aws-lambda
-https://www.docker.com/resources/what-container/
-https://blog.logrocket.com/testing-node-js-mocha-chai/
-https://www.ponicode.com/shift-left/
-https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
-https://evanhalley.dev/post/aws-ssm-node/
+As \textcite{Jetty} says.
+
+%No cite prints all references even if they are not in the document!!
+% \nocite{*}
+\printbibliography
+
+
+% https://www.opsramp.com/guides/aws-monitoring-tool/cloudwatch-synthetics/
+% https://www.functionize.com/automated-testing/assertion
+% https://jestjs.io
+% https://www.browserstack.com/guide/unit-testing-for-nodejs-using-mocha-and-chai
+% https://www.tricentis.com/blog/bdd-behavior-driven-development
+% https://www.pluralsight.com/blog/software-development/tdd-vs-bdd
+% https://www.testim.io/blog/puppeteer-selenium-playwright-cypress-how-to-choose/
+% https://www.testim.io/blog/webinar-summary-is-ai-taking-over-front-end-testing/
+% https://aws.amazon.com/blogs/architecture/field-notes-scaling-browser-automation-with-puppeteer-on-aws-lambda-with-container-image-support/
+% https://moiva.io/
+% https://docs.aws.amazon.com/AmazonCloudWatch/
+% https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html
+% https://oxylabs.io/blog/puppeteer-on-aws-lambda
+% https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/
+% https://www.npmjs.com/package/chrome-aws-lambda
+% https://www.docker.com/resources/what-container/
+% https://blog.logrocket.com/testing-node-js-mocha-chai/
+% https://www.ponicode.com/shift-left/
+% https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
+% https://evanhalley.dev/post/aws-ssm-node/
 
 \chapter{References}
 //TODO
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

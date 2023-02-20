@@ -1,0 +1,12 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{    }\PYG{n+nt}{ScheduledEventIAMRole}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n+nt}{Policies}\PYG{p}{:}
+\PYG{+w}{          }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{n+nt}{PolicyName}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{StateMachineExecutionPolicy}
+\PYG{+w}{            }\PYG{n+nt}{PolicyDocument}\PYG{p}{:}
+\PYG{+w}{              }\PYG{n+nt}{Version}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}2012\PYGZhy{}10\PYGZhy{}17\PYGZdq{}}
+\PYG{+w}{              }\PYG{n+nt}{Statement}\PYG{p}{:}
+\PYG{+w}{                }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{n+nt}{Effect}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Allow\PYGZdq{}}
+\PYG{+w}{                  }\PYG{n+nt}{Action}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}states:StartExecution\PYGZdq{}}
+\PYG{+w}{                  }\PYG{n+nt}{Resource}\PYG{p}{:}
+\PYG{+w}{                    }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{k+kt}{!Ref}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{ImportBoscoStateMachine}
+\end{Verbatim}

@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{   }\PYG{n+nt}{EuMercuryTriggerEnabled}\PYG{p}{:}\PYG{+w}{ }\PYG{k+kt}{!Equals}\PYG{+w}{ }\PYG{p+pIndicator}{[}\PYG{+w}{ }\PYG{k+kt}{!Ref}\PYG{+w}{ }\PYG{n+nv}{MercuryEuRunnerEnabled}\PYG{p+pIndicator}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}true\PYGZdq{}}\PYG{+w}{ }\PYG{p+pIndicator}{]}
+\PYG{+w}{   }\PYG{n+nt}{EuVenusTriggerEnabled}\PYG{p}{:}\PYG{+w}{ }\PYG{k+kt}{!Equals}\PYG{+w}{ }\PYG{p+pIndicator}{[}\PYG{+w}{ }\PYG{k+kt}{!Ref}\PYG{+w}{ }\PYG{n+nv}{VenusEuRunnerEnabled}\PYG{p+pIndicator}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}true\PYGZdq{}}\PYG{+w}{ }\PYG{p+pIndicator}{]}
+\PYG{+w}{   }\PYG{n+nt}{EuHourlyTriggerEnabled}\PYG{p}{:}\PYG{+w}{ }\PYG{k+kt}{!Equals}\PYG{+w}{ }\PYG{p+pIndicator}{[}\PYG{+w}{ }\PYG{k+kt}{!Ref}\PYG{+w}{ }\PYG{n+nv}{HourlyEuRunnerEnabled}\PYG{p+pIndicator}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}true\PYGZdq{}}\PYG{+w}{ }\PYG{p+pIndicator}{]}
+\end{Verbatim}

@@ -695,7 +695,7 @@ An AWS cross account role, ie a secret, is required in order to access Lex. An e
 
 This test creates a long living bot which is a bot that is not deleted after the test but is created the first time the test is run and then reused for every test. The bot's variable intent is updated with the timestamp every time to ensure the bot is publishing successfully. When the bot is publishing its status is polled every 5 seconds and when published its status is SUCCEEDED and so the test starts.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=15cm]{./diagrams/nlp_worker_poll.png}
   \caption{NLP worker test with polling}
@@ -711,17 +711,18 @@ The steps to this task were as follows:
 \item The parameters were created in the SSM parameter store in the same format as the Frankenstein parameters.
 \item Code was added to the orchestrator to read the SSM parameters using the node module \textbf{aws-sdk}.
 \item A new policy was added to the cloud formation template in order to give IAM permissions to read from the parameter store
-\item The environment was built in the orchestrator.
-\item The logger was added as a parameter to cloud formation instead of being inputted in the test profile environment
-\item A new class Secrets was added in order to retrieve the SSM parameters from the parameter store. Later to be renamed EnvironmentResolver
-\item The documentation was updated
+\item The environment was built in the orchestrator by retrieving the ssm parameters in the orchestrator, building the envirnoment object and returning this to the output.
+\item A new class, Secrets was added in order to retrieve the SSM parameters from the parameter store to extract that work from the orchestrator. Later to be renamed EnvironmentResolver. This was done by passing the ssm through to the Secrets constructor.
+\item The README was updated to reflect the changes.
 \end{itemize}
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=10cm,height=10cm,keepaspectratio]{./diagrams/ssm_params.png}
+  \includegraphics[width=8cm,height=8cm,keepaspectratio]{./diagrams/ssm_params.png}
   \caption{SSM Parameters created in AWS Systems Manager}
 \end{figure}
+
+
 
 \appendix
 \chapter{Methodology}

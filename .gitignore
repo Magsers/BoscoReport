@@ -8,3 +8,12 @@ pygmentize
 *.bbl
 *.blg
 *.fdb_latexmk
+*.bcf
+*.dvi
+*.pyg
+*.run.xml
+*.sta
+*.synctex.gz
+*.sty
+Bosco-blx.bib
+.DS_Store

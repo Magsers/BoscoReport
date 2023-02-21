@@ -1,0 +1,10 @@
+    ScheduledEventIAMRole:
+        Policies:
+          - PolicyName: StateMachineExecutionPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action: "states:StartExecution"
+                  Resource:
+                    - !Ref ImportBoscoStateMachine

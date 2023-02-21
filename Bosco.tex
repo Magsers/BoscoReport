@@ -1,30 +1,24 @@
 \documentclass[12pt,a4paper,titlepage]{report}
 
-\usepackage{tcolorbox} % load the tcolorbox package (which loads the fancyvrb package)
 \usepackage{minted}
+
 % set up the minted package
 \usemintedstyle{borland} % set the code highlighting style
 \setminted{fontsize=\small} % set the code font size
-\usepackage[backend=biber]{biblatex}
-\addbibresource{references.bib}
-\usepackage{graphicx}
+
 \usepackage{subfig}
 \usepackage{float}
-\usepackage{tcolorbox}
-\usepackage{parskip}
 \usepackage{microtype}
 \usepackage{fvextra}
 \usepackage[margin=2cm]{geometry}
-\usepackage{fancyhdr}
-\usepackage{xcolor}
 \usepackage{caption}
 
 \let\cleardoublepage\clearpage
 
 % Referencing
 %
-%
-\addbibresource{references.bib}
+\usepackage[backend=bibtex,style=verbose-trad2]{biblatex}
+\bibliography{references}
 
 % Graphics and colour
 %
@@ -32,7 +26,7 @@
 \usepackage{graphicx}
 \graphicspath{{./diagrams/}}
 \usepackage{xcolor} 
-\usepackage{tcolorbox}
+\usepackage{tcolorbox} % load the tcolorbox package (which loads the fancyvrb package)
 
 \definecolor{myOrange}{RGB}{241,85,44}
 \definecolor{myGray}{RGB}{106,100,100}
@@ -77,7 +71,7 @@
  \mbox{}\vfill
  {\fontsize{17pt}{20pt}\selectfont \bfseries \AcademicTitle}
  \vfill
- {\fontsize{14pt}{20pt}\selectfont \bfseries\itshape \CommericalTitle}
+ {\fontsize{14pt}{20pt}\selectfont \bfseries\itshape\CommericalTitle}
  \vfill
  {\fontsize{12pt}{20pt}\selectfont \bfseries \Report}
  \vfill
@@ -113,7 +107,9 @@
 
 This project aims to design and implement a feature based test runner for ServisBOT which determines which features of a system are working and which are down. The proposed system has the working title Bosco.
 
-ServisBOT Ltd runs an online platform that creates chatbots which provide customer service by allowing end users to communicate with a business or service through a pop up messenger on a website. The technology is cloud based and mostly serverless which means it is provided over the internet rather than using storage on a physical computer or server. It has to be consistently monitored and so tests are run continuously to ensure any problems are detected and resolved immediately. Testing the code is crucial to the service they provide. It ensures a robust platform and gives customers confidence that the system is dependable.
+ServisBOT Ltd runs an online platform that creates chatbots which provide customer service by allowing end users to communicate with a business or service through a pop up messenger on a website. The technology is cloud based and mostly serverless which means it is provided over the internet rather than using storage on a physical computer or server. It has to be consistently monitored and so tests are run continuously to ensure any problems are detected and resolved immediately. 
+
+Software testing is a critical element of software quality assurance and represents the ultimate review of specification, design and coding. Software testing is the process of testing the functionality and correctness of software by running it. Software testing is usually performed for one of two reasons: defect detection, and reliability estimation.\autocite[1]{arXiv.org}
 
 \subsection{Frankenstein}
 The components of a chatbot and each of its functions are broken down into micro services. These are created independent of one another but combined are the building blocks for the chatbot. There is a suite of tests which ServisBOT have called Frankenstein tests which run against these micro services. They run several times an hour, every hour. 
@@ -171,33 +167,7 @@ In order to determine the best approach, technologies and methodology for Bosco,
 \section{Review of Frankenstein and Testcafe}
 Frankenstein is a feature based test runner designed to determine
 which features of a system are up and working and which are down.
-The tests are run in AWS ECS and are run on a cron.
-
-\begin{table}[H]
- \centering
- \small
- \setlength\tabcolsep{6pt}
- \begin{tabular}{|c|c|}
-  \hline \textbf
-  {Pros} & \textbf {Cons}\\
-  \hline\hline
-  Cross Browser Testing&Expensive\\
-  \hline
-  Open Source& Slow\\
-  \hline
-  Easy Setup \& Installation& Difficult to debug\\
-  \hline
-  Built-In Waits& No browser control\\
-  \hline
-  Supports devices without extra software package & Simulated events leads to false positives\\
-  \hline
-  UI End to End Testing\\
-  \hline
-  Both client and server side debug \\
-  \hline
- \end{tabular}
- \caption{Pros and Cons of Testcafe}
-\end{table}
+The tests are run in AWS ECS and are run on a cron which is a schedulted event that runs every 20 minutes non-stop.
 
 \section{Cost Analysis of Frankenstein Tests}
 
@@ -307,7 +277,31 @@ but can be configured to run full (non-headless) Chrome or Chromium; It provides
 control Chromium or Chrome over the DevTools Protocol. TestCafe runs on Windows, MacOs, and Linux and
 supports mobile, remote and cloud browsers (UI or headless). It is also free and open source.
 
-\clearpage
+\begin{table}[H]
+  \centering
+  \small
+  \setlength\tabcolsep{6pt}
+  \begin{tabular}{|c|c|}
+   \hline \textbf
+   {Pros} & \textbf {Cons}\\
+   \hline\hline
+   Cross Browser Testing&Expensive\\
+   \hline
+   Open Source& Slow\\
+   \hline
+   Easy Setup \& Installation& Difficult to debug\\
+   \hline
+   Built-In Waits& No browser control\\
+   \hline
+   Supports devices without extra software package & Simulated events leads to false positives\\
+   \hline
+   UI End to End Testing\\
+   \hline
+   Both client and server side debug \\
+   \hline
+  \end{tabular}
+  \caption{Pros and Cons of Testcafe}
+ \end{table}
 
 \begin{figure}{h}
  \centering
@@ -478,9 +472,8 @@ to deploy each time they were to be tested.
 \section{Context Test}
 The first actual Frankenstein test to be converted to Bosco was the Context test. This test sets the context from the url
 and tests if it is outputted with the rest of the context.  This was interesting to work on as it exposed a bug in the Frankenstein test had a bug in it so it was not testing what it was supposed to be
-testing even though the test was passing. Once the error was highlighted I was able to finish writing the test
-and ensure it was working correctly. I made a PR, Dean reviewed it. I made the changes Dean suggested which
-included tidying up the code.
+testing even though the test was passing. Once the error was highlighted and fixed by the developer team it was now possible to finish writing the test
+and ensure it was working correctly. 
 
 \section{Conversation Engaged Test}
 The next task at hand is to convert the Conversation Engaged test. Whenever a user interacts with a bot, a goal is generated, which is a default or custom event that's tracked to measure the success of the bot's interactions.
@@ -699,6 +692,10 @@ An AWS cross account role, ie a secret, is required in order to access Lex. An e
 
 This test creates a long living bot which is a bot that is not deleted after the test but is created the first time the test is run and then reused for every test. The bot's variable intent is updated with the timestamp every time to ensure the bot is publishing successfully. When the bot is publishing its status is polled every 5 seconds and when published its status is SUCCEEDED and so the test starts.
 
+A bot class was created so that a publish function which polled the status of the publishing and outputted the status to the console could be created. This was so 
+the test behaved the same way as Frankenstein but also because using the ServisBOT cli proxy does not have this functionality so in calling sbCli.publish we would 
+not have the polling outputted to the console.
+
 \begin{figure}[ht]
  \centering
  \includegraphics[width=15cm]{./diagrams/nlp_worker_poll.png}
@@ -768,6 +765,12 @@ To trigger the state macine to run different profiles at different times, in dif
  \end{tcolorbox}
 \end{itemize}
 
+Once the cloud formation file was deployed successfully, it was possible to observe the timed events executing successfully. You can see from the following table 
+that each execution is now given a unique ID and runs at regular intervals past the hour. The working CRON instigated time machine was showcased to the team and they were 
+queried on whether they would liked the introdcution of a profile that ran hourly as opposed to every twenty minutes. The team agreed that the tests were already running too 
+frequently and costing a lot. Bosco will have more control over what tests are run, in what regions and how frequently through the test profiles, therefore giving ServisBOT 
+much more control over their testing suite and providing flexibility and control that Frankenstein seriously lacks in.
+
 \begin{figure}[h]
   \centering
   \includegraphics[width=15cm]{./diagrams/state_machine_cron_executions.png}
@@ -779,16 +782,10 @@ To trigger the state macine to run different profiles at different times, in dif
 Jira was used to keep track the sprints on the Bosco project. Week long sprints were the chosen method for the implementation phase as this
 was better suited to the type of project as the urgency to have it complete is high.
 
-Once the cloud formation file was deployed successfully, it was possible to observe the timed events executing successfully. You can see from the following table 
-that each execution is now given a unique ID and runs at regular intervals past the hour. The working CRON instigated time machine was showcased to the team and they were 
-queried on whether they would liked the introdcution of a profile that ran hourly as opposed to every twenty minutes. The team agreed that the tests were already running too 
-frequently and costing a lot. Bosco will have more control over what tests are run, in what regions and how frequently through the test profiles, therefore giving ServisBOT 
-much more control over their testing suite and providing flexibility and control that Frankenstein seriously lacks in.
-
 The projcet was broken into three Epics:
 
 \begin{itemize}
-  \item Bosco Research and Dessign
+  \item Bosco Research and Design
   \item Bosco Implementation
   \item Bosco Dissemination Phase
 \end{itemize}
@@ -846,12 +843,7 @@ The implementation of Bosco was carried out in one week sprints as was required 
 
 \chapter{Bibliography}
 
-As \textcite{Jetty} says.
-
-%No cite prints all references even if they are not in the document!!
-% \nocite{*}
 \printbibliography
-
 
 % https://www.opsramp.com/guides/aws-monitoring-tool/cloudwatch-synthetics/
 % https://www.functionize.com/automated-testing/assertion

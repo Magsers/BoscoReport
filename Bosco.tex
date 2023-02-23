@@ -18,7 +18,7 @@
 % Referencing
 %
 \usepackage[backend=bibtex,style=verbose-trad2]{biblatex}
-\bibliography{references}
+\addbibresource{references.bib}
 
 % Graphics and colour
 %
@@ -109,7 +109,7 @@ This project aims to design and implement a feature based test runner for Servis
 
 ServisBOT Ltd runs an online platform that creates chatbots which provide customer service by allowing end users to communicate with a business or service through a pop up messenger on a website. The technology is cloud based and mostly serverless which means it is provided over the internet rather than using storage on a physical computer or server. It has to be consistently monitored and so tests are run continuously to ensure any problems are detected and resolved immediately. 
 
-Software testing is a critical element of software quality assurance and represents the ultimate review of specification, design and coding. Software testing is the process of testing the functionality and correctness of software by running it. Software testing is usually performed for one of two reasons: defect detection, and reliability estimation.\autocite[1]{arXiv.org}
+Software testing is a critical element of software quality assurance and represents the ultimate review of specification, design and coding. Software testing is the process of testing the functionality and correctness of software by running it. Software testing is usually performed for one of two reasons: defect detection, and reliability estimation.\autocite{arXiv.org}
 
 \subsection{Frankenstein}
 The components of a chatbot and each of its functions are broken down into micro services. These are created independent of one another but combined are the building blocks for the chatbot. There is a suite of tests which ServisBOT have called Frankenstein tests which run against these micro services. They run several times an hour, every hour. 
@@ -363,11 +363,14 @@ Once mocha was configured and run without errors the next step was to run the sc
 \captionof{figure}{Simple test written with Puppeteer}
 \end{figure}
 
-However, there are problems running Puppeteer in a lambda. Lambda has a 50 MB limit on the zip file you can upload. Due to the fact that it installs Chromium, the Puppeteer package is significantly larger than 50 MB\. This limit does not apply when uploaded from an S3 bucket but there are other issues. Linux including AWS Lambda does not include the necessary libraries required to allow Puppeteer to function.
+However, there are problems running Puppeteer in a lambda. Lambda has a 50 MB limit on the zip file you can upload. 
+Due to the fact that it installs Chromium, the Puppeteer package is significantly larger than 50 {MB}. This 
+limit does not apply when uploaded from an S3 bucket but there are other issues. 
+Linux including AWS Lambda does not include the necessary libraries required to allow Puppeteer to function.
 
 \subsection{Node Modules}
 
-There are work-arounds for this in the form of node modules, \'puppeteer-core\' and \'chrome-aws-lambda\'.
+According to Hansen \autocite{hansen}, there are work-arounds for this in the form of node modules, \textbf{puppeteer-core} and \textbf{chrome-aws-lambda}.
 Both these modules installed allow for a version of Chromium that is built to run for AWS Lambda. Incorporating
 these ensures the tests run successfully. Unfortunately these modules need to be in parody with each other.
 

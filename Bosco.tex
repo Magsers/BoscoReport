@@ -13,12 +13,12 @@
 \usepackage[margin=2cm]{geometry}
 \usepackage{caption}
 
-\let\cleardoublepage\clearpage
-
 % Referencing
 %
-\usepackage[backend=bibtex,style=verbose-trad2]{biblatex}
-\addbibresource{references.bib}
+\usepackage[colorlinks=true, linkcolor=gray, filecolor=gray, urlcolor=gray]{hyperref}
+\usepackage{cleveref}
+\usepackage[style=authoryear-ibid,backend=biber]{biblatex}
+\addbibresource{bibliography.bib}
 
 % Graphics and colour
 %
@@ -42,7 +42,7 @@
 
 \lhead{\rmfamily \textcolor{gray}{\AcademicTitle}}
 \rhead{\rmfamily \textcolor{gray}{\Report}}
-\lfoot{\rmfamily \textcolor{gray}{\Author (\StudentID)}}
+\lfoot{\rmfamily \textcolor{gray}{\Author}{\StudentID}}
 \rfoot{\rmfamily \thepage}
 
 \usepackage{parskip}
@@ -50,7 +50,7 @@
 % Document Info
 %
 \newcommand\AcademicTitle{Frankenstein Test-Suite Re-Architecture}
-\newcommand\CommericalTitle{Bosco}
+\newcommand\CommercialTitle{Bosco}
 \newcommand\Author{Margaret McCarthy}
 \newcommand\StudentID{20095610}
 
@@ -71,7 +71,7 @@
  \mbox{}\vfill
  {\fontsize{17pt}{20pt}\selectfont \bfseries \AcademicTitle}
  \vfill
- {\fontsize{14pt}{20pt}\selectfont \bfseries\itshape\CommericalTitle}
+ {\fontsize{14pt}{20pt}\selectfont \bfseries\itshape \CommercialTitle}
  \vfill
  {\fontsize{12pt}{20pt}\selectfont \bfseries \Report}
  \vfill
@@ -109,7 +109,7 @@ This project aims to design and implement a feature based test runner for Servis
 
 ServisBOT Ltd runs an online platform that creates chatbots which provide customer service by allowing end users to communicate with a business or service through a pop up messenger on a website. The technology is cloud based and mostly serverless which means it is provided over the internet rather than using storage on a physical computer or server. It has to be consistently monitored and so tests are run continuously to ensure any problems are detected and resolved immediately. 
 
-Software testing is a critical element of software quality assurance and represents the ultimate review of specification, design and coding. Software testing is the process of testing the functionality and correctness of software by running it. Software testing is usually performed for one of two reasons: defect detection, and reliability estimation.\autocite{arXiv.org}
+Software testing is a critical element of software quality assurance and represents the ultimate review of specification, design and coding. Software testing is the process of testing the functionality and correctness of software by running it. Software testing is usually performed for one of two reasons: defect detection, and reliability estimation. \autocite{arXiv.org}
 
 \subsection{Frankenstein}
 The components of a chatbot and each of its functions are broken down into micro services. These are created independent of one another but combined are the building blocks for the chatbot. There is a suite of tests which ServisBOT have called Frankenstein tests which run against these micro services. They run several times an hour, every hour. 
@@ -204,7 +204,7 @@ library, there is no need to install and integrate additional libraries to be ab
 
 \subsection{Mocha vs Jest}
 
-\begin{table}[H]
+\begin{table}[ht]
  \centering
  \small
  \setlength\tabcolsep{6pt}
@@ -222,7 +222,7 @@ library, there is no need to install and integrate additional libraries to be ab
   \hline
  \end{tabular}
  \caption{Mocha Vs Jest}
-\label{table:mocha:jest}
+label{table:mocha:jest}
 \end{table}
 
 \section{Review of Puppeteer}
@@ -233,7 +233,7 @@ This means it is incredibly popular for use cases such as web scraping, generati
 
 Testing user flows within web applications usually involves either using an automated headful
 browser (i.e. FireFox with Selenium) or a Headless browser, one that presents no UI, that is built on top of its own unique JavaScript
-engine (i.e. Testcafe). This creates a situation where trade offs have to be made: speed vs. reliability.
+engine (i.e. Testcafe). This creates a situation where trade offs have to be made: speed vs\. reliability.
 Puppeteer aimed to remove this trade off – by enabling developers to leverage the Chromium browser environment
 to run their tests and by giving them the flexibility to leverage headless or headful browsers that run on the same underlying platform as their users.
 
@@ -254,7 +254,7 @@ to run their tests and by giving them the flexibility to leverage headless or he
  \item Trusted Actions: This criterion means dispatching events by the user agent which allows for user agent behaviours like hovers.
  \item End to end tests are very fast in practice but people suffer misconceptions regarding the execution speed. Typically, it’s the website or web-app that are slow and the tests end up waiting for the web app to be ready most of the time.
  \item Pro and Con: Stability which means how often tests fail after being authored other than when detecting a real application bug. Puppeteer wait for certain thing but has to waitFor manually for others.
- \item Debugging: Can write and debug Javascript from an IDE.
+ \item Debugging: Can write and debug Javascript from an IDE\@.
 \end{itemize}
 
 \subsection{Cons of using Puppeteer}
@@ -263,7 +263,7 @@ to run their tests and by giving them the flexibility to leverage headless or he
  \item Feels like an automation framework and not a test framework—you often have to re-implement testing-related tools
  \item Grids (running concurrently) in production are often a challenge
  \item The automatic browser set up downloads Chromium and not Chrome and there are subtle differences between the two.
- \item Smarter Locators : No support for selecting elements in multiple ways
+ \item Smarter Locators: No support for selecting elements in multiple ways
  \item Does not support parallelism, grids and infrastructure. Usually people build their own but this is due to change soon.
  \item Does not support self healing tests and automatically improving tests.
  \item Does not support Autonomous testing which is testing without code or user intervention.
@@ -277,7 +277,7 @@ but can be configured to run full (non-headless) Chrome or Chromium; It provides
 control Chromium or Chrome over the DevTools Protocol. TestCafe runs on Windows, MacOs, and Linux and
 supports mobile, remote and cloud browsers (UI or headless). It is also free and open source.
 
-\begin{table}[H]
+\begin{table}[ht]
   \centering
   \small
   \setlength\tabcolsep{6pt}
@@ -319,7 +319,7 @@ are intended for consistent, static operations and users pay a recurring monthly
 system and the region. The instances run until they are deliberately stopped.
 
 Lambda on the other hand is billed per exectution and per ms in use with the amount of memory the user allocates to the function.
-When a lambda funciton is invoked, the code is run without the need to deploy or manage a VM. It is an event based service that is
+When a lambda funciton is invoked, the code is run without the need to deploy or manage a VM\@. It is an event based service that is
 designed to deliver extremely short-term compute capability. AWS handles the back-end provisioning, loading, execution, scaling and unloading of the user's code.
 Lambdas only run when executed yet are always available. They scale dynamically in response to traffic.
 
@@ -370,7 +370,7 @@ Linux including AWS Lambda does not include the necessary libraries required to 
 
 \subsection{Node Modules}
 
-According to Hansen \autocite{hansen}, there are work-arounds for this in the form of node modules, \textbf{puppeteer-core} and \textbf{chrome-aws-lambda}.
+According to \textcite{hansen}, there are work-arounds for this in the form of node modules, \textbf{puppeteer-core} and \textbf{chrome-aws-lambda}.
 Both these modules installed allow for a version of Chromium that is built to run for AWS Lambda. Incorporating
 these ensures the tests run successfully. Unfortunately these modules need to be in parody with each other.
 
@@ -410,7 +410,7 @@ state in that workflow that another AWS service performs.
 
 \section{State Transitions}
 
-The Bosco test suite runs through 5 state transitions (Start, StartState, Map, Done, End) plus an additional transition for each test run (Running). With three tests, there are 8 states as the \"Running\" state is executed three times. The first state is the \"Start\" state which initiates the run and then the \"StartState\" is invoked, creating an array of tests and passing the payload to the \"Map\" state.
+The Bosco test suite runs through 5 state transitions (Start, StartState, Map, Done, End) plus an additional transition for each test run (Running). With three tests, there are 8 states as the \"Running\" state is executed three times. The first state is the \"Start\" state which initiates the run and then the \'StartState\i' is invoked, creating an array of tests and passing the payload to the \"Map\" state.
 
 This experiment focuses on using the Inline Map state instead of the Distributed Map state. The Inline Map state is used for fewer than 40 parallel iterations while the Distributed Map state is used for larger workloads. The map state runs a lambda for each test, which runs in parallel with each other. The results of the tests are then outputted to the \"Done\" lambda, the next state, which processes and runs the tests. Finally, a state prints out the results and the End state completes the workflow.
 
@@ -445,7 +445,7 @@ The cost of running the test suite in a state machine using AWS Step Functions i
 \section{Lightning Page}
 The implementation of Bosco has begun after finalizing the proof of concept. The first step involves refactoring the Frankenstein Lightning page, which serves as the source for all selectors and functions related to the Messenger page. To avoid duplication, a constructor was created and a function was added to launch the browser and open the Messenger page.
 
-\begin{figure}[H]
+\begin{figure}[h]
  \begin{tcolorbox}
   \begin{minted}{js}
  async goToPage() {
@@ -528,7 +528,7 @@ parameters.
 
 The updated definition of the state machine included the following extra parameters:
 
-\begin{figure}[H]
+\begin{figure}[h]
  \begin{tcolorbox}
   \begin{minted}{json}
 
@@ -548,7 +548,7 @@ The updated definition of the state machine included the following extra paramet
 
 The input to the map state became the following:
 
-\begin{figure}[H]
+\begin{figure}[ht]
  \begin{tcolorbox}
   \begin{minted}{json}
 {
@@ -565,7 +565,7 @@ The input to the map state became the following:
 
 In addition the input to each iteration of the running state became the following:
 
-\begin{figure}[H]
+\begin{figure}[h]
  \begin{tcolorbox}
   \begin{minted}{json}
 {
@@ -624,7 +624,7 @@ event profile. The node module \textbf{file system\&(fs)} was used to read the c
 a javascript object and a spreader operator was used to combine the contents of the profile and the contents of 
 the even inputted to the orchestrator and output these to the handler.
 
-\begin{figure}[H]
+\begin{figure}[h]
  \begin{tcolorbox}
   \begin{minted}[breaklines]{javascript}
   const readProfile = fs.readFileSync(testProfile, (err, data) => {
@@ -649,7 +649,7 @@ itself. It is used when there is going to be no change or update to the object f
 Initially the TestRunnerConfig took in the runnerEvent and created an instance of itself. It had getters to get different variables from the event which at the time were just the profile, testConfig, testSuite and environment. The tests ran but now the aim was to remove process.env to set the variables and use an Environment class that instead reads the environment variables from the TestRunnerConfig.
 
 An Environment object was created using the environment from the event. This could now be accessed in the tests by calling the getters from the Environment object.
-\begin{figure}[H]
+\begin{figure}[h]
  \begin{tcolorbox}
   \begin{minted}[breaklines]{javascript}
 const testRunnerConfig = TestRunnerConfig.getInstance();
@@ -679,14 +679,15 @@ the network tab examined. When the browser was talking to Venus there calls to \
  \caption{Mercury Network Calls}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[h]
  \centering
  \includegraphics[width=15cm]{./diagrams/venus_network_calls.png}
  \caption{Venus Network Calls}
 \end{figure}
 
 \section{Creating a Test with a Secret}
-Many of the Frankenstein tests use secrets in order to run the tests. Secrets can be defined as secure documents containing access keys, api keys, api secrets or IDs to external systems. They can be created and stored in the ServisBOT system and then referenced by bots securely. This is how ServisBOT manage API keys for AWS.
+Many of the Frankenstein tests use secrets in order to run the tests. Secrets can be defined as secure documents containing access keys, api keys, api secrets or IDs to external systems. They can be created and stored in the ServisBOT system and then referenced by bots securely. 
+This is how ServisBOT manage API keys for AWS\@.
 
 The test that was chosen was the NLP worker, Lex V2, intent-publish test. A \textbf{Lex} worker is a remotely managed NLP worker who takes input and sends it to a Lex bot for Natural Language Processing. A Lex bot is an Amazon bot, users use ServisBOT to access, manage and run their Lexbots. 
 \textbf{NLP} is a form of Artificial Intelligence that transforms text that a user submits into language that the computer programme can understand. In order for ServisBOT to classify utterances using a remote managed NLP, the correct API keys, access tokens or cross account roles need to be configured in the ServisBOT Secrets Vault.
@@ -699,7 +700,7 @@ A bot class was created so that a publish function which polled the status of th
 the test behaved the same way as Frankenstein but also because using the ServisBOT cli proxy does not have this functionality so in calling sbCli.publish we would 
 not have the polling outputted to the console.
 
-\begin{figure}[ht]
+\begin{figure}[h]
  \centering
  \includegraphics[width=15cm]{./diagrams/nlp_worker_poll.png}
  \caption{NLP worker test with polling}
@@ -774,7 +775,7 @@ queried on whether they would liked the introdcution of a profile that ran hourl
 frequently and costing a lot. Bosco will have more control over what tests are run, in what regions and how frequently through the test profiles, therefore giving ServisBOT 
 much more control over their testing suite and providing flexibility and control that Frankenstein seriously lacks in.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=15cm]{./diagrams/state_machine_cron_executions.png}
   \caption{R\&D Phase and Bosco Implementation Phase}
@@ -803,7 +804,7 @@ Research and Design was carried out over a number of weeks starting in December 
 \end{itemize}
 
 \section{Implementation}\subsection*{0.2.0}
-The implementation of Bosco was carried out in one week sprints as was required by the project supervisor in ServisBOT. 
+The implementation of Bosco was carried out in one week sprints as was required by the project supervisor in ServisBOT\@. 
 \subsection*{0.2.1}
 \begin{itemize}
 \item Add two Frankenstein tests to Bosco
@@ -831,23 +832,19 @@ The implementation of Bosco was carried out in one week sprints as was required 
 \item Create a test with a secret
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[ht]
  \centering
  \includegraphics[width=15cm]{./diagrams/sprints1.png}
  \caption{R\&D Phase and Bosco Implementation Phase}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[ht]
  \centering
  \includegraphics[width=15cm]{./diagrams/sprints2.png}
  \caption{Bosco Dissemination Phase}
 \end{figure}
 
-
-\chapter{Bibliography}
-
-\printbibliography
-
+\chapter{References}
 % https://www.opsramp.com/guides/aws-monitoring-tool/cloudwatch-synthetics/
 % https://www.functionize.com/automated-testing/assertion
 % https://jestjs.io
@@ -869,6 +866,6 @@ The implementation of Bosco was carried out in one week sprints as was required 
 % https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
 % https://evanhalley.dev/post/aws-ssm-node/
 
-\chapter{References}
-//TODO
+\printbibliography %Prints bibliography
+
 \end{document}

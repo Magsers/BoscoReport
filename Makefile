@@ -1,14 +1,14 @@
 MAIN = Bosco
 
 default:
-	pdflatex --shell-escape $(MAIN)
+	pdflatex -shell-escape $(MAIN)
 	biber $(MAIN)
-	pdflatex --shell-escape $(MAIN)
-	pdflatex --shell-escape $(MAIN)
+	pdflatex -shell-escape $(MAIN)
 
 b build: $(MAIN).pdf
 				biber $(MAIN)
-				pdflatex --shell-escape $(MAIN)
+				pdflatex -shell-escape $(MAIN)
+				pdflatex -shell-escape $(MAIN)
 
 $(MAIN).pdf: $(MAIN).tex
 				pdflatex --shell-escape $(MAIN)

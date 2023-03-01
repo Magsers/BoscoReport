@@ -1,36 +1,5 @@
 \documentclass[12pt,a4paper,titlepage]{report}
 
-\usepackage{minted}
-
-% set up the minted package
-\usemintedstyle{borland} % set the code highlighting style
-\setminted{fontsize=\small} % set the code font size
-
-\usepackage{subfig}
-\usepackage{float}
-\usepackage{microtype}
-\usepackage{fvextra}
-\usepackage[margin=2cm]{geometry}
-\usepackage{caption}
-
-% Referencing
-%
-\usepackage[colorlinks=true, linkcolor=gray, filecolor=gray, urlcolor=gray]{hyperref}
-\usepackage{cleveref}
-\usepackage[style=authoryear-ibid,backend=biber]{biblatex}
-\addbibresource{bibliography.bib}
-
-% Graphics and colour
-%
-
-\usepackage{graphicx}
-\graphicspath{{./diagrams/}}
-\usepackage{xcolor} 
-\usepackage{tcolorbox} % load the tcolorbox package (which loads the fancyvrb package)
-
-\definecolor{myOrange}{RGB}{241,85,44}
-\definecolor{myGray}{RGB}{106,100,100}
-
 % Page setup
 %
 \usepackage{fancyhdr}
@@ -45,21 +14,21 @@
 \lfoot{\rmfamily \textcolor{gray}{\Author}{\StudentID}}
 \rfoot{\rmfamily \thepage}
 
-\usepackage{parskip}
-\usepackage[bottom]{footmisc}
+
 % Document Info
 %
 \newcommand\AcademicTitle{Frankenstein Test-Suite Re-Architecture}
 \newcommand\CommercialTitle{Bosco}
 \newcommand\Author{Margaret McCarthy}
 \newcommand\StudentID{20095610}
-
 \newcommand\Date{March 2023}
 \newcommand\Report{Project Report}
 \newcommand\Stakeholder{ServisBOT Ltd.}
 \newcommand\Course{Higher Diploma in Computer Science}
 \newcommand\Reader{Supervisor: David Power}
 \newcommand\University{South East Technological University}
+
+\usepackage{Bosco}
 
 \begin{document}
 
@@ -109,7 +78,7 @@ This project aims to design and implement a feature based test runner for Servis
 
 ServisBOT Ltd runs an online platform that creates chatbots which provide customer service by allowing end users to communicate with a business or service through a pop up messenger on a website. The technology is cloud based and mostly serverless which means it is provided over the internet rather than using storage on a physical computer or server. It has to be consistently monitored and so tests are run continuously to ensure any problems are detected and resolved immediately. 
 
-Software testing is a critical element of software quality assurance and represents the ultimate review of specification, design and coding. Software testing is the process of testing the functionality and correctness of software by running it. Software testing is usually performed for one of two reasons: defect detection, and reliability estimation. \autocite{arXiv.org}
+Software testing is a critical element of software quality assurance and represents the ultimate review of specification, design and coding. Software testing is the process of testing the functionality and correctness of software by running it. Software testing is usually performed for one of two reasons: defect detection, and reliability estimation. \cite{Ahamed}
 
 \subsection{Frankenstein}
 The components of a chatbot and each of its functions are broken down into micro services. These are created independent of one another but combined are the building blocks for the chatbot. There is a suite of tests which ServisBOT have called Frankenstein tests which run against these micro services. They run several times an hour, every hour. 
@@ -341,7 +310,7 @@ The mocha test framework was added to the code as in reality Puppeteer is not a 
 Assertions are made using the Assert library package and logged to the console but it is not in essence a testing tool.
 Once mocha was configured and run without errors the next step was to run the script in a lambda.
 
-\begin{figure}[h]
+\begin{figure}[H]
  \begin{tcolorbox}
   \begin{minted}[breaklines]{javascript}
   // simple-test.js
@@ -370,7 +339,7 @@ Linux including AWS Lambda does not include the necessary libraries required to 
 
 \subsection{Node Modules}
 
-According to \textcite{hansen}, there are work-arounds for this in the form of node modules, \textbf{puppeteer-core} and \textbf{chrome-aws-lambda}.
+According to \autocite{hansen}, there are work-arounds for this in the form of node modules, \textbf{puppeteer-core} and \textbf{chrome-aws-lambda}.
 Both these modules installed allow for a version of Chromium that is built to run for AWS Lambda. Incorporating
 these ensures the tests run successfully. Unfortunately these modules need to be in parody with each other.
 
@@ -402,7 +371,7 @@ step functions a workflow can be created through a series of lambda functions wi
 the workflow. They are based on a state machine and tasks where a state machine is a workflow and a task is a
 state in that workflow that another AWS service performs.
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=15cm]{./diagrams/possible_implementation}
  \captionof{figure}{Bosco Planned Implementation}
@@ -414,13 +383,13 @@ The Bosco test suite runs through 5 state transitions (Start, StartState, Map, D
 
 This experiment focuses on using the Inline Map state instead of the Distributed Map state. The Inline Map state is used for fewer than 40 parallel iterations while the Distributed Map state is used for larger workloads. The map state runs a lambda for each test, which runs in parallel with each other. The results of the tests are then outputted to the \"Done\" lambda, the next state, which processes and runs the tests. Finally, a state prints out the results and the End state completes the workflow.
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=5cm]{./diagrams/step_function}
  \caption{Bosco State Machine}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=5cm]{./diagrams/state_machine}
  \caption{Inline Map State for Bosco Step Function}
@@ -434,7 +403,7 @@ Comparisons were made between running the tests on cold lambdas as opposed to wa
 
 The cost of running the test suite in a state machine using AWS Step Functions is based on the number of state transitions. This cost analysis does not account for error handling, which may increase the cost due to retries. The cost per transition is \$0.000025 according to the AWS pricing calculator. The analysis is based on the current number of tests and the frequency they are run (three times an hour), which may vary for Bosco tests.
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=15cm]{./diagrams/sf_cost_analysis}
  \caption{Bosco Step Function Cost Analysis}
@@ -445,7 +414,7 @@ The cost of running the test suite in a state machine using AWS Step Functions i
 \section{Lightning Page}
 The implementation of Bosco has begun after finalizing the proof of concept. The first step involves refactoring the Frankenstein Lightning page, which serves as the source for all selectors and functions related to the Messenger page. To avoid duplication, a constructor was created and a function was added to launch the browser and open the Messenger page.
 
-\begin{figure}[h]
+\begin{figure}[H]
  \begin{tcolorbox}
   \begin{minted}{js}
  async goToPage() {
@@ -528,7 +497,7 @@ parameters.
 
 The updated definition of the state machine included the following extra parameters:
 
-\begin{figure}[h]
+\begin{figure}[H]
  \begin{tcolorbox}
   \begin{minted}{json}
 
@@ -565,7 +534,7 @@ The input to the map state became the following:
 
 In addition the input to each iteration of the running state became the following:
 
-\begin{figure}[h]
+\begin{figure}[H]
  \begin{tcolorbox}
   \begin{minted}{json}
 {
@@ -624,7 +593,7 @@ event profile. The node module \textbf{file system\&(fs)} was used to read the c
 a javascript object and a spreader operator was used to combine the contents of the profile and the contents of 
 the even inputted to the orchestrator and output these to the handler.
 
-\begin{figure}[h]
+\begin{figure}[H]
  \begin{tcolorbox}
   \begin{minted}[breaklines]{javascript}
   const readProfile = fs.readFileSync(testProfile, (err, data) => {
@@ -649,7 +618,7 @@ itself. It is used when there is going to be no change or update to the object f
 Initially the TestRunnerConfig took in the runnerEvent and created an instance of itself. It had getters to get different variables from the event which at the time were just the profile, testConfig, testSuite and environment. The tests ran but now the aim was to remove process.env to set the variables and use an Environment class that instead reads the environment variables from the TestRunnerConfig.
 
 An Environment object was created using the environment from the event. This could now be accessed in the tests by calling the getters from the Environment object.
-\begin{figure}[h]
+\begin{figure}[H]
  \begin{tcolorbox}
   \begin{minted}[breaklines]{javascript}
 const testRunnerConfig = TestRunnerConfig.getInstance();
@@ -673,13 +642,13 @@ in the form of an Endpoint proxy would instead suffix the endpoint with the prof
 containing the endpoint proxy. To prove the tests were making network calls to either Mercury or Venus, the tests were slowed down, run in headful mode and 
 the network tab examined. When the browser was talking to Venus there calls to \textbf{VendAnonConversation} and \textbf{ReadyForConversation} and when there were calls to Mercury, \textbf{graphql} calls were evident.
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=15cm]{./diagrams/mercury_network_calls.png}
  \caption{Mercury Network Calls}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=15cm]{./diagrams/venus_network_calls.png}
  \caption{Venus Network Calls}
@@ -700,7 +669,7 @@ A bot class was created so that a publish function which polled the status of th
 the test behaved the same way as Frankenstein but also because using the ServisBOT cli proxy does not have this functionality so in calling sbCli.publish we would 
 not have the polling outputted to the console.
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=15cm]{./diagrams/nlp_worker_poll.png}
  \caption{NLP worker test with polling}
@@ -721,7 +690,7 @@ The steps to this task were as follows:
 \item The README was updated to reflect the changes.
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=8cm,height=8cm,keepaspectratio]{./diagrams/ssm_params.png}
  \caption{SSM Parameters created in AWS Systems Manager}
@@ -778,8 +747,33 @@ much more control over their testing suite and providing flexibility and control
 \begin{figure}[ht]
   \centering
   \includegraphics[width=15cm]{./diagrams/state_machine_cron_executions.png}
-  \caption{R\&D Phase and Bosco Implementation Phase}
+  \caption{State Machine Executions on a CRON }
  \end{figure}
+
+ \section{Converting a CLI Test}
+ Frankenstein also has a number of tests that test the functionality of the cli. The cli has most of the functionality if not more of the ServisBOT UI. The tests do not use a web scraper like Testcafe as it is not needed, instead the tests just run the cli commands and use an assertion to ensure they were carried out sufficiently. As a result the tests are completed much faster than the Testcafe tests.
+
+The CLI test chosen was the Content, create-describe-update-delete-list test. It was a simple test that tests a Content node. It takes a content definition in JSON format and creates a content node object. Then it describes it, updates it, lists the contents and deletes the content. 
+When deployed the test took 18 seconds as opposed to a Puppeteer test taking an average of 55 seconds.
+
+When put to the team however, whether Bosco was to include CLI tests or not, it was agreed that it was unnecessary to include the CLI tests. Bosco was to test portal specifically where the users would 
+be using the UI first hand. CLI tests were basically only for developers and there was less of a need to test them. The goal is to have full Frankenstein coverage with Bosco and testing the ServisBOT CLI proxy has 95\% coverage. 
+It was then decided to remove the CLI test from Bosco. 
+
+\section{Dynamo DB}
+The next task for Bosco was to store the test results in a global Dynamo DB table. 
+Each test run would have a row in the table with details on the results of the test. 
+Initially the following attributes were chosen. The primary key was set to the test profile with the sort key which is unique set to the endTime of the test run. 
+The other values passed to the dynamo table would be the duration of the test run and the status of the test run. Once the step function would write to the dynamo table, additional attributes would be added.
+
+The learning path to achieving this began with:
+\begin{itemize}
+\item Manually creating a dynamo table in dev and deciding the attributes that would be written to it.
+\item The handler was then refactored in order to pass the profile, the endTime and the duration to the results lambda.
+\item The results lambda then used the aws-sdk to write to the Dynamo DB. It filtered through the status of all the tests and if there was a failed test then the overall test run was marked as a fail.
+\item Once the step function was writing to the table which was created manually, a new resource, a Global Dynamo table was added to the cloud formation template.
+\item A condition was added to the Dynamo table so that it was possible to interchange between deploying the table or not.
+\end{itemize}
 
 \appendix
 \chapter{Methodology}
@@ -844,6 +838,8 @@ The implementation of Bosco was carried out in one week sprints as was required 
  \caption{Bosco Dissemination Phase}
 \end{figure}
 
+\printbibliography 
+
 \chapter{References}
 % https://www.opsramp.com/guides/aws-monitoring-tool/cloudwatch-synthetics/
 % https://www.functionize.com/automated-testing/assertion
@@ -865,7 +861,5 @@ The implementation of Bosco was carried out in one week sprints as was required 
 % https://www.ponicode.com/shift-left/
 % https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
 % https://evanhalley.dev/post/aws-ssm-node/
-
-\printbibliography %Prints bibliography
 
 \end{document}

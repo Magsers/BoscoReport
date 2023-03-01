@@ -627,7 +627,6 @@
     <bcf:option datatype="boolean">related</bcf:option>
     <bcf:option datatype="boolean">dashed</bcf:option>
     <bcf:option datatype="boolean">mergedate</bcf:option>
-    <bcf:option datatype="boolean">ibidpage</bcf:option>
     <bcf:option datatype="boolean">bibtexcaseprotection</bcf:option>
     <bcf:option datatype="integer">mincrossrefs</bcf:option>
     <bcf:option datatype="integer">minxrefs</bcf:option>
@@ -2346,9 +2345,9 @@
     <bcf:datasource type="file" datatype="bibtex" glob="false">bibliography.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1">arXiv.org</bcf:citekey>
+    <bcf:citekey order="1">Ahamed</bcf:citekey>
     <bcf:citekey order="2">hansen</bcf:citekey>
-    <bcf:citekey order="3">arXiv.org</bcf:citekey>
+    <bcf:citekey order="3">Ahamed</bcf:citekey>
     <bcf:citekey order="4">hansen</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->

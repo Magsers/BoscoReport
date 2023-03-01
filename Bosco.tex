@@ -339,7 +339,7 @@ Linux including AWS Lambda does not include the necessary libraries required to 
 
 \subsection{Node Modules}
 
-According to \autocite{hansen}, there are work-arounds for this in the form of node modules, \textbf{puppeteer-core} and \textbf{chrome-aws-lambda}.
+According to \autocite{Hansen}, there are work-arounds for this in the form of node modules, \textbf{puppeteer-core} and \textbf{chrome-aws-lambda}.
 Both these modules installed allow for a version of Chromium that is built to run for AWS Lambda. Incorporating
 these ensures the tests run successfully. Unfortunately these modules need to be in parody with each other.
 
@@ -766,6 +766,12 @@ Each test run would have a row in the table with details on the results of the t
 Initially the following attributes were chosen. The primary key was set to the test profile with the sort key which is unique set to the endTime of the test run. 
 The other values passed to the dynamo table would be the duration of the test run and the status of the test run. Once the step function would write to the dynamo table, additional attributes would be added.
 
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=15cm]{./diagrams/dynamodb.png}
+  \caption{Dynamo DB Global Table Results}
+ \end{figure}
+
 The learning path to achieving this began with:
 \begin{itemize}
 \item Manually creating a dynamo table in dev and deciding the attributes that would be written to it.
@@ -799,31 +805,49 @@ Research and Design was carried out over a number of weeks starting in December 
 
 \section{Implementation}\subsection*{0.2.0}
 The implementation of Bosco was carried out in one week sprints as was required by the project supervisor in ServisBOT\@. 
-\subsection*{0.2.1}
+\subsection*{Sprint 1}
 \begin{itemize}
 \item Add two Frankenstein tests to Bosco
 \item Step Function Lambda code moved to Bosco
 \end{itemize}
 
-\subsection*{0.2.2}
+\subsection*{Sprint 2}
 \begin{itemize}
 \item Cloudformation
 \end{itemize}
 
-\subsection*{0.2.3}
+\subsection*{Sprint 3}
 \begin{itemize}
 \item Bosco environment variables for tests
 \item Refactor state machine to use a shared environment
 \end{itemize}
 
-\subsection*{0.2.4}
+\subsection*{Sprint 4}
 \begin{itemize}
 \item Test profiles and overrides
 \end{itemize}
 
-\subsection*{0.2.5}
+\subsection*{Sprint 5}
 \begin{itemize}
 \item Create a test with a secret
+\end{itemize}
+
+\subsection*{Sprint 6}
+\begin{itemize}
+\item Lightning url in tests needs to be config in test profiles
+\end{itemize}
+
+\subsection*{Sprint 7}
+\begin{itemize}
+\item READMe update for Developer Experience
+\item Schedule different test profiles to run on a CRON
+\item Orchestrator builds the Environment
+\end{itemize}
+
+\subsection*{Sprint 8}
+\begin{itemize}
+\item Storing Test Results in Dynamo DB
+\item Create a CLI test in Bosco
 \end{itemize}
 
 \begin{figure}[ht]

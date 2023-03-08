@@ -78,7 +78,7 @@ This project aims to design and implement a feature based test runner for Servis
 
 ServisBOT Ltd runs an online platform that creates chatbots which provide customer service by allowing end users to communicate with a business or service through a pop up messenger on a website. The technology is cloud based and mostly serverless which means it is provided over the internet rather than using storage on a physical computer or server. It has to be consistently monitored and so tests are run continuously to ensure any problems are detected and resolved immediately. 
 
-Software testing is a critical element of software quality assurance and represents the ultimate review of specification, design and coding. Software testing is the process of testing the functionality and correctness of software by running it. Software testing is usually performed for one of two reasons: defect detection, and reliability estimation. \cite{Ahamed}
+Software testing is a critical element of software quality assurance and represents the ultimate review of specification, design and coding. Software testing is usually performed for one of two reasons: defect detection, and reliability estimation. \cite{Ahamed}
 
 \subsection{Frankenstein}
 The components of a chatbot and each of its functions are broken down into micro services. These are created independent of one another but combined are the building blocks for the chatbot. There is a suite of tests which ServisBOT have called Frankenstein tests which run against these micro services. They run several times an hour, every hour. 
@@ -109,7 +109,7 @@ Also there are numerous problems with Testcafe.
 
 This project aims to completely overhaul the existing test suite by migrating the tests from the EC2 instances to AWS Lambda functions. This would ensure each lambda, whether it runs one test or multiple tests, is run independently and is not competing for memory. It would mean the test suite could be scaled infinitely, would run faster and as a result would most likely be a lot more cost efficient. This has yet to be proven.
 
-In particular the migration will focus on an automation tool called Puppeteer which has been proven by ServisBOT to be more performant than Testcafe. The Puppeteer package includes its own browser whereas Testcafe launches an external browser which is slow and cumbersome. With Puppeteer there is more control over what the developer can test, it is more efficient, easier to debug and has a lot more functionality. It is widely chosen by developers now.
+In particular the migration will focus on an automation tool called Puppeteer which has been proven by ServisBOT to be more performant than Testcafe. The Puppeteer package includes its own browser whereas Testcafe launches an external browser which is slow and cumbersome. With Puppeteer there is more control over what the developer can test, it is more efficient, easier to debug and has a lot more functionality. It is widely chosen by developers now. (4.6 million weekly downloads, 2023-03-02) \cite{Puppeteer}
 
 \begin{figure}[ht]
  \centering
@@ -128,7 +128,6 @@ In order to determine the best approach, technologies and methodology for Bosco,
  \item Puppeteer comparison to Testcafe
  \item Lambda vs EC2 comparison
  \item Possible implementations and modelling of Bosco
- \item Proof of Concept
  \item Additional requirements for implementing Bosco
  \item Scope of the project
 \end{itemize}
@@ -295,7 +294,7 @@ Lambdas only run when executed yet are always available. They scale dynamically 
 \section{Conclusion}
 // TODO
 
-\chapter{Initial Design Implementation}
+\chapter{Initial Design \& Implementation}
 
 \section{Proof of Concept - Running Puppeteer on a Lambda}
 
@@ -349,7 +348,7 @@ synced the lambda function passes. Obviously this is not ideal as there is a vas
 Whatever the reason for these modules not being updated, relying on them is impractical and will eventually lead to our tests being broken.
 
 \subsection{Docker}
-
+ 
 The process uses a Docker container instead of node modules to condense the code. A Docker
 container is a standalone piece of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to the next.
 A Docker container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
@@ -377,7 +376,7 @@ state in that workflow that another AWS service performs.
  \captionof{figure}{Bosco Planned Implementation}
 \end{figure}
 
-\section{State Transitions}
+\section{State Machine Transitions}
 
 The Bosco test suite runs through 5 state transitions (Start, StartState, Map, Done, End) plus an additional transition for each test run (Running). With three tests, there are 8 states as the \"Running\" state is executed three times. The first state is the \"Start\" state which initiates the run and then the \'StartState\i' is invoked, creating an array of tests and passing the payload to the \"Map\" state.
 
@@ -677,8 +676,9 @@ not have the polling outputted to the console.
 
 \section{SSM Parameters}
 The next task for Bosco was to build the environment in the orchestrator using SSM parameters. 
-SSM parameters are credentials and secrets that are stored in AWS Systems Manager parameter store. 
-They can be encrypted and the service is easy and free to use. A few lines of code can retrieve the parameters from the store. 
+SSM (Systems Manager) is a service provided by AWS that allows you to securely store and retrieve data for your application \cite{Halley}.
+They can be encrypted and the service is easy and free to use. 
+A few lines of code can retrieve the parameters from the store. 
 
 The steps to this task were as follows:
 \begin{itemize}
@@ -781,6 +781,40 @@ The learning path to achieving this began with:
 \item A condition was added to the Dynamo table so that it was possible to interchange between deploying the table or not.
 \end{itemize}
 
+\chapter{Deployment}
+The deployment process was undertaken with help from the team as the initial plan needed to be altered. The triggers were removed from the 
+cloud formation script and instead were put in a script specific to the AWS Region they would be deployed in. 
+
+
+\section{Triggers}
+\begin{table}[ht]
+  \centering
+  \small
+  \setlength\tabcolsep{5pt}
+  \begin{tabular}{|c|c|c|c|c|}
+   \hline & \textbf{Staging/Lower}&\textbf{Prod/Upper}&\textbf{Prod/Upper}&\textbf{Prod/Upper}\\
+   \hline\hline
+   \textbf{ServisBOT Region}&\textbf{eu-private-1}&\textbf{eu-1}&\textbf{us1}&\textbf{usscif1}\\
+   \hline
+   \textbf{Timeframe}&Mon-Fri, 8am-5pm&24/7&24/7&24/7\\
+   \hline
+   \textbf{Mercury}&0,20,40&0,20,40&0,20,40&N/A\\
+   \hline
+   \textbf{Venus}&10,30,50&10,30,50&10,30,50&10,30,50\\
+   \hline
+   \textbf{Hourly}&hourly&hourly&hourly&hourly\\
+   \hline
+  \end{tabular}
+  \caption{Scheduled Triggers (CRON)s for Running Bosco}
+ \end{table}
+
+\chapter{Conclusion}
+\section{Reflection}
+\section{Key skills}
+\section{Challenges}
+\section{Future Work}
+
+
 \appendix
 \chapter{Methodology}
 Jira was used to keep track the sprints on the Bosco project. Week long sprints were the chosen method for the implementation phase as this
@@ -793,17 +827,16 @@ The projcet was broken into three Epics:
   \item Bosco Implementation
   \item Bosco Dissemination Phase
 \end{itemize}
-\section{Research and Design}\subsection*{0.1.0}
+\section{Research and Design}
 Research and Design was carried out over a number of weeks starting in December with the main focus on the following:
 \begin{itemize}
 \item Review Puppeteer
 \item Review Lambda
 \item Initial Step Function R\&D
 \item Cost Analysis
-\item Proof of Concept
 \end{itemize}
 
-\section{Implementation}\subsection*{0.2.0}
+\section{Implementation}
 The implementation of Bosco was carried out in one week sprints as was required by the project supervisor in ServisBOT\@. 
 \subsection*{Sprint 1}
 \begin{itemize}
@@ -862,28 +895,30 @@ The implementation of Bosco was carried out in one week sprints as was required 
  \caption{Bosco Dissemination Phase}
 \end{figure}
 
-\printbibliography 
+\printbibliography[title={References}]
 
-\chapter{References}
-% https://www.opsramp.com/guides/aws-monitoring-tool/cloudwatch-synthetics/
-% https://www.functionize.com/automated-testing/assertion
-% https://jestjs.io
-% https://www.browserstack.com/guide/unit-testing-for-nodejs-using-mocha-and-chai
-% https://www.tricentis.com/blog/bdd-behavior-driven-development
-% https://www.pluralsight.com/blog/software-development/tdd-vs-bdd
-% https://www.testim.io/blog/puppeteer-selenium-playwright-cypress-how-to-choose/
-% https://www.testim.io/blog/webinar-summary-is-ai-taking-over-front-end-testing/
-% https://aws.amazon.com/blogs/architecture/field-notes-scaling-browser-automation-with-puppeteer-on-aws-lambda-with-container-image-support/
-% https://moiva.io/
-% https://docs.aws.amazon.com/AmazonCloudWatch/
-% https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html
-% https://oxylabs.io/blog/puppeteer-on-aws-lambda
-% https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/
-% https://www.npmjs.com/package/chrome-aws-lambda
-% https://www.docker.com/resources/what-container/
-% https://blog.logrocket.com/testing-node-js-mocha-chai/
-% https://www.ponicode.com/shift-left/
-% https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
-% https://evanhalley.dev/post/aws-ssm-node/
+\chapter{Bibliography}
+\begin{enumerate}
+\item https://www.opsramp.com/guides/aws-monitoring-tool/cloudwatch-synthetics/
+\item https://www.functionize.com/automated-testing/assertion
+\item https://jestjs.io
+\item https://www.browserstack.com/guide/unit-testing-for-nodejs-using-mocha-and-chai
+\item https://www.tricentis.com/blog/bdd-behavior-driven-development
+\item https://www.pluralsight.com/blog/software-development/tdd-vs-bdd
+\item https://www.testim.io/blog/puppeteer-selenium-playwright-cypress-how-to-choose/
+\item https://www.testim.io/blog/webinar-summary-is-ai-taking-over-front-end-testing/
+\item https://aws.amazon.com/blogs/architecture/field-notes-scaling-browser-automation-with-puppeteer-on-aws-lambda-with-container-image-support/
+\item https://moiva.io/
+\item https://docs.aws.amazon.com/AmazonCloudWatch/
+\item https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html
+\item https://oxylabs.io/blog/puppeteer-on-aws-lambda
+\item https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/
+\item https://www.npmjs.com/package/chrome-aws-lambda
+\item https://www.docker.com/resources/what-container/
+\item https://blog.logrocket.com/testing-node-js-mocha-chai/
+\item https://www.ponicode.com/shift-left/
+\item https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
+\item https://evanhalley.dev/post/aws-ssm-node/
+\end{enumerate}
 
 \end{document}

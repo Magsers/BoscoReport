@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{err}{co}\PYG{k+kc}{nst}\PYG{+w}{ }\PYG{k+kc}{test}\PYG{err}{Ru}\PYG{k+kc}{nner}\PYG{err}{Co}\PYG{k+kc}{nf}\PYG{err}{ig}\PYG{+w}{ }\PYG{err}{=}\PYG{+w}{ }\PYG{err}{Tes}\PYG{k+kc}{t}\PYG{err}{Ru}\PYG{k+kc}{nner}\PYG{err}{Co}\PYG{k+kc}{nf}\PYG{err}{ig.ge}\PYG{k+kc}{t}\PYG{err}{I}\PYG{k+kc}{nstan}\PYG{err}{ce();}
+\PYG{err}{co}\PYG{k+kc}{nst}\PYG{+w}{ }\PYG{err}{e}\PYG{k+kc}{n}\PYG{err}{viro}\PYG{k+kc}{n}\PYG{err}{me}\PYG{k+kc}{nt}\PYG{+w}{ }\PYG{err}{=}\PYG{+w}{ }\PYG{k+kc}{test}\PYG{err}{Ru}\PYG{k+kc}{nner}\PYG{err}{Co}\PYG{k+kc}{nf}\PYG{err}{ig.ge}\PYG{k+kc}{t}\PYG{err}{E}\PYG{k+kc}{n}\PYG{err}{viro}\PYG{k+kc}{n}\PYG{err}{me}\PYG{k+kc}{nt}\PYG{err}{();}
+\PYG{err}{co}\PYG{k+kc}{nst}\PYG{+w}{ }\PYG{err}{params}\PYG{+w}{ }\PYG{err}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{err}{orga}\PYG{k+kc}{n}\PYG{err}{iza}\PYG{k+kc}{t}\PYG{err}{io}\PYG{k+kc}{n}\PYG{p}{:}\PYG{+w}{ }\PYG{err}{e}\PYG{k+kc}{n}\PYG{err}{viro}\PYG{k+kc}{n}\PYG{err}{me}\PYG{k+kc}{nt}\PYG{err}{.ge}\PYG{k+kc}{t}\PYG{err}{Orga}\PYG{k+kc}{n}\PYG{err}{iza}\PYG{k+kc}{t}\PYG{err}{io}\PYG{k+kc}{n}\PYG{err}{()}\PYG{p}{,}
+\PYG{err}{user}\PYG{k+kc}{na}\PYG{err}{me}\PYG{p}{:}\PYG{+w}{ }\PYG{err}{e}\PYG{k+kc}{n}\PYG{err}{viro}\PYG{k+kc}{n}\PYG{err}{me}\PYG{k+kc}{nt}\PYG{err}{.ge}\PYG{k+kc}{t}\PYG{err}{User}\PYG{k+kc}{na}\PYG{err}{me()}\PYG{p}{,}
+\PYG{err}{password}\PYG{p}{:}\PYG{+w}{ }\PYG{err}{e}\PYG{k+kc}{n}\PYG{err}{viro}\PYG{k+kc}{n}\PYG{err}{me}\PYG{k+kc}{nt}\PYG{err}{.ge}\PYG{k+kc}{t}\PYG{err}{Password()}\PYG{p}{,}
+\PYG{err}{regio}\PYG{k+kc}{n}\PYG{p}{:}\PYG{+w}{ }\PYG{err}{e}\PYG{k+kc}{n}\PYG{err}{viro}\PYG{k+kc}{n}\PYG{err}{me}\PYG{k+kc}{nt}\PYG{err}{.ge}\PYG{k+kc}{t}\PYG{err}{SBRegio}\PYG{k+kc}{n}\PYG{err}{()}
+\PYG{p}{\PYGZcb{}}\PYG{err}{;}
+\end{Verbatim}

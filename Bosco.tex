@@ -456,13 +456,13 @@ At first, it was believed that this test would be simple, but changes were reque
 This created a need to parse the exported goal JSON result. However, an error was encountered in the Servisbot CLI proxy, where the outputted JSON was not formatted correctly and could not be parsed. To work around this, the CSV output option was used instead of JSON and the csv-parse node module was imported.
 To test this, a temporary script named \"proxy.mjs\" was created to run the goals part of the test independently. It was discovered that csv-parse/sync needed to be imported instead of just csv-parse and that VSCode needed to be restarted as it was not running the code. After discussing the issue with colleagues and having them run the code on their machines, it was concluded that the problem was with VSCode and simply restarting it solved the issue.
 
-\section{Cloud Formation}
-The Bosco project will be deployed using Cloud Formation, a deployment tool.
-The Cloud Formation template, which can be in either yaml or json format, specifies the necessary environment variables and resources.
-The aim is to upload the start, done, and test runner lambda functions through Cloud Formation and have the state machine reference these lambdas.
+\section{Cloudformation}
+The Bosco project will be deployed using Cloudformation, a deployment tool.
+The Cloudformation template, which can be in either yaml or json format, specifies the necessary environment variables and resources.
+The aim is to upload the start, done, and test runner lambda functions through Cloudformation and have the state machine reference these lambdas.
 Once this is complete, the state machine will invoke the lambdas.
 
-The cloud formation template will have three lambda functions.
+The cloudformation template will have three lambda functions.
 The start function, the test runner which points to the image of the container and the done function. The
 template will also contain the state machine definition. A YAML formatting extension from Redhat to format the YAML
 file is also necessary as it is not possible to deploy the YAML unless the format is accurate.
@@ -687,7 +687,7 @@ The steps to this task were as follows:
 \begin{itemize}
 \item The parameters were created in the SSM parameter store in the same format as the Frankenstein parameters.
 \item Code was added to the orchestrator to read the SSM parameters using the node module \textbf{aws-sdk}.
-\item A new policy was added to the cloud formation template in order to give IAM permissions to read from the parameter store
+\item A new policy was added to the cloudformation template in order to give IAM permissions to read from the parameter store
 \item The environment was built in the orchestrator by retrieving the ssm parameters in the orchestrator, building the envirnoment object and returning this to the output.
 \item A new class, Secrets was added in order to retrieve the SSM parameters from the parameter store to extract that work from the orchestrator. Later to be renamed EnvironmentResolver. This was done by passing the ssm through to the Secrets constructor.
 \item The README was updated to reflect the changes.
@@ -702,7 +702,7 @@ The steps to this task were as follows:
 \section{Eventbridge Rules (CRON) }
 
 Like Frankenstein, Bosco needs to run on a scheduled event. WS Eventbridge allows developers to trigger evAents on a CRON which is `a command to an operating system or server for a job that is to be executed at a specified time`. 
-To trigger the state macine to run different profiles at different times, in different regions the cloud formation file needed to be updates. 
+To trigger the state macine to run different profiles at different times, in different regions the cloudformation file needed to be updates. 
 \begin{itemize}
  \item First the rule defaults were added to the cloudformation
  \item The CRON rules were then added 
@@ -741,7 +741,7 @@ To trigger the state macine to run different profiles at different times, in dif
  \end{tcolorbox}
 \end{itemize}
 
-Once the cloud formation file was deployed successfully, it was possible to observe the timed events executing successfully. You can see from the following table 
+Once the cloudformation file was deployed successfully, it was possible to observe the timed events executing successfully. You can see from the following table 
 that each execution is now given a unique ID and runs at regular intervals past the hour. The working CRON instigated time machine was showcased to the team and they were 
 queried on whether they would liked the introdcution of a profile that ran hourly as opposed to every twenty minutes. The team agreed that the tests were already running too 
 frequently and costing a lot. Bosco will have more control over what tests are run, in what regions and how frequently through the test profiles, therefore giving ServisBOT 
@@ -780,13 +780,13 @@ The learning path to achieving this began with:
 \item Manually creating a dynamo table in dev and deciding the attributes that would be written to it.
 \item The handler was then refactored in order to pass the profile, the endTime and the duration to the results lambda.
 \item The results lambda then used the aws-sdk to write to the Dynamo DB. It filtered through the status of all the tests and if there was a failed test then the overall test run was marked as a fail.
-\item Once the step function was writing to the table which was created manually, a new resource, a Global Dynamo table was added to the cloud formation template.
+\item Once the step function was writing to the table which was created manually, a new resource, a Global Dynamo table was added to the cloudformation template.
 \item A condition was added to the Dynamo table so that it was possible to interchange between deploying the table or not.
 \end{itemize}
 
 \chapter{Deployment}
 The deployment process was undertaken with help from the team as the initial plan needed to be altered. The triggers were removed from the 
-cloud formation script and instead were put in a script specific to the AWS Region they would be deployed in. 
+cloudformation script and instead were put in a script specific to the AWS Region they would be deployed in. 
 
 \section{CICD Process}
 The steps to the CICD process for Bosco are as follows:
@@ -811,8 +811,8 @@ It was required that Bosco would run multiple ServisBOT region test profiles per
 Bosco in the AWS region, eu-west-1 should be capable of creating CRON schedules for ServisBOT regions, eu-1 and eu-private-1. 
 
 \subsection{Triggers}
-Triggers are what initiates the test runs. They can be defined for each region and each environment. On discussion among the team the decision was taken 
-to reduce the number of test runs that Frankenstein ran on. Frankenstein was running 24/7 and this was deemed unnecessary. This will have a huge cost reduction 
+Triggers are what initiates the test runs. They can be defined for each region and each environment. The decision was taken 
+to reduce the number of test runs that Frankenstein runs. Frankenstein runs 24/7 and this was deemed unnecessary. This will have a huge cost reduction 
 effect on the company. The following times were decided on for the test runs.
 
 \begin{table}[ht]
@@ -836,7 +836,7 @@ effect on the company. The following times were decided on for the test runs.
   \caption{Scheduled Triggers (CRON)s for Running Bosco}
  \end{table}
 
-A new folder src/triggers was created which contatins cloud formation templates for each AWS region and ServisBOT region pair.
+A new folder src/triggers was created which contatins cloudformation templates for each AWS region and ServisBOT region pair.
 For example:
 src/triggers/eu-west-1/eu-1-triggers.yaml
 src/triggers/eu-west-1/eu-private-1-triggers.yaml
@@ -845,9 +845,73 @@ Within each of these template files is the infrastructure for the eu-1 CRON and 
 A new lambda was created in Bosco which does the following:
 * When invoked, checks the AWS region the lambda is running in.
 * Reads the src/triggers/<aws-region> folder, and uses the AWS SDK to deploy each of the templates found within this folder.
-* The lambda function has the ability to poll to check for new or updated cloud formation stacks.
+* The lambda function has the ability to poll to check for new or updated cloudformation stacks.
 * The lambda will fail if any of the stacks fail to create/update.
 A post-build code build script invokes the lambda. This now only runs on deployment to an account (not the CICD account).
+
+\section{Additional Features Post-Deployment}
+
+\subsection{Logging Test Results}
+A new class was added, LogReporter in order to report the test results to Cloudwatch. Each test reports on itself plus each test run will log a completion report. 
+These reports can be viewed in Cloudwatch in the following format.
+
+\begin{figure}[H]
+  \begin{tcolorbox}
+   \begin{minted}{json}
+    {
+      "SbRegion": "eu-private-3",
+      "TestProfile": "eu-private-3-venus",
+      "TestTitle": "Bosco Interaction Test",
+      "DurationInMs": 42268,
+      "Result": "passed",
+      "Type": "test",
+      "TestRunnerIdentifier": "1b3bc8b5-7db5-48ae-83a4-3ad40a6bfa92"
+  }
+ \end{minted}
+ \end{tcolorbox}
+ \captionof{figure}{Cloudwatch Log of Bosco Interacton Test}
+ \end{figure}
+
+ \begin{figure}[H]
+  \begin{tcolorbox}
+   \begin{minted}{json}
+    {
+      "SbRegion": "eu-private-3",
+      "TestProfile": "eu-private-3-venus",
+      "TotalDurationInMs": 120218,
+      "Result": "passed",
+      "Type": "completion",
+      "TestRunnerIdentifier": "1b3bc8b5-7db5-48ae-83a4-3ad40a6bfa92"
+  }
+ \end{minted}
+ \end{tcolorbox}
+ \captionof{figure}{Cloudwatch Log of Complete Test Run}
+ \end{figure}
+
+ \subsection{Cloudwatch Insights}
+ A query was constructed and added to the READMe to make it easier for developers to be able to view failed test results.
+ The following figure is the result of the query. 
+ \begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/insights.png}
+  \caption{Cloudwatch Log Insight of Failed Tests for 1 week on Production}
+ \end{figure}
+
+\subsection{Failed Test Screenshots stored in S3}
+On failure of a test, a screenshot is taken using Puppeteer and stored locally in a /tmp/screenshots folder with the execution ID of the state 
+machine run. On completion of the test run, the handler checks for the existance of a directory with the execution ID and if 
+it exists then it runs through each file in the directory which will be a screenshot of the moment the test failed and it uploads 
+these screenshots to an S3 bucket. The /tmp directroy is the only directory that lambda can access. Any attempts to read/write 
+to other named directories will cause an error. Once the files have been uploaded the /tmp/screenshots directory is deleted.
+
+The S3 bucket is deployed using cloudformation. There is a condition on the bucket to deploy only in a staging environment and 
+otherwise only if specified. Cloudformation permissions were added to allow for upload to the specific bucket.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/screenshot.png}
+  \caption{Screenshot of failed test}
+ \end{figure}
 
 \chapter{Conclusion}
 \section{Reflection}
@@ -919,8 +983,22 @@ The implementation of Bosco was carried out in one week sprints as was required 
 
 \subsection*{Sprint 8}
 \begin{itemize}
-\item Storing Test Results in Dynamo DB
 \item Create a CLI test in Bosco
+\item Staging organization and SSM Parameters
+\end{itemize}
+
+\subsection*{Sprint 9}
+\begin{itemize}
+\item Deployment of Bosco
+\item Storing Test Results in Dynamo DB
+\item Logging Test Results and Completion
+\item Bosco infrastructure to handle multiple ServisBOT regions with one deploy
+\end{itemize}
+
+\subsection*{Sprint 10}
+\begin{itemize}
+\item Screenshots of failed tests upload to S3
+\item Alert of test failures and failed test runs
 \end{itemize}
 
 \begin{figure}[ht]

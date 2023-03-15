@@ -135,8 +135,9 @@ In order to determine the best approach, technologies and methodology for Bosco,
 \section{Review of Frankenstein and Testcafe}
 Frankenstein is a feature based test runner designed to determine
 which features of a system are up and working and which are down.
-The tests are run in AWS ECS and are run on a cron which is a schedulted event that runs every 20 minutes non-stop.
+The tests are run in // TODO EXPLAIN AWS ECS and are run on a cron which is a scheduled event that runs every 20 minutes non-stop.
 
+\clearpage
 \section{Cost Analysis of Frankenstein Tests}
 
 The following cost analysis was carried out on Frankenstein. There is an EC2 instance running the tests in the EU and the US costing ServisBOT about \$20 per day each. This costs the company almost \$15,000 a year to run tests.
@@ -149,18 +150,20 @@ The following cost analysis was carried out on Frankenstein. There is an EC2 ins
 
 \section{Research and Analysis of Possible Testing Frameworks for Bosco}
 
-Frankenstein uses Mocha as its testing framework but there are multiple frameworks like Mocha. The following is an investigation into what else is available as well as a review of the current framework, Mocha.
+Frankenstein uses Mocha as its testing framework but there are multiple frameworks that ServisBOT could choose from. The following is an investigation into what else is available as well as a review of the current framework, Mocha.
 \subsection{Mocha}
 
-Mocha is a feature-rich JavaScript test framework running on Node.js and in the browser, simplifying asynchronous
+According to Mocha documentation, Mocha is a feature-rich JavaScript test framework running on Node.js and in the browser, simplifying asynchronous
 testing. Mocha tests run serially, allowing for flexible and accurate reporting, while mapping uncaught
-exceptions to the correct test cases. Mocha provides functions that execute in a specific order, logging the
+exceptions to the correct test cases. \autocite{Mocha}
+
+Mocha provides functions that execute in a specific order, logging the
 results in the terminal window. Mocha also cleans the state of the software being tested to ensure that test
 cases run independently of each other.
 
 \begin{figure}[ht]
  \centering
- \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/mocha_test_result.png}
+ \includegraphics[width=0.75\textwidth,height=0.75\textwidth,keepaspectratio]{./diagrams/mocha_test_result.png}
  \caption{Mocha Test Result Output}
 \end{figure}
 
@@ -190,7 +193,7 @@ library, there is no need to install and integrate additional libraries to be ab
   \hline
  \end{tabular}
  \caption{Mocha Vs Jest}
-label{table:mocha:jest}
+\label{table:mocha:jest}
 \end{table}
 
 \section{Review of Puppeteer}
@@ -200,9 +203,9 @@ Fundamentally Puppeteer is an automation tool and not a test tool.
 This means it is incredibly popular for use cases such as web scraping, generating PDFs, etc.
 
 Testing user flows within web applications usually involves either using an automated headful
-browser (i.e. FireFox with Selenium) or a Headless browser, one that presents no UI, that is built on top of its own unique JavaScript
-engine (i.e. Testcafe). This creates a situation where trade offs have to be made: speed vs\. reliability.
-Puppeteer aimed to remove this trade off – by enabling developers to leverage the Chromium browser environment
+browser (i.e. FireFox with Selenium) or a headless browser, one that presents no UI, that is built on top of its own unique JavaScript
+engine (i.e. Testcafe). This creates a situation where trade offs have to be made such as speed vs reliability.
+Puppeteer aims to remove this trade off by enabling developers to leverage the Chromium browser environment
 to run their tests and by giving them the flexibility to leverage headless or headful browsers that run on the same underlying platform as their users.
 
 \subsection{Pros of using Puppeteer}
@@ -785,8 +788,33 @@ The learning path to achieving this began with:
 The deployment process was undertaken with help from the team as the initial plan needed to be altered. The triggers were removed from the 
 cloud formation script and instead were put in a script specific to the AWS Region they would be deployed in. 
 
+\section{CICD Process}
+The steps to the CICD process for Bosco are as follows:
 
-\section{Triggers}
+\begin{itemize}
+  \item Developer puts in a PR with the changes they made to the git repo.
+  \item Senior developer reviews the code and when ok, approves the merge.
+  \item Developer merges branch which kicks off the CICD process. 
+  \item Unit tests are run, artefacts are built and the project code is deployed on lower/staging/testing.
+  \item If successful Slack will report on deployment, otherwise error needs to be located and debugged. 
+  \item Developer tests the code changes on lower/staging/testing.
+  \item When the changes are verified developer tags a release through deploybot on Slack.
+  \item This initiates the CICD process again which builds artifacts, runs unit tests, integration tests and deploys to lower/staging/testing again as a tagged release.
+  \item Developer tests on staging/lower/testing again.
+  \item Once verified developer requests a deploy to production/testing from deploybot on Slack.
+  \item CICD process is initiated once more with the project being deployed on production/upper.
+  \item Developer tests the code on upper and verifies.
+\end{itemize}
+
+\section{Handling Multiple ServisBOT Regions}
+It was required that Bosco would run multiple ServisBOT region test profiles per deploy. For example deploying an instance of 
+Bosco in the AWS region, eu-west-1 should be capable of creating CRON schedules for ServisBOT regions, eu-1 and eu-private-1. 
+
+\subsection{Triggers}
+Triggers are what initiates the test runs. They can be defined for each region and each environment. On discussion among the team the decision was taken 
+to reduce the number of test runs that Frankenstein ran on. Frankenstein was running 24/7 and this was deemed unnecessary. This will have a huge cost reduction 
+effect on the company. The following times were decided on for the test runs.
+
 \begin{table}[ht]
   \centering
   \small
@@ -808,12 +836,24 @@ cloud formation script and instead were put in a script specific to the AWS Regi
   \caption{Scheduled Triggers (CRON)s for Running Bosco}
  \end{table}
 
+A new folder src/triggers was created which contatins cloud formation templates for each AWS region and ServisBOT region pair.
+For example:
+src/triggers/eu-west-1/eu-1-triggers.yaml
+src/triggers/eu-west-1/eu-private-1-triggers.yaml
+
+Within each of these template files is the infrastructure for the eu-1 CRON and eu-private-1 respectively.
+A new lambda was created in Bosco which does the following:
+* When invoked, checks the AWS region the lambda is running in.
+* Reads the src/triggers/<aws-region> folder, and uses the AWS SDK to deploy each of the templates found within this folder.
+* The lambda function has the ability to poll to check for new or updated cloud formation stacks.
+* The lambda will fail if any of the stacks fail to create/update.
+A post-build code build script invokes the lambda. This now only runs on deployment to an account (not the CICD account).
+
 \chapter{Conclusion}
 \section{Reflection}
 \section{Key skills}
 \section{Challenges}
 \section{Future Work}
-
 
 \appendix
 \chapter{Methodology}

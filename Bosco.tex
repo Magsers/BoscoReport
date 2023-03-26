@@ -334,20 +334,16 @@ passed if the text from the messenger returned the expected output text.
 
 \subsection{Mocha}
 
-The mocha test framework was added to the code as in reality Puppeteer is not a test framework but an automation tool.
-Assertions are made using the Assert library package and logged to the console but it is not in essence a testing tool.
+Mocha was incorporated as the testing framework. Assertions are made using the Assert library package and logged to the console but it is not in essence a testing tool.
 Once mocha was configured and run without errors the next step was to run the script in a lambda.
 
 \begin{figure}[H]
  \begin{tcolorbox}
   \begin{minted}[breaklines]{javascript}
-  // simple-test.js
-  const puppeteer = require("puppeteer");
-  const url = process.argv[2];
-  if (!url) {
-    throw "Please provide URL as a first argument";
-  }
-  async function run () {
+  // basic-puppeteer.js
+  const puppeteer = require('puppeteer');
+  const url = 'https://www.google.com';
+  async run () => {
    const browser = await puppeteer.launch();
    const page = await browser.newPage();
    await page.goto(url);
@@ -357,59 +353,69 @@ Once mocha was configured and run without errors the next step was to run the sc
   run();
 \end{minted}
 \end{tcolorbox}
-\captionof{figure}{Simple test written with Puppeteer}
+\captionof{figure}{Example of a function written with Puppeteer which takes a screenshot of the Google homepage and stores it locally}
 \end{figure}
 
 However, there are problems running Puppeteer in a lambda. Lambda has a 50 MB limit on the zip file you can upload. 
 Due to the fact that it installs Chromium, the Puppeteer package is significantly larger than 50 {MB}. This 
 limit does not apply when uploaded from an S3 bucket but there are other issues. 
-Linux including AWS Lambda does not include the necessary libraries required to allow Puppeteer to function.
+The default setup of some Linux distributions, including the ones used by AWS Lambda do not include the necessary libraries required to allow Puppeteer to function.
 
 \subsection{Node Modules}
 
-According to \autocite{Hansen}, there are work-arounds for this in the form of node modules, \textbf{puppeteer-core} and \textbf{chrome-aws-lambda}.
+A developer named Hansen\autocite{Hansen}, figured out a work-around for this in the form of the node modules, \textbf{puppeteer-core} and \textbf{chrome-aws-lambda}.
 Both these modules installed allow for a version of Chromium that is built to run for AWS Lambda. Incorporating
 these ensures the tests run successfully. Unfortunately these modules need to be in parody with each other.
 
 The aws-chrome-lambda module has not been updated since June 2021 so its latest version is 10.1.0 whereas
-puppeteer-core has been updated regularly and is at present at version 19.3.0. When the version numbers are
-synced the lambda function passes. Obviously this is not ideal as there is a vast difference between versions.
-Whatever the reason for these modules not being updated, relying on them is impractical and will eventually lead to our tests being broken.
+puppeteer-core has been updated regularly and at time of writing (26/03/23) is at version 19.8.0. When the version numbers are
+synced the lambda function passes. Therefore using the latest version of both modules would mean they are incompatible with each other.
+Whatever the reason for these modules not being updated, relying on them is impractical and will eventually lead to the tests being broken.
 
 \subsection{Docker}
  
-The process uses a Docker container instead of node modules to condense the code. A Docker
+A Docker container was used instead of node modules to condense the code. A Docker
 container is a standalone piece of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to the next.
 A Docker container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
-Container images become containers at runtime. Containers isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.
+Container images become containers at runtime. When you use a Docker container, it creates an isolated environment that shields the application from other parts of the computer it is running on. This 
+means that the application can work smoothly and consistently, even if it is being used in different stages of development or on different computers with different settings.
 
-The puppeteer test runs locally using a Docker engine, then gets tagged and pushed to a container on a Lambda function named \'puppeteer-container\'.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=10cm]{./diagrams/dockerexplained.png}
+  \captionof{figure}{Illustration of Docker}
+ \end{figure}
+
+The puppeteer test can be run locally using a Docker engine. When the test was functioning as expected the docker image gets built, tagged and pushed to an AWS repository. 
+The latest Docker container image is deployed to the Bosco test-runner Lambda container where it can be run and tested in a Lambda environment.
 This significantly speeds up the testing process, automating a browser in milliseconds compared to the previous method's average time of six seconds.
 The process provides more control over the testing environment and successfully runs the tests by targeting a number of tests through event handler parameters instead of hard coding.
 The results validate the feasibility of running tests in a Lambda using Puppeteer.
 
 \subsection{Conclusion}
-
-The process tests the use of Puppeteer and Mocha as an automation tool in a Lambda container and finds that deploying an image through Docker is a more reliable solution. The tests can be run locally with Docker and then uploaded to the Lambda container. The results are recorded in Cloudwatch logs for monitoring and assessment.
+The process tested the use of Puppeteer and Mocha as an automation tool in a Lambda container and found that deploying an image through Docker is a more reliable solution. 
+The tests can be run locally with Docker and then uploaded to the Lambda container. 
+The results are automatically recorded in Cloudwatch logs for monitoring and assessment.
 
 \section{Initial Stepfunction Research and Development}
 
-One possible infrastructure that is important to explore is the use of of step functions for the test suite. With 
+The use of a Step Function in order to run the tests had been considered by ServisBOT to be a viable option for Bosco. With 
 step functions a workflow can be created through a series of lambda functions with each step being a state within
-the workflow. They are based on a state machine and tasks where a state machine is a workflow and a task is a
+the workflow. They are based on a state machine and tasks, where a state machine is a workflow and a task is a
 state in that workflow that another AWS service performs.
 
 \begin{figure}[H]
  \centering
  \includegraphics[width=15cm]{./diagrams/possible_implementation}
- \captionof{figure}{Bosco Planned Implementation}
+ \captionof{figure}{Bosco Initial Possible Implementations}
 \end{figure}
 
 \section{State Machine Transitions}
 
-The Bosco test suite runs through 5 state transitions (Start, StartState, Map, Done, End) plus an additional transition for each test run (Running). With three tests, there are 8 states as the \"Running\" state is executed three times. The first state is the \"Start\" state which initiates the run and then the \'StartState\i' is invoked, creating an array of tests and passing the payload to the \"Map\" state.
+The Bosco test suite runs through 5 state transitions (Start, StartState, Map, Done, End) plus an additional transition for each test run (Running). With three tests, there are eight states as the \textbf{Running} state is executed three times. The first state is the \textbf{Start} state which initiates the run and then the \textbf{StartState} is invoked, creating an array of tests and passing the payload to the \textbf{Map} state.
 
-This experiment focuses on using the Inline Map state instead of the Distributed Map state. The Inline Map state is used for fewer than 40 parallel iterations while the Distributed Map state is used for larger workloads. The map state runs a lambda for each test, which runs in parallel with each other. The results of the tests are then outputted to the \"Done\" lambda, the next state, which processes and runs the tests. Finally, a state prints out the results and the End state completes the workflow.
+This experiment focuses on using the Inline Map state instead of the Distributed Map state. The Inline Map state is used for fewer than forty parallel iterations which is appropriate for the number of tests that Bosco will run, while the Distributed Map state is used for larger workloads. 
+The map state can run a lambda for each test, or it can run an array of tests. The lambdas run in parallel with each other with the results of the tests outputted to the \textbf{Done} lambda, the next state, which processes and runs the tests. Finally, a state prints out the results and the \textbf{End} state completes the workflow.
 
 \begin{figure}[H]
  \centering
@@ -419,17 +425,21 @@ This experiment focuses on using the Inline Map state instead of the Distributed
 
 \begin{figure}[H]
  \centering
- \includegraphics[width=5cm]{./diagrams/state_machine}
- \caption{Inline Map State for Bosco Step Function}
+ \includegraphics[width=15cm]{./diagrams/tablestepfx.png}
+ \caption{Results of Execution of State Machine}
 \end{figure}
 
 \subsection{Cold vs Warm Lambdas}
 
-Comparisons were made between running the tests on cold lambdas as opposed to warm lambdas and the results were significantly different. The cold lambda run ran in 40 seconds and the warm lambda run ran in 14 seconds total which is more than half the duration. Further investigation will take place when actual Frankenstein tests can be added to our state machine.
+Comparisons were made between running the tests on cold lambdas as opposed to warm lambdas and the results were significantly different. The cold lambda run ran in 40 seconds and the warm lambda run ran in 14 seconds total which is more than half the duration. 
+Later in the project imiplementation, an issue occured with Lambda, where the caching of files was occuring which is why a warm run is quicker than a cold run. This was not the intention and it caused the tests to fail. 
+This means testing the code locally is not always compatible with testing it in a lambda environment. When the code passed through the CICD process it fell over in the Lambda environment and the code needed to be refactored to take this into consideration.
 
-\subsection{Cost Analysis of Step Function State Machine}
+\subsection{Initial Cost Analysis of Bosco Step Function State Machine}
 
-The cost of running the test suite in a state machine using AWS Step Functions is based on the number of state transitions. This cost analysis does not account for error handling, which may increase the cost due to retries. The cost per transition is \$0.000025 according to the AWS pricing calculator. The analysis is based on the current number of tests and the frequency they are run (three times an hour), which may vary for Bosco tests.
+The cost of running the test suite in a state machine using AWS Step Functions was based on the number of state transitions.\autocite{Amazon} 
+This cost analysis does not account for error handling, which may increase the cost due to retries. The cost per transition is \$0.000025 according to the AWS pricing calculator. 
+The analysis is based on the current number of tests and the frequency they are run (three times an hour), which at the time of conducting the cost analysis may vary for Bosco tests.
 
 \begin{figure}[H]
  \centering
@@ -438,7 +448,6 @@ The cost of running the test suite in a state machine using AWS Step Functions i
 \end{figure}
 
 \chapter{Bosco Implementation}
-
 \section{Lightning Page}
 The implementation of Bosco has begun after finalizing the proof of concept. The first step involves refactoring the Frankenstein Lightning page, which serves as the source for all selectors and functions related to the Messenger page. To avoid duplication, a constructor was created and a function was added to launch the browser and open the Messenger page.
 
@@ -1087,6 +1096,8 @@ The implementation of Bosco was carried out in one week sprints as was required 
 \item https://www.ponicode.com/shift-left/
 \item https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
 \item https://evanhalley.dev/post/aws-ssm-node/
+\item https://dockerlabs.collabnix.com/beginners/components/what-is-container.html
+\item https://www.youtube.com/watch?v=rQijrDj1wCQ
 \end{enumerate}
 
 \end{document}

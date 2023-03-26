@@ -2353,16 +2353,18 @@
     <bcf:citekey order="8">inbook</bcf:citekey>
     <bcf:citekey order="9">inbook</bcf:citekey>
     <bcf:citekey order="10">Hansen</bcf:citekey>
-    <bcf:citekey order="11">Halley</bcf:citekey>
-    <bcf:citekey order="12">Ahamed</bcf:citekey>
-    <bcf:citekey order="13">Microservices</bcf:citekey>
-    <bcf:citekey order="14">Puppeteer</bcf:citekey>
-    <bcf:citekey order="15">Mocha</bcf:citekey>
-    <bcf:citekey order="16">PuppvsSel</bcf:citekey>
-    <bcf:citekey order="17">Crowther</bcf:citekey>
-    <bcf:citekey order="18">inbook</bcf:citekey>
-    <bcf:citekey order="19">Hansen</bcf:citekey>
-    <bcf:citekey order="20">Halley</bcf:citekey>
+    <bcf:citekey order="11">Amazon</bcf:citekey>
+    <bcf:citekey order="12">Halley</bcf:citekey>
+    <bcf:citekey order="13">Ahamed</bcf:citekey>
+    <bcf:citekey order="14">Microservices</bcf:citekey>
+    <bcf:citekey order="15">Puppeteer</bcf:citekey>
+    <bcf:citekey order="16">Mocha</bcf:citekey>
+    <bcf:citekey order="17">PuppvsSel</bcf:citekey>
+    <bcf:citekey order="18">Crowther</bcf:citekey>
+    <bcf:citekey order="19">inbook</bcf:citekey>
+    <bcf:citekey order="20">Hansen</bcf:citekey>
+    <bcf:citekey order="21">Amazon</bcf:citekey>
+    <bcf:citekey order="22">Halley</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nyt">

@@ -17,7 +17,7 @@
 
 % Document Info
 %
-\newcommand\AcademicTitle{Frankenstein Test-Suite Re-Architecture}
+\newcommand\AcademicTitle{Test-Suite Re-Architecture Solution}
 \newcommand\CommercialTitle{Bosco}
 \newcommand\Author{Margaret McCarthy}
 \newcommand\StudentID{20095610}
@@ -793,7 +793,7 @@ cloudformation script and instead were put in a script specific to the AWS Regio
 The steps to the CICD process for Bosco are as follows:
 
 \begin{itemize}
-  \item Developer puts in a PR with the changes they made to the git repo.
+  \item Developer puts in a PR (pull request) with the changes they made to the project code.
   \item Senior developer reviews the code and when ok, approves the merge.
   \item Developer merges branch which kicks off the CICD process. 
   \item Unit tests are run, artefacts are built and the project code is deployed on lower/staging/testing.
@@ -908,6 +908,8 @@ to other named directories will cause an error. Once the files have been uploade
 The S3 bucket is deployed using cloudformation. There is a condition on the bucket to deploy only in a staging environment and 
 otherwise only if specified. Cloudformation permissions were added to allow for upload to the specific bucket.
 
+The process to achieving this feature began initially with each test storing the screenshot on a failure. A new function 
+was written in the Lightning Page class
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/screenshot.png}
@@ -917,6 +919,18 @@ otherwise only if specified. Cloudformation permissions were added to allow for 
 \chapter{Conclusion}
 \section{Reflection}
 \section{Key skills}
+\begin{itemize}
+  \item Sprint planning. 
+  \item Amazon Web services, in particular Lambda, Step Functions, §Cloud Formation, S3, DynmaoDB, AWS regions, SSM Parameters, 
+  \item Showcasing progress of the project to the team
+  \item LateX
+  \item CICD process
+  \item Git
+  \item Javascript fundamentals
+  \item Project design and infrastructure 
+  \item Puppeteer and Mocha
+  \item Docker
+\end{itemize}
 \section{Challenges}
 Fortunately the team at ServisBOT were very supportive and as a result, working on this project posed very few challenges. However, there 
 were a few which may be common to work based projects for students completing theirs in the workplace.

@@ -17,7 +17,7 @@
 
 % Document Info
 %
-\newcommand\AcademicTitle{Test-Suite Re-Architecture Solution}
+\newcommand\AcademicTitle{Optimising Test Runner Performance through Serverless Computing}
 \newcommand\CommercialTitle{Bosco}
 \newcommand\Author{Margaret McCarthy}
 \newcommand\StudentID{20095610}
@@ -74,17 +74,25 @@
 
 \section{Background}
 
-This project aims to design and implement a feature based test runner for ServisBOT which determines which features of a system are working and which are down. The proposed system has the working title Bosco.
+The objective of this project is to create and execute a test runner for ServisBOT that focuses on specific features of the system, identifying those that are operational and those that are not. The proposed system has the working title Bosco.
 
-ServisBOT is an AI focused technology company which specialise in chatbot technology and conversational AI. They provide customer service by allowing end users to communicate with a business or service through a pop up messenger on an online platform. 
-The technology is cloud based and mostly serverless which means it is provided over the internet rather than using storage on a physical computer or server. It has to be consistently monitored and so tests are run continuously to ensure any problems are detected and resolved immediately. 
+ServisBOT is a company which specialise in chatbot technology and conversational AI. They provide customer service by allowing end users to communicate with a business or service through a pop up messenger on an online platform. 
+The technology is cloud based and mostly serverless, it is provided over the internet rather than using storage on a physical computer or server. ServisBOT has a global customer base so the system has to be consistently monitored and so tests are run continuously to ensure any problems are detected and resolved immediately. 
 
 Software testing is a critical element of software quality assurance and represents the ultimate review of specification, design and coding. Software testing is usually performed for one of two reasons: defect detection, and reliability estimation. \cite{Ahamed}
 
 \subsection{Frankenstein}
-The components of a chatbot and each of its functions are broken down into micro services. These are created independent of one another but combined are the building blocks for the chatbot. There is a suite of tests which ServisBOT have called Frankenstein tests which run against these micro services. They run several times an hour, every hour. 
+The components of a chatbot and each of its functions are created using microservice architecture. This is an architectural style that structures an application as a collection of services that are:
+\begin{itemize}
+  \item Independently deployable
+  \item Loosely coupled
+  \item Organised around business capabilities
+  \item Owned by a small team
+\end{itemize}
+The microservice architecture enables an organization to deliver large, complex applications rapidly, frequently, reliably and sustainably - a necessity for competing and winning in today's world. \autocite{Microservices}
+There is a suite of tests which ServisBOT have named Frankenstein which run against these micro services testing every component of the chatbot. They run several times an hour, every hour. 
 \subsection{TestCafe}
-The tests use a software package called Testcafe which is an end to end testing service that uses messenger in a browser in order to run their tests. It simulates what a user would do by opening a browser and interacting with a chatbot. If the chatbot reacts in the expected way the test passes, otherwise the issue is investigated and resolved.
+The tests use a software package called Testcafe which is used for automated browser testing.  By opening messenger in a browser in order to run the tests, it simulates what a user would do by interacting with a chatbot. If the chatbot reacts in the expected way the test passes, otherwise the issue is investigated and resolved.
 \subsection{EC2}
 The Frankenstein test suite is run on two EC2 instances in two different AWS regions. AWS Elastic Compute Cloud (EC2) is basically a virtual machine where developers can define the resources they need. For example, what regions the are to be run in. 
 \section{The Issue}
@@ -93,7 +101,7 @@ Running the tests causes a lot of contention for CPU and memory. When a test run
 
 Also there are numerous problems with Testcafe. 
 \begin{itemize}
- \item Testcafe has proven to be resource heavy, expensive and inefficient, causing slow CPU performance. 
+ \item ServisBOT, when running the Frankenstein test suite, find Testcafe resource heavy, expensive and inefficient, causing slow CPU performance. 
  \item Because of the competing resources some tests affect the performance of others. 
  \item Debugging and monitoring of the tests is complex.
  \item The test suite does not scale. Scalability is essential in order to increase the number of tests according to the number of user interactions and alternatively to reduce the number of tests when interactions drop which would not only prove to be more cost effective but would mostly solve all the issues mentioned.
@@ -108,9 +116,9 @@ Also there are numerous problems with Testcafe.
 
 \section{Purpose and Requirements for Bosco}
 
-This project aims to completely overhaul the existing test suite by migrating the tests from the EC2 instances to AWS Lambda functions. This would ensure each lambda, whether it runs one test or multiple tests, is run independently and is not competing for memory. It would mean the test suite could be scaled infinitely, would run faster and as a result would most likely be a lot more cost efficient. This has yet to be proven.
+The objective of this project is to create a new test runner, Bosco that is more efficient, scalable, optimised, and cost-effective than Frankenstein. The purpose is to completely revamp the existing test suite and develop AWS Lambda functions that can run each test independently without memory competition. By doing so, the test suite could be scaled infinitely, perform faster, and potentially be more cost-effective. Each test will be migrated from Frankenstein to Bosco once the infrastructure has been developed.
 
-In particular the migration will focus on an automation tool called Puppeteer which has been proven by ServisBOT to be more performant than Testcafe. The Puppeteer package includes its own browser whereas Testcafe launches an external browser which is slow and cumbersome. With Puppeteer there is more control over what the developer can test, it is more efficient, easier to debug and has a lot more functionality. It is widely chosen by developers now. (4.6 million weekly downloads, 2023-03-02) \cite{Puppeteer}
+In particular the migration will focus on an automation tool called Puppeteer which has been proven by ServisBOT to be more performant than Testcafe. The Puppeteer package includes its own browser, Chromium, whereas Testcafe launches an external browser which is slow and cumbersome. With Puppeteer there is more control over what the developer can test, it is more efficient, easier to debug and has a lot more functionality. It is widely chosen by developers now. (4.6 million weekly downloads, 2023-03-02) \cite{Puppeteer}
 
 \begin{figure}[ht]
  \centering
@@ -123,7 +131,6 @@ In particular the migration will focus on an automation tool called Puppeteer wh
 In order to determine the best approach, technologies and methodology for Bosco, it was concluded that the research and analysis phase necessary for the implementation of this project was the following:
 
 \begin{itemize}
- \item Review of Frankenstein and Testcafe
  \item Cost Analysis of Frankenstein
  \item Research into possible testing frameworks for Bosco
  \item Puppeteer comparison to Testcafe
@@ -133,15 +140,9 @@ In order to determine the best approach, technologies and methodology for Bosco,
  \item Scope of the project
 \end{itemize}
 
-\section{Review of Frankenstein and Testcafe}
-Frankenstein is a feature based test runner designed to determine
-which features of a system are up and working and which are down.
-The tests are run in // TODO EXPLAIN AWS ECS and are run on a cron which is a scheduled event that runs every 20 minutes non-stop.
-
-\clearpage
 \section{Cost Analysis of Frankenstein Tests}
 
-The following cost analysis was carried out on Frankenstein. There is an EC2 instance running the tests in the EU and the US costing ServisBOT about \$20 per day each. This costs the company almost \$15,000 a year to run tests.
+The following cost analysis was carried out on Frankenstein. There is two EC2 instances running the tests in the EU and the US costing ServisBOT on average \$20 per day for each region. This costs the company almost \$15,000 a year to run tests.
 
 \begin{figure}[ht]
  \centering
@@ -149,7 +150,7 @@ The following cost analysis was carried out on Frankenstein. There is an EC2 ins
  \caption{Frankenstein Cost Analysis}
 \end{figure}
 
-\section{Research and Analysis of Possible Testing Frameworks for Bosco}
+\section{Research into Possible Testing Frameworks for Bosco}
 
 Frankenstein uses Mocha as its testing framework but there are multiple frameworks that ServisBOT could choose from. The following is an investigation into what else is available as well as a review of the current framework, Mocha.
 \subsection{Mocha}
@@ -157,6 +158,8 @@ Frankenstein uses Mocha as its testing framework but there are multiple framewor
 According to Mocha documentation, Mocha is a feature-rich JavaScript test framework running on Node.js and in the browser, simplifying asynchronous
 testing. Mocha tests run serially, allowing for flexible and accurate reporting, while mapping uncaught
 exceptions to the correct test cases. \autocite{Mocha}
+
+Asynchronous testing is a technique used in software testing to verify the behavior of code that relies on asynchronous programming or event driven architecture. Asynchronous programming allows the program to perform tasks concurrently or in parallel, rather than waiting for each task to complete before moving on to the next one. 
 
 Mocha provides functions that execute in a specific order, logging the
 results in the terminal window. Mocha also cleans the state of the software being tested to ensure that test
@@ -200,53 +203,49 @@ library, there is no need to install and integrate additional libraries to be ab
 \section{Review of Puppeteer}
 
 Puppeteer is a popular test automation tool maintained by Google. It automates Chrome and Firefox and is relatively simple and stable to use.
-Fundamentally Puppeteer is an automation tool and not a test tool.
-This means it is incredibly popular for use cases such as web scraping, generating PDFs, etc.
+Fundamentally Puppeteer is an automation tool and not a test tool. 
+This means it is incredibly popular for use cases such as web scraping, generating PDFs, etc. \autocite{PuppvsSel}
 
 Testing user flows within web applications usually involves either using an automated headful
 browser (i.e. FireFox with Selenium) or a headless browser, one that presents no UI, that is built on top of its own unique JavaScript
 engine (i.e. Testcafe). This creates a situation where trade offs have to be made such as speed vs reliability.
 Puppeteer aims to remove this trade off by enabling developers to leverage the Chromium browser environment
-to run their tests and by giving them the flexibility to leverage headless or headful browsers that run on the same underlying platform as their users.
+to run their tests and by giving them the flexibility to leverage headless or headful browsers that run on the same underlying platform as their users. \autocite{Crowther}
 
 \subsection{Pros of using Puppeteer}
 
 \begin{itemize}
  \item Simple to set up.
- \item Good documentation. Small community but lots of tutorials at this point.
- \item Promise based.
- \item Scriptable web browser
- \item Installs Chrome in a working version automatically
- \item Thin wrapper
- \item Bi-Directional (events) \- automating things like console logs is easy
- \item Maintained by Google.
- \item JavaScript first, so the code feels very natural
- \item Puppeteer also gives you direct access to the Chrome DevTools Protocol if you need it. Which can be very useful at times and in general it feels like there are fewer moving parts.
+ \item Good documentation with lots of tutorials.
+ \item Promise based which allows for management of asynchronous code.
+ \item Programmable web browser.
+ \item Installs Chrome in a working version automatically.
+ \item Puppeteer has a thin wrapper which provides a simpler interface for an underlying complex system.
+ \item Bi-Directional (events) \- automating console logs is easy.
+ \item It uses JavaScript first, which is one of the most popular programming languages.
+ \item Puppeteer also gives you direct access to the Chrome DevTools Protocol which allows for developers to feel like there are fewer moving parts.
  \item Works with multiple tabs and frames. It has an intuitive API
- \item Trusted Actions: This criterion means dispatching events by the user agent which allows for user agent behaviours like hovers.
- \item End to end tests are very fast in practice but people suffer misconceptions regarding the execution speed. Typically, it’s the website or web-app that are slow and the tests end up waiting for the web app to be ready most of the time.
- \item Pro and Con: Stability which means how often tests fail after being authored other than when detecting a real application bug. Puppeteer wait for certain thing but has to waitFor manually for others.
+ \item Trusted Actions: This criterion means dispatching events by the user which allows for user behaviours like hovers.
+ \item End to end tests are very fast in practice but people suffer misconceptions regarding the execution speed. Typically, it's the website or web-app that are slow and the tests end up waiting for the web app to be ready most of the time.
+ \item Pro and Con: Stability, which means how often tests fail after being authored other than when detecting a real application bug. Puppeteer waits for certain things but has to wait manually for others. 
  \item Debugging: Can write and debug Javascript from an IDE\@.
 \end{itemize}
 
 \subsection{Cons of using Puppeteer}
 \begin{itemize}
- \item Limited cross-browser support—only Chrome and Firefox
- \item Feels like an automation framework and not a test framework—you often have to re-implement testing-related tools
+ \item Limited cross-browser support. Only Chrome and Firefox.
+ \item Feels like an automation tool and not a test framework. Often developers have to re-implement testing-related tools.
  \item Grids (running concurrently) in production are often a challenge
- \item The automatic browser set up downloads Chromium and not Chrome and there are subtle differences between the two.
- \item Smarter Locators: No support for selecting elements in multiple ways
- \item Does not support parallelism, grids and infrastructure. Usually people build their own but this is due to change soon.
+ \item The automatic browser set-up, downloads Chromium and not Chrome and there are subtle differences between the two.
+ \item Smarter Locators: No support for selecting elements in multiple ways.
+ \item Does not support parallelism, grids and infrastructure.
  \item Does not support self healing tests and automatically improving tests.
  \item Does not support Autonomous testing which is testing without code or user intervention.
 \end{itemize}
 
-\subsection{Testcafe Vs Puppeteer}
+\subsection{Testcafe}
 
-Puppeteer is a Node library which provides browser automation for chrome and chromium.
-TestCafe is a Node.js tool to automate end-to-end web testing. Puppeteer runs headless by default,
-but can be configured to run full (non-headless) Chrome or Chromium; It provides a high-level API to
-control Chromium or Chrome over the DevTools Protocol. TestCafe runs on Windows, MacOs, and Linux and
+TestCafe is a Node.js tool to automate end-to-end web testing. It runs on Windows, MacOs, and Linux and
 supports mobile, remote and cloud browsers (UI or headless). It is also free and open source.
 
 \begin{table}[ht]
@@ -280,7 +279,7 @@ supports mobile, remote and cloud browsers (UI or headless). It is also free and
  \subfloat[\centering Npm Downloads]{{\includegraphics[width=5cm]{./diagrams/npm_pupp_tc}}}
  \qquad
  \subfloat[\centering GitHub stars]{{\includegraphics[width=5cm]{./diagrams/github_stars}}}
- \caption{NPM statistics}
+ \caption{Puppeteer vs Testcafe NPM statistics}
 \end{figure}
 
 \section{EC2 vs Lambda comparison}
@@ -295,8 +294,34 @@ When a lambda funciton is invoked, the code is run without the need to deploy or
 designed to deliver extremely short-term compute capability. AWS handles the back-end provisioning, loading, execution, scaling and unloading of the user's code.
 Lambdas only run when executed yet are always available. They scale dynamically in response to traffic.
 
+\begin{table}[ht]
+  \centering
+  \small
+  \setlength\tabcolsep{6pt}
+  \begin{tabular}{|c|c|c|}
+   \hline
+   \textbf{Feature} & \textbf{Lambda} & \textbf{EC2}\\
+   \hline\hline
+   Time to execute&milliseconds&seconds to minutes\\
+   \hline
+   Billing increments& 100 milliseconds&1 second\\
+   \hline
+   Configuration \&Function& Operating System\\
+   \hline
+   Scaling Unit&Parallel function executions&Instances\\
+   \hline
+   Maintenance& AWS&AWS and User\\
+   \hline
+  \end{tabular}
+  \caption{Comparison of AWS Lambda and EC2 \autocite{inbook}}
+ \end{table}
+
 \section{Conclusion}
-// TODO
+Based on the research and analysis conducted, it can be affirmed that ServisBOT's decision to use Puppeteer in conjunction 
+with Mocha instead of Testcafe is affirmed. Puppeteer will give the developers more control over the tests, testing will be more reliable 
+and easier to use and debug. Together with migrating the test runner from EC2 to Lambda, the test suite will become infinitely scalable and 
+more cost efficient. A revamp of the test runner will mean that issues encountered by Frankenstein can be resolved and unnecessary costs (for 
+example running too many tests) can be eliminated.
 
 \chapter{Initial Design \& Implementation}
 

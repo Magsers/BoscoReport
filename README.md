@@ -1,5 +1,5 @@
 # BoscoReport
-This repository contains the report for my final year project [Bosco](https://github.com/servisbot/bosco). The report was written in LateX. The report can be found here. [Bosco Report](https://github.com/Magsers/BoscoReport/blob/main/Bosco.pdf)
+This repository contains the report for my final year project [Bosco](https://bosco.surge.sh). The report was written in LateX. The report can be found here. [Bosco Report](https://github.com/Magsers/BoscoReport/blob/main/Bosco.pdf)
 
 ## Prerequisites
 * [LateX](https://www.latex-project.org/get/)

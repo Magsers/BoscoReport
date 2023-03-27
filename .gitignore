@@ -15,5 +15,4 @@ pygmentize
 *.sta
 *.synctex.gz
 *.sty
-Bosco-blx.bib
 .DS_Store

@@ -3,6 +3,7 @@
 pygmentize
 *.lof
 *.lot
+*.out
 *.fls
 *.aux
 *.bbl
@@ -16,3 +17,4 @@ pygmentize
 *.synctex.gz
 *.sty
 .DS_Store
+.chktexrc

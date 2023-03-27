@@ -116,7 +116,10 @@ Also there are numerous problems with Testcafe.
 
 \section{Purpose and Requirements for Bosco}
 
-The objective of this project is to create a new test runner, Bosco that is more efficient, scalable, optimised, and cost-effective than Frankenstein. The purpose is to completely revamp the existing test suite and develop AWS Lambda functions that can run each test independently without memory competition. By doing so, the test suite could be scaled infinitely, perform faster, and potentially be more cost-effective. Each test will be migrated from Frankenstein to Bosco once the infrastructure has been developed.
+The objective of this project is to create a new test runner, Bosco, that is more efficient, scalable, optimised, and cost-effective than Frankenstein. 
+The purpose is to completely revamp the existing test suite and develop AWS Lambda functions that can run each test independently without memory competition. 
+By doing so, the test suite could be scaled infinitely, perform faster, and potentially be more cost-effective. 
+Each test will eventually be migrated from Frankenstein to Bosco once the infrastructure has been developed.
 
 In particular the migration will focus on an automation tool called Puppeteer which has been proven by ServisBOT to be more performant than Testcafe. The Puppeteer package includes its own browser, Chromium, whereas Testcafe launches an external browser which is slow and cumbersome. With Puppeteer there is more control over what the developer can test, it is more efficient, easier to debug and has a lot more functionality. It is widely chosen by developers now. (4.6 million weekly downloads, 2023-03-02) \cite{Puppeteer}
 
@@ -386,16 +389,12 @@ means that the application can work smoothly and consistently, even if it is bei
   \captionof{figure}{Illustration of Docker}
  \end{figure}
 
-The puppeteer test can be run locally using a Docker engine. When the test was functioning as expected the docker image gets built, tagged and pushed to an AWS repository. 
-The latest Docker container image is deployed to the Bosco test-runner Lambda container where it can be run and tested in a Lambda environment.
-This significantly speeds up the testing process, automating a browser in milliseconds compared to the previous method's average time of six seconds.
-The process provides more control over the testing environment and successfully runs the tests by targeting a number of tests through event handler parameters instead of hard coding.
-The results validate the feasibility of running tests in a Lambda using Puppeteer.
-
 \subsection{Conclusion}
-The process tested the use of Puppeteer and Mocha as an automation tool in a Lambda container and found that deploying an image through Docker is a more reliable solution. 
-The tests can be run locally with Docker and then uploaded to the Lambda container. 
-The results are automatically recorded in Cloudwatch logs for monitoring and assessment.
+The puppeteer test was run locally using a Docker engine. When the test was functioning as expected the docker image got built, tagged and pushed to an AWS repository. 
+The latest Docker container image was deployed to the Bosco test-runner Lambda container where it was run and tested in a Lambda environment.
+This significantly sped up the testing process, automating a browser in milliseconds compared to the previous method's average time of six seconds.
+The process provides more control over the testing environment and successfully runs the tests by targeting specific tests through the event handler input parameters.
+The results validate the feasibility of running tests in a Lambda environment using Puppeteer.
 
 \section{Initial Stepfunction Research and Development}
 
@@ -449,61 +448,124 @@ The analysis is based on the current number of tests and the frequency they are 
 
 \chapter{Bosco Implementation}
 \section{Lightning Page}
-The implementation of Bosco has begun after finalizing the proof of concept. The first step involves refactoring the Frankenstein Lightning page, which serves as the source for all selectors and functions related to the Messenger page. To avoid duplication, a constructor was created and a function was added to launch the browser and open the Messenger page.
+The implementation of Bosco began after finalising the proof of concept. 
+The first step involved creating a Lightning page class which is the page the tests are running against. 
+The class serves as the source for accessing the selectors and functions that have been added specifically for the Lightning page. 
+Confining this functionality to a class reduces boilerplate code which is repetitious code.
 
 \begin{figure}[H]
  \begin{tcolorbox}
   \begin{minted}{js}
- async goToPage() {
-  await this.page.goto(this.url, 
-  { waitUntil: 'networkidle2' });
- }
-\end{minted}
+  async getMessage(index) {
+    const allMessages = await this.getAllMessages();
+    return allMessages[index];
+  }
+  \end{minted}
  \end{tcolorbox}
- \caption{Example of a Lightning function}
+ \caption{Example of getMessage Lightning Page function}
 \end{figure}
 
 With this starting point the interaction node test was refactored to use the Lightning page. Two functions were
 created, one which clicks through the selectable list and another function which types into messenger instead of
 clicking the list. A BrowserFactory class was created which has a function to create the browser.
 
-\section{Developer Dependencies}
-\textbf{ESLint} was also added to the project which is a linting tool that ensures all the code is formatted consistently
-by anyone who makes changes to the code.  
-
-\textbf{loglevel} was added to replace the console.logs and a dependency check
-was added which checks for unused dependencies before commits.  Once the test was running without errors the work
-was committed, the code reviewed and the POC branch was merged into the master branch on the Bosco repository.
-
-\textbf{lambda-local}, a node module was used for testing purposes. This allowed for the running of the lamdas locally rather than having 
-to deploy each time they were to be tested. 
-
-\section{Context Test}
+\section{Tests}
+\subsection{Context Test}
 The first actual Frankenstein test to be converted to Bosco was the Context test. This test sets the context from the url
-and tests if it is outputted with the rest of the context.  This was interesting to work on as it exposed a bug in the Frankenstein test had a bug in it so it was not testing what it was supposed to be
-testing even though the test was passing. Once the error was highlighted and fixed by the developer team it was now possible to finish writing the test
+and tests if it is outputted with the rest of the context to the messenger. Working through this test exposed a bug in the Frankenstein test. 
+It was not testing what it was supposed to be testing even though the test was passing. Once the error was highlighted and fixed by the developer team it was now possible to finish writing the test
 and ensure it was working correctly. 
 
-\section{Conversation Engaged Test}
-The next task at hand is to convert the Conversation Engaged test. Whenever a user interacts with a bot, a goal is generated, which is a default or custom event that's tracked to measure the success of the bot's interactions.
+\subsection{Conversation Engaged Test}
+The next test was the Conversation Engaged test. Whenever a user interacts with a bot, a goal is generated, which is a default or custom event that's tracked to measure the success of the bot's interactions.
 At first, it was believed that this test would be simple, but changes were requested after a pull request was submitted for review, including removing nested if statements and improving the code's formatting.
 
-This created a need to parse the exported goal JSON result. However, an error was encountered in the Servisbot CLI proxy, where the outputted JSON was not formatted correctly and could not be parsed. To work around this, the CSV output option was used instead of JSON and the csv-parse node module was imported.
-To test this, a temporary script named \"proxy.mjs\" was created to run the goals part of the test independently. It was discovered that csv-parse/sync needed to be imported instead of just csv-parse and that VSCode needed to be restarted as it was not running the code. After discussing the issue with colleagues and having them run the code on their machines, it was concluded that the problem was with VSCode and simply restarting it solved the issue.
+This created a need to parse the exported goal JSON result. However, an error was encountered in the Servisbot CLI proxy, where the outputted JSON was not formatted correctly and could not be parsed. 
+To work around this, the CSV output option was used instead of JSON and the csv-parse node module was imported.
+
+\subsection{Interaction Test}
+% // TODO
 
 \section{Cloudformation}
-The Bosco project will be deployed using Cloudformation, a deployment tool.
-The Cloudformation template, which can be in either yaml or json format, specifies the necessary environment variables and resources.
-The aim is to upload the start, done, and test runner lambda functions through Cloudformation and have the state machine reference these lambdas.
-Once this is complete, the state machine will invoke the lambdas.
+When deploying Bosco, a  CloudFormation template in the form of YAML is run.  CloudFormation is an AWS service that allows developers to define and deploy infrastructure as code.
+The Cloudformation template, which can be in either YAML or JSON format, is used to create AWS resources like Lambda functions, State Machines, API-Gateways, DynamoDB tables and S3. 
+It specifies the necessary environment variables, parameters, conditionals and other resources such as IAM roles and policies.
 
-The cloudformation template will have three lambda functions.
-The start function, the test runner which points to the image of the container and the done function. The
+The Step Function has three lambda functions. 
+\begin{itemize}
+  \item The Orchestrator which takes in the profile name as JSON. It reads the profile contents, resolves the environment variables and the test runner configuration and passes this information to the next Lambda function in the state machine, the handler.  
+
+\begin{figure}[H]
+  \begin{tcolorbox}
+   \begin{minted}{json}
+    {
+      "profile": "eu-private-3-venus"
+    }
+   \end{minted}
+  \end{tcolorbox}
+  \caption{Expected input of State Machine / Start state / Orchestrator}
+ \end{figure}
+
+ \begin{figure}[H]
+  \begin{tcolorbox}
+   \begin{minted}{json}
+    {
+      "testProfileConfig": {
+        "profile": "eu-private-3-venus",
+        "organization": "bosco",
+        "sbRegion": "eu-private-3",
+        "awsRegion": "eu-west-1",
+        "messengerUrl": "https://exampleurl.html",
+        "testConfig": {
+          "endpoint": {
+            "create": {
+              "AutoFailover": true
+            }
+          }
+        }
+      },
+      "profile": "eu-private-3-venus",
+      "testSuite": [
+        {
+          "tests": [
+            {
+              "path": "interaction/puppeteer-interaction-test.js"
+            }
+          ]
+        },
+        {
+          "tests": [
+            {
+              "path": "goals/puppeteer-conversation-engaged.js"
+            }
+          ]
+        }
+      ],
+      "environment": [
+        {
+          "name": "SB_CLI_CREDENTIALS",
+          "value": {
+            "username": "some-username",
+            "password": "some-password"
+          }
+        },
+        {
+          "name": "LOG_LEVEL",
+          "value": "INFO"
+        }
+      ]
+    }
+ \end{minted}
+  \end{tcolorbox}
+  \caption{Sample output of Start state of State Machine}
+ \end{figure}
+
+ \item The Handler which runs the Mocha tests using Puppeteer. The handler invokes a Lambda function for each test.
+ \item The Results function which takes in an array of test results, stores them in DynamoDB and logs the results to the Log Reporter in Cloudwatch.
+\end{itemize}
+ The
 template will also contain the state machine definition. A YAML formatting extension from Redhat to format the YAML
-file is also necessary as it is not possible to deploy the YAML unless the format is accurate.
-
-To log into the ServisBOT cli a \.env file containing authentication details can be added as a temporary solution.
-The environment variables will be read through AWS SSM eventually.
+file was used as it is not possible to deploy the YAML unless the formatting is accurate.
 
 \section{Environment Variables}
 The next objective is to supply the handler with the environment variables through the orchestration lambda.
@@ -722,7 +784,7 @@ The steps to this task were as follows:
 \begin{itemize}
 \item The parameters were created in the SSM parameter store in the same format as the Frankenstein parameters.
 \item Code was added to the orchestrator to read the SSM parameters using the node module \textbf{aws-sdk}.
-\item A new policy was added to the cloudformation template in order to give IAM permissions to read from the parameter store
+\item A new policy was added to the  CloudFormation template in order to give IAM permissions to read from the parameter store
 \item The environment was built in the orchestrator by retrieving the ssm parameters in the orchestrator, building the envirnoment object and returning this to the output.
 \item A new class, Secrets was added in order to retrieve the SSM parameters from the parameter store to extract that work from the orchestrator. Later to be renamed EnvironmentResolver. This was done by passing the ssm through to the Secrets constructor.
 \item The README was updated to reflect the changes.
@@ -737,9 +799,9 @@ The steps to this task were as follows:
 \section{Eventbridge Rules (CRON) }
 
 Like Frankenstein, Bosco needs to run on a scheduled event. WS Eventbridge allows developers to trigger evAents on a CRON which is `a command to an operating system or server for a job that is to be executed at a specified time`. 
-To trigger the state macine to run different profiles at different times, in different regions the cloudformation file needed to be updates. 
+To trigger the state macine to run different profiles at different times, in different regions the  CloudFormation file needed to be updates. 
 \begin{itemize}
- \item First the rule defaults were added to the cloudformation
+ \item First the rule defaults were added to the  CloudFormation
  \item The CRON rules were then added 
   \begin{tcolorbox}
    \begin{minted}[fontsize=\footnotesize, breaklines]{yaml}
@@ -776,7 +838,7 @@ To trigger the state macine to run different profiles at different times, in dif
  \end{tcolorbox}
 \end{itemize}
 
-Once the cloudformation file was deployed successfully, it was possible to observe the timed events executing successfully. You can see from the following table 
+Once the  CloudFormation file was deployed successfully, it was possible to observe the timed events executing successfully. You can see from the following table 
 that each execution is now given a unique ID and runs at regular intervals past the hour. The working CRON instigated time machine was showcased to the team and they were 
 queried on whether they would liked the introdcution of a profile that ran hourly as opposed to every twenty minutes. The team agreed that the tests were already running too 
 frequently and costing a lot. Bosco will have more control over what tests are run, in what regions and how frequently through the test profiles, therefore giving ServisBOT 
@@ -815,13 +877,13 @@ The learning path to achieving this began with:
 \item Manually creating a dynamo table in dev and deciding the attributes that would be written to it.
 \item The handler was then refactored in order to pass the profile, the endTime and the duration to the results lambda.
 \item The results lambda then used the aws-sdk to write to the Dynamo DB. It filtered through the status of all the tests and if there was a failed test then the overall test run was marked as a fail.
-\item Once the step function was writing to the table which was created manually, a new resource, a Global Dynamo table was added to the cloudformation template.
+\item Once the step function was writing to the table which was created manually, a new resource, a Global Dynamo table was added to the  CloudFormation template.
 \item A condition was added to the Dynamo table so that it was possible to interchange between deploying the table or not.
 \end{itemize}
 
 \chapter{Deployment}
 The deployment process was undertaken with help from the team as the initial plan needed to be altered. The triggers were removed from the 
-cloudformation script and instead were put in a script specific to the AWS Region they would be deployed in. 
+ CloudFormation script and instead were put in a script specific to the AWS Region they would be deployed in. 
 
 \section{CICD Process}
 The steps to the CICD process for Bosco are as follows:
@@ -871,7 +933,7 @@ effect on the company. The following times were decided on for the test runs.
   \caption{Scheduled Triggers (CRON)s for Running Bosco}
  \end{table}
 
-A new folder src/triggers was created which contatins cloudformation templates for each AWS region and ServisBOT region pair.
+A new folder src/triggers was created which contatins  CloudFormation templates for each AWS region and ServisBOT region pair.
 For example:
 src/triggers/eu-west-1/eu-1-triggers.yaml
 src/triggers/eu-west-1/eu-private-1-triggers.yaml
@@ -880,7 +942,7 @@ Within each of these template files is the infrastructure for the eu-1 CRON and 
 A new lambda was created in Bosco which does the following:
 * When invoked, checks the AWS region the lambda is running in.
 * Reads the src/triggers/<aws-region> folder, and uses the AWS SDK to deploy each of the templates found within this folder.
-* The lambda function has the ability to poll to check for new or updated cloudformation stacks.
+* The lambda function has the ability to poll to check for new or updated  CloudFormation stacks.
 * The lambda will fail if any of the stacks fail to create/update.
 A post-build code build script invokes the lambda. This now only runs on deployment to an account (not the CICD account).
 
@@ -939,7 +1001,7 @@ it exists then it runs through each file in the directory which will be a screen
 these screenshots to an S3 bucket. The /tmp directroy is the only directory that lambda can access. Any attempts to read/write 
 to other named directories will cause an error. Once the files have been uploaded the /tmp/screenshots directory is deleted.
 
-The S3 bucket is deployed using cloudformation. There is a condition on the bucket to deploy only in a staging environment and 
+The S3 bucket is deployed using  CloudFormation. There is a condition on the bucket to deploy only in a staging environment and 
 otherwise only if specified. Cloudformation permissions were added to allow for upload to the specific bucket.
 
 The process to achieving this feature began initially with each test storing the screenshot on a failure. A new function 
@@ -955,7 +1017,7 @@ was written in the Lightning Page class
 \section{Key skills}
 \begin{itemize}
   \item Sprint planning. 
-  \item Amazon Web services, in particular Lambda, Step Functions, §Cloud Formation, S3, DynmaoDB, AWS regions, SSM Parameters, 
+  \item Amazon Web services, in particular Lambda, Step Functions, § CloudFormation, S3, DynmaoDB, AWS regions, SSM Parameters, 
   \item Showcasing progress of the project to the team
   \item LateX
   \item CICD process
@@ -978,6 +1040,7 @@ were a few which may be common to work based projects for students completing th
 \section{Future Work}
 Incredibly at the end of the project, Bosco is at a state where the team can now take over and add the remainder of the tests. There are about forty tests that are to be transitioned from Frankenstein to Bosco which any team member 
 once lightly versed in Puppeteer and Mocha can work on easily. 
+
 \appendix
 \chapter{Methodology}
 Jira was used to keep track the sprints on the Bosco project. Week long sprints were the chosen method for the implementation phase as this
@@ -1071,6 +1134,38 @@ The implementation of Bosco was carried out in one week sprints as was required 
  \includegraphics[width=15cm]{./diagrams/sprints2.png}
  \caption{Bosco Dissemination Phase}
 \end{figure}
+
+\chapter{Dependencies and Dev-Dependencies}
+\subsection*{dependencies}
+\textbf{@aws-sdk/client-dynamodb}
+\textbf{@aws-sdk/lib-dynamodb}
+\textbf{@servisbot/servisbot-cli}
+\textbf{bluebird}
+\textbf{cors}
+\textbf{csv-parse}
+\textbf{express}
+\textbf{loglevel} was added to replace the console.logs.
+\textbf{luxon}
+\textbf{number-to-words-en}
+\textbf{puppeteer}
+\textbf{serverless-http}
+\textbf{sinon}
+\textbf{supertest}
+
+\subsection*{dev-dependencies}
+\textbf{aws-sdk}
+\textbf{depcheck}: a dependency check package which checks for unused dependencies before commits.
+\textbf{eslint}: a linting tool that ensures all the code is formatted consistently by anyone who makes changes to the code.
+\textbf{lambda-local}, a node module was used for testing purposes. This allowed for the running of the lamdas locally rather than having 
+to deploy each time they were to be tested. 
+\textbf{mocha}
+\textbf{pre-commit}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=15cm]{./diagrams/dependencies.png}
+  \caption{dependencies and dev dependencies used for Bosco}
+ \end{figure}
 
 \printbibliography[title={References}]
 

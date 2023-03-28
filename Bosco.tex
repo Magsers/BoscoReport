@@ -495,17 +495,17 @@ A YAML formatting extension from Redhat to format the YAML file was used as it i
 Bosco's CloudFormation Template consists of the following resources:
 
 \begin{description}
-  \item [LambdaRole] IAM (Identity and Access Management) role in AWS that is used to grant permissions to AWS Lambda functions.
-  \item [ScheduledEventIAMRole] IAM role used to grant permissions to the cron in Cloudwatch Events that will run the state machine.
-  \item [BoscoIAMManagedPolicy] AWS managed policy that defines the permissions for the roles and users attached to the IAM role.
-  \item [ApiLambda] The Lambda function that serves as an API endpoint for retrieving test run results from DynmaoDB.
-  \item [TestOrchestrationLambda] The Lambda function that configures the input to the state machine based on the profile provided in the event.
-  \item [TestRunnerLambda] The Lambda function that runs the suite of tests and returns the results.
-  \item [TestResultsLambda] The Lambda function that processes, stores and logs the tests results.
-  \item [StateMachine] The AWS Step Function State Machine that is used to manage the orchestrator, runner and results Lambdas in a workflow based on a map inline state. 
-  \item [ApiGateway] The API Gateway created to access the DynamoDB results table.
-  \item [ResultsDynamoTable] The DynamoDB table that the results are written to.
-  \item [S3BucketScreenshots] The S3 bucket that screenshots of failed tests are stored in.
+  \item [LambdaRole]: IAM (Identity and Access Management) role in AWS that is used to grant permissions to AWS Lambda functions.
+  \item [ScheduledEventIAMRole]: IAM role used to grant permissions to the cron in Cloudwatch Events that will run the state machine.
+  \item [BoscoIAMManagedPolicy]: AWS managed policy that defines the permissions for the roles and users attached to the IAM role.
+  \item [ApiLambda]: The Lambda function that serves as an API endpoint for retrieving test run results from DynmaoDB.
+  \item [TestOrchestrationLambda]: The Lambda function that configures the input to the state machine based on the profile provided in the event.
+  \item [TestRunnerLambda]: The Lambda function that runs the suite of tests and returns the results.
+  \item [TestResultsLambda]: The Lambda function that processes, stores and logs the tests results.
+  \item [StateMachine]: The AWS Step Function State Machine that is used to manage the orchestrator, runner and results Lambdas in a workflow based on a map inline state. 
+  \item [ApiGateway]: The API Gateway created to access the DynamoDB results table.
+  \item [ResultsDynamoTable]: The DynamoDB table that the results are written to.
+  \item [S3BucketScreenshots]: The S3 bucket that screenshots of failed tests are stored in.
 \end{description}
 
 \section{Environment Variables}

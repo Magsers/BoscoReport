@@ -1,0 +1,12 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{    }\PYG{err}{ScheduledEve}\PYG{k+kc}{nt}\PYG{err}{IAMRole}\PYG{p}{:}
+\PYG{+w}{        }\PYG{err}{Policies}\PYG{p}{:}
+\PYG{+w}{          }\PYG{l+m+mi}{\PYGZhy{}}\PYG{+w}{ }\PYG{err}{PolicyName}\PYG{p}{:}\PYG{+w}{ }\PYG{err}{S}\PYG{k+kc}{tate}\PYG{err}{Machi}\PYG{k+kc}{ne}\PYG{err}{Execu}\PYG{k+kc}{t}\PYG{err}{io}\PYG{k+kc}{n}\PYG{err}{Policy}
+\PYG{+w}{            }\PYG{err}{PolicyDocume}\PYG{k+kc}{nt}\PYG{p}{:}
+\PYG{+w}{              }\PYG{err}{Versio}\PYG{k+kc}{n}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}2012\PYGZhy{}10\PYGZhy{}17\PYGZdq{}}
+\PYG{+w}{              }\PYG{err}{S}\PYG{k+kc}{tate}\PYG{err}{me}\PYG{k+kc}{nt}\PYG{p}{:}
+\PYG{+w}{                }\PYG{l+m+mi}{\PYGZhy{}}\PYG{+w}{ }\PYG{err}{E}\PYG{k+kc}{ffe}\PYG{err}{c}\PYG{k+kc}{t}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Allow\PYGZdq{}}
+\PYG{+w}{                  }\PYG{err}{Ac}\PYG{k+kc}{t}\PYG{err}{io}\PYG{k+kc}{n}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}states:StartExecution\PYGZdq{}}
+\PYG{+w}{                  }\PYG{err}{Resource}\PYG{p}{:}
+\PYG{+w}{                    }\PYG{l+m+mi}{\PYGZhy{}}\PYG{+w}{ }\PYG{err}{!Re}\PYG{k+kc}{f}\PYG{+w}{ }\PYG{err}{Impor}\PYG{k+kc}{t}\PYG{err}{BoscoS}\PYG{k+kc}{tate}\PYG{err}{Machi}\PYG{k+kc}{ne}
+\end{Verbatim}

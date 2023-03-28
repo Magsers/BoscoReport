@@ -488,9 +488,12 @@ To work around this, the CSV output option was used instead of JSON and the csv-
 
 \section{CloudFormation}
 When deploying Bosco, a  CloudFormation template in the form of YAML is run.  CloudFormation is an AWS service that allows developers to define and deploy infrastructure as code.
-The Cloudformation template, which can be in either YAML or JSON format, is used to create AWS resources like Lambda functions, State Machines, API-Gateways, DynamoDB tables and S3. 
-It specifies the necessary environment variables, parameters, conditionals and other resources such as IAM roles and policies. 
-A YAML formatting extension from Redhat to format the YAML file was used as it is not possible to deploy the YAML unless the formatting is accurate.
+The Cloudformation template, which can be in either YAML or JSON format, is used to define and provision the AWS resources. When the CloudFormation template is uploaded to AWS it 
+creates a CloudFormation stack which is a collection of AWS resources that can be managed as one unit. 
+The template specifies the necessary environment variables, parameters, conditionals and other resources such as IAM roles and policies. 
+
+CloudFormation saves time and reduces errors as the same resources can be created multiple times once the template is defined.
+A YAML formatting extension from Redhat to format the YAML file was used for Bosco as it is not possible to deploy the YAML unless the formatting is accurate.
 
 Bosco's CloudFormation Template consists of the following resources:
 
@@ -509,25 +512,55 @@ Bosco's CloudFormation Template consists of the following resources:
 \end{description}
 
 \section{Environment Variables}
-The next objective was to supply the handler with the environment variables through the Orchestrator Lambda.
-The final result has an array called TestSuite, consisting of elements, each of which contains two arrays: one for tests and the other for environment variables.
-The tests array can contain either a single test or an array of tests, but it was structured in a way that each element in the TestSuite array is also an array,
-which leaves room for running multiple tests in one lambda or running each test separately in different lambda functions.
+The environment variables are made up of the credentials needed to log into the ServisBOT CLI, the Log Level and the SSM credentials for the Lex V2 test which uses an external service.  
+Storing the log level in the environment variables allows for consistency across the application, better security, easier debugging and flexibility. 
+The log level can be changed without changing the code.
+Initially, the environment variables were passed to the Orchestrator through the event. Once this was working, the environment variables became part of the profile. However, a more 
+secure option was neccessary so they were subsequently removed from the profile and stored in AWS Systems Manager Parameter Store, an AWS service for storage, configuration, secrets and data management. 
 
-Once it was possible to provide the environment variables to the handler via the Orchestrator Lambda via an
-object containing the test file path and the environment variables the next step was to provide a shared environment
-between all lambda functions in the map. This was achieved by providing the environment variables to the handler
-at the same level as the array of tests and refactoring the state machine to use the environment variables for
-each test. This was necessary to implement as environments can grow and therefore can be resource heavy on the
-state machine. By providing one instance of environment variables rather than 40 test objects containing
-environment variables and a test file path.
+Two more classes were constructed in addition to the Environment class in order to resolve the environment variables. 
+\begin{description}
+  \item[EnvironmentResolver:]A class with three functions: resolveEnvironment; resolveEnvironmentVariable; retrieveSSMParam
+  \item[resolveEnvironmentVariables:]A class which takes in the test profile and uses this to return the array of environment variables.
+\end{description}
 
-It was essential at this stage to ensure it was possible to flip between environments by either providing the JSON through the
-Orchestrator Lambda or by providing it to the State machine initiation step. If the JSON was provided by both, then the tests should run twice.
+\begin{figure}[H]
+  \begin{tcolorbox}
+   \begin{minted}{json}
+    "environment": [
+      {
+        "name": "SB_CLI_CREDENTIALS",
+        "value": {
+          "username": "some-username",
+          "password": "some-password"
+        }
+      },
+      {
+        "name": "LEX_V2_CROSS_ACCOUNT_ROLE_SECRET",
+        "value": {
+          "externalId": "some-externalId",
+          "crossAccountRole": "some-cross-account-role"
+        }
+      },
+      {
+        "name": "LOG_LEVEL",
+        "value": "INFO"
+      }
+    ],
+ \end{minted}
+  \end{tcolorbox}
+  \caption{Environment Variables Inputted to Handler}
+ \end{figure}
+
+The environment variables are provided to the handler at the same level as the testSuite and the testProfileConfig. 
+By fetching and resolving the environment variables in the Orchestrator, this allows for a shared environment between the tests rather 
+than providing the environment to each test which would be inefficient and resource heavy. Environments can grow and so this allows 
+for flexibility in the development of Bosco.
+
+It was essential to prove it was possible to flip between environments by either providing the environment to the
+Orchestrator Lambda or by inputting it to the State machine as an event. 
 This was important to prove because providing the state machine with the environment variables and testSuite configuration there is more control over the state
 machine. What tests are run with what environment variables can be determined at any stage.
-
-\section{Refactor of State Machine to use a Shared Environment on Individual Test Instances }
 
 The state machine was then refactored to use a shared environment instead of
 passing the environment variables in with each test object. In the state machine definition there is an option to
@@ -539,87 +572,74 @@ The updated definition of the state machine included the following extra paramet
 \begin{figure}[H]
  \begin{tcolorbox}
   \begin{minted}{json}
-
- "Next": "Done",
- "ItemsPath": "\$.testSuite",
- "ItemSelector": {
-  "testSuite.\$": "\$\$.Map.Item.Value",
-  "environment.\$": "\$.environment",
-  "profile.\$": "\$.profile",
-  "testConfig.\$": "\$.testConfig"
-
-}
+  {
+    "ItemsPath":"$.testSuite",
+    "ItemSelector": {
+      "testSuite.$": "$$.Map.Item.Value",
+      "environment.$": "$.environment",
+      "testProfileConfig.$": "$.testProfileConfig",
+      "executionId.$": "$$.Execution.Id"
+    },
+  }
 \end{minted}
  \end{tcolorbox}
- \caption{Definition of Map State including Test Profile}
+ \caption{State Machine Definition passing the environment to the Handler}
 \end{figure}
 
-The input to the map state became the following:
+The input to the Handler became the following:
 
 \begin{figure}[ht]
  \begin{tcolorbox}
   \begin{minted}{json}
-{
- "tests": [
-  {
-   "path": "goals/puppeteer-conversation-engaged.js"
-  }
- ]
-}
+    {
+      "testProfileConfig": {
+        "profile": "eu-private-3-venus",
+        "organization": "bosco",
+        "sbRegion": "eu-private-3",
+        "awsRegion": "eu-west-1",
+        "messengerUrl": "some-url",
+        "testConfig": {
+          "endpoint": {
+            "create": {
+              "AutoFailover": true
+            }
+          }
+        }
+      },
+      "executionId": "...",
+      "environment": [
+        {
+          "name": "SB_CLI_CREDENTIALS",
+          "value": {
+              "username": "some-username",
+              "password": "some-password"
+          }
+        },
+        {
+          "name": "LEX_V2_CROSS_ACCOUNT_ROLE_SECRET",
+          "value": {
+            "externalId": ...,
+            "crossAccountRole": ...
+          }
+        },
+        {
+          "name": "LOG_LEVEL",
+          "value": "INFO"
+        }
+      ],
+      "testSuite": {
+        "tests": [
+          {
+            "path": "goals/puppeteer-conversation-engaged.js"
+          }
+        ]
+      }
+    }
 \end{minted}
  \end{tcolorbox}
  \caption{Input to one Iteration of Map State with just the Test Path}
 \end{figure}
 
-In addition the input to each iteration of the running state became the following:
-
-\begin{figure}[H]
- \begin{tcolorbox}
-  \begin{minted}{json}
-{
- "testConfig": {
-  "endpoint": {
-   "create": {
-    "AutoFailover": true
-   }
-  }
- },
- "environment": [
-  {
-   "name": "ORGANIZATION",
-   "value": "some-organization"
-  },
-  {
-   "name": "USERNAME",
-   "value": "some-username"
-  },
-  {
-   "name": "PASSWORD",
-   "value": "some-password"
-  },
-  {
-   "name": "SERVISBOT_REGION",
-   "value": "eu-private-3"
-  },
-  {
-   "name": "LOG_LEVEL",
-   "value": "INFO"
-  }
- ],
- "testSuite": {
-  "tests": [
-   {
-    "path": "goals/puppeteer-conversation-engaged.js"
-   }
-  ]
- },
- "profile": "eu-private-3-venus"
-}
-
-\end{minted}
- \end{tcolorbox}
- \caption{Running State Input including Shared Environment}
-\end{figure}
 
 \section{Test Profiles}
 One significant way in which Bosco will differ to Frankenstein is in the capability to run test profiles rather than 

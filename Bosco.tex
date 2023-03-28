@@ -508,6 +508,17 @@ not have the polling outputted to the console.
  \caption{NLP worker test with polling}
 \end{figure}
 
+\subsection{CLI Test: Content}
+Frankenstein also has a number of tests that test the functionality of the ServisBOT CLI. The cli has most of the functionality if not more of the ServisBOT UI (user interface). The tests do not use a web scraper like Testcafe as it is not needed. 
+Instead the tests just run the cli commands and use an assertion to ensure they were carried out successfully. As a result the tests are completed much faster than the Testcafe tests.
+
+The CLI test chosen was the Content, create-describe-update-delete-list test. It was a simple test that tests a Content node. It takes a content definition in JSON format and creates a content node object. Then it describes it, updates it, lists the contents and deletes the content. 
+When deployed the test took 18 seconds as opposed to a Puppeteer test taking an average of 55 seconds.
+
+When put to the team however, whether Bosco was to include CLI tests or not, it was agreed that it was unnecessary to include the CLI tests. Bosco was to test Portal specifically, the UI that the users would 
+be using first hand. CLI tests are basically only for developers and there is less of a need to test them. The goal is to have full Frankenstein coverage with Bosco and testing the ServisBOT CLI proxy has 95\% coverage. 
+It was then decided to remove the CLI test from Bosco. 
+
 \section{CloudFormation}
 When deploying Bosco, a  CloudFormation template in the form of YAML is run.  CloudFormation is an AWS service that allows developers to define and deploy infrastructure as code.
 The Cloudformation template, which can be in either YAML or JSON format, is used to define and provision the AWS resources. When the CloudFormation template is uploaded to AWS it 
@@ -610,12 +621,13 @@ region: environment.getSBRegion()
 \end{figure}
 
 \section{Environment Variables}
-The environment variables are made up of the credentials needed to log into the ServisBOT CLI, the Log Level and the SSM credentials for the Lex V2 test which uses an external service.  
+The environment variables are made up of the credentials needed to log into the ServisBOT CLI, the Log Level and the SSM parameters for the Lex V2 test which uses an external service.  
 Storing the log level in the environment variables allows for consistency across the application, better security, easier debugging and flexibility. 
 The log level can be changed without changing the code.
 
-Initially, the environment variables were passed to the Orchestrator through the event. Once this was working, the environment variables became part of the profile. However, a more 
+Initially, the environment variables were passed to the Orchestrator through the event. Once this was proven to work, the environment variables became part of the profile. However, a more 
 secure option was neccessary so they were subsequently removed from the profile and stored in AWS Systems Manager Parameter Store, an AWS service for storage, configuration, secrets and data management. 
+More information on SSM parameter store in Bosco is provided at a later stage in this report.
 
 Two more classes were constructed in addition to the Environment class in order to resolve the environment variables. 
 \begin{description}
@@ -736,7 +748,7 @@ the network tab examined. When the browser was talking to Venus there calls to \
 
 
 \section{SSM Parameters}
-The next task for Bosco was to build the environment in the orchestrator using SSM parameters. 
+In order for Bosco to build the environment in the orchestrator, SSM parameter store was utilised. 
 SSM (Systems Manager) is a service provided by AWS that allows you to securely store and retrieve data for your application \autocite{Halley}.
 They can be encrypted and the service is easy and free to use. 
 A few lines of code can retrieve the parameters from the store. 
@@ -744,11 +756,11 @@ A few lines of code can retrieve the parameters from the store.
 The steps to this task were as follows:
 \begin{itemize}
 \item The parameters were created in the SSM parameter store in the same format as the Frankenstein parameters.
-\item Code was added to the orchestrator to read the SSM parameters using the node module \textbf{aws-sdk}.
+\item Code was added to the orchestrator to read the SSM parameters using the AWS SDK (Software Development Package) \textbf{aws-sdk}.
 \item A new policy was added to the  CloudFormation template in order to give IAM permissions to read from the parameter store
-\item The environment was built in the orchestrator by retrieving the ssm parameters in the orchestrator, building the envirnoment object and returning this to the output.
-\item A new class, Secrets was added in order to retrieve the SSM parameters from the parameter store to extract that work from the orchestrator. Later to be renamed EnvironmentResolver. This was done by passing the ssm through to the Secrets constructor.
-\item The README was updated to reflect the changes.
+\item The environment was built in the orchestrator by retrieving the SSM parameters in the orchestrator, building the environment object and returning this in the output.
+\item A new class, Secrets was added in order to retrieve the SSM parameters from the parameter store to extract that work from the orchestrator. Later to be renamed EnvironmentResolver. 
+\item The README was updated to reflect the changes for future development from the ServisBOT team.
 \end{itemize}
 
 \begin{figure}[H]
@@ -759,11 +771,30 @@ The steps to this task were as follows:
 
 \section{Eventbridge Rules (CRON) }
 
-Like Frankenstein, Bosco needs to run on a scheduled event. WS Eventbridge allows developers to trigger evAents on a CRON which is `a command to an operating system or server for a job that is to be executed at a specified time`. 
-To trigger the state macine to run different profiles at different times, in different regions the  CloudFormation file needed to be updates. 
+Like Frankenstein, Bosco needs to run on a scheduled event. AWS Eventbridge allows developers to trigger events on a CRON which is a command to an operating system or server for a job that is to be executed at a specified time. 
+To trigger the state macine to run different profiles at different times, in different regions, the  CloudFormation file needed to be updated. 
 \begin{itemize}
- \item First the rule defaults were added to the  CloudFormation
- \item The CRON rules were then added 
+ \item Scheduled Rules were added as resources to the CloudFormation template.
+ \begin{tcolorbox}
+  \begin{minted}[fontsize=\footnotesize, breaklines]{yaml}
+  MercuryProfileScheduledRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub "${CoreName}-Mercury-Profile"
+      State: "ENABLED"
+      ScheduleExpression: ScheduleVenusExpression
+      Targets:
+        - Arn: 
+            Fn::ImportValue: 
+              Fn::Sub: "${Environment}-bosco-StateMachineArn-${AWS::Region}"
+          Id: !Sub "${CoreName}-Mercury"
+          Input: !Sub '{"profile": "${ServisBotRegion}-mercury"}'
+          RoleArn: 
+            Fn::ImportValue:
+              Fn::Sub: ${Environment}-bosco-ScheduledEventIAMRoleArn-${AWS::Region}
+  \end{minted}
+ \end{tcolorbox}
+ \item The CRON rules were then added.
   \begin{tcolorbox}
    \begin{minted}[fontsize=\footnotesize, breaklines]{yaml}
    ScheduleMercuryExpression: { Type: String, Default: "cron(0,20,40 * * * ? *)" } # run at 0,20,40 past the hour
@@ -780,7 +811,6 @@ To trigger the state macine to run different profiles at different times, in dif
    EuHourlyTriggerEnabled: !Equals [ !Ref HourlyEuRunnerEnabled, "true" ]
   \end{minted}
  \end{tcolorbox}
- \item The schedule rules were added
  \item A new Sceduled Event IAM role to execute the state machine was added with a special policy that allows the execution of the state machine. 
  
  \begin{tcolorbox}
@@ -799,9 +829,12 @@ To trigger the state macine to run different profiles at different times, in dif
  \end{tcolorbox}
 \end{itemize}
 
-Once the  CloudFormation file was deployed successfully, it was possible to observe the timed events executing successfully. You can see from the following table 
-that each execution is now given a unique ID and runs at regular intervals past the hour. The working CRON instigated time machine was showcased to the team and they were 
-queried on whether they would liked the introdcution of a profile that ran hourly as opposed to every twenty minutes. The team agreed that the tests were already running too 
+Once the  CloudFormation file was deployed successfully, it was possible to observe the timed events executing successfully. The following table displays  
+each execution, which is  given a unique ID and runs at regular intervals past the hour. 
+
+The working CRON instigated state machine was showcased to the team and they were 
+queried on whether they would like the introdcution of a profile that runs hourly as opposed to every twenty minutes. 
+The team agreed that the tests were already running too 
 frequently and costing a lot. Bosco will have more control over what tests are run, in what regions and how frequently through the test profiles, therefore giving ServisBOT 
 much more control over their testing suite and providing flexibility and control that Frankenstein seriously lacks in.
 
@@ -810,16 +843,6 @@ much more control over their testing suite and providing flexibility and control
   \includegraphics[width=15cm]{./diagrams/state_machine_cron_executions.png}
   \caption{State Machine Executions on a CRON }
  \end{figure}
-
- \section{Converting a CLI Test}
- Frankenstein also has a number of tests that test the functionality of the cli. The cli has most of the functionality if not more of the ServisBOT UI. The tests do not use a web scraper like Testcafe as it is not needed, instead the tests just run the cli commands and use an assertion to ensure they were carried out sufficiently. As a result the tests are completed much faster than the Testcafe tests.
-
-The CLI test chosen was the Content, create-describe-update-delete-list test. It was a simple test that tests a Content node. It takes a content definition in JSON format and creates a content node object. Then it describes it, updates it, lists the contents and deletes the content. 
-When deployed the test took 18 seconds as opposed to a Puppeteer test taking an average of 55 seconds.
-
-When put to the team however, whether Bosco was to include CLI tests or not, it was agreed that it was unnecessary to include the CLI tests. Bosco was to test portal specifically where the users would 
-be using the UI first hand. CLI tests were basically only for developers and there was less of a need to test them. The goal is to have full Frankenstein coverage with Bosco and testing the ServisBOT CLI proxy has 95\% coverage. 
-It was then decided to remove the CLI test from Bosco. 
 
 \section{Dynamo DB}
 The next task for Bosco was to store the test results in a global Dynamo DB table. 
@@ -1151,7 +1174,7 @@ to deploy each time they were to be tested.
 \item https://blog.logrocket.com/testing-node-js-mocha-chai/
 \item https://www.ponicode.com/shift-left/
 \item https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
-\item https://evanhalley.dev/post/aws-ssm-node/
+\item https://evanhalley.dev/post/aws- SSM-node/
 \item https://dockerlabs.collabnix.com/beginners/components/what-is-container.html
 \item https://www.youtube.com/watch?v=rQijrDj1wCQ
 \end{enumerate}

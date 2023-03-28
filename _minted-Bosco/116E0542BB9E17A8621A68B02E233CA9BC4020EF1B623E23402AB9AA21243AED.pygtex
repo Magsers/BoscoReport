@@ -1,0 +1,17 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{  }\PYG{n+nt}{MercuryProfileScheduledRule}\PYG{p}{:}
+\PYG{+w}{    }\PYG{n+nt}{Type}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{AWS::Events::Rule}
+\PYG{+w}{    }\PYG{n+nt}{Properties}\PYG{p}{:}
+\PYG{+w}{      }\PYG{n+nt}{Name}\PYG{p}{:}\PYG{+w}{ }\PYG{k+kt}{!Sub}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZdl{}\PYGZob{}CoreName\PYGZcb{}\PYGZhy{}Mercury\PYGZhy{}Profile\PYGZdq{}}
+\PYG{+w}{      }\PYG{n+nt}{State}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}ENABLED\PYGZdq{}}
+\PYG{+w}{      }\PYG{n+nt}{ScheduleExpression}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{ScheduleVenusExpression}
+\PYG{+w}{      }\PYG{n+nt}{Targets}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{n+nt}{Arn}\PYG{p}{:}
+\PYG{+w}{            }\PYG{n+nt}{Fn::ImportValue}\PYG{p}{:}
+\PYG{+w}{              }\PYG{n+nt}{Fn::Sub}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZdl{}\PYGZob{}Environment\PYGZcb{}\PYGZhy{}bosco\PYGZhy{}StateMachineArn\PYGZhy{}\PYGZdl{}\PYGZob{}AWS::Region\PYGZcb{}\PYGZdq{}}
+\PYG{+w}{          }\PYG{n+nt}{Id}\PYG{p}{:}\PYG{+w}{ }\PYG{k+kt}{!Sub}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZdl{}\PYGZob{}CoreName\PYGZcb{}\PYGZhy{}Mercury\PYGZdq{}}
+\PYG{+w}{          }\PYG{n+nt}{Input}\PYG{p}{:}\PYG{+w}{ }\PYG{k+kt}{!Sub}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}\PYGZob{}\PYGZdq{}profile\PYGZdq{}:}\PYG{n+nv}{ }\PYG{l+s}{\PYGZdq{}\PYGZdl{}\PYGZob{}ServisBotRegion\PYGZcb{}\PYGZhy{}mercury\PYGZdq{}\PYGZcb{}\PYGZsq{}}
+\PYG{+w}{          }\PYG{n+nt}{RoleArn}\PYG{p}{:}
+\PYG{+w}{            }\PYG{n+nt}{Fn::ImportValue}\PYG{p}{:}
+\PYG{+w}{              }\PYG{n+nt}{Fn::Sub}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{\PYGZdl{}\PYGZob{}Environment\PYGZcb{}\PYGZhy{}bosco\PYGZhy{}ScheduledEventIAMRoleArn\PYGZhy{}\PYGZdl{}\PYGZob{}AWS::Region\PYGZcb{}}
+\end{Verbatim}

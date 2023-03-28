@@ -560,31 +560,31 @@ The Step Function has three lambda functions.
   \caption{Sample output of Start state of State Machine}
  \end{figure}
 
- \item The Handler which runs the Mocha tests using Puppeteer. The handler invokes a Lambda function for each test.
- \item The Results function which takes in an array of test results, stores them in DynamoDB and logs the results to the Log Reporter in Cloudwatch.
+ \item The Handler which runs the Mocha tests using Puppeteer. The handler invokes a Lambda function for each test. It uses the testProfileConfig and the 
+ enviroment variables and uses this information to apply parameters to the tests in the profile. 
+ \item The Results Lambda which takes in an array of test results, stores them in DynamoDB and logs the results to the Log Reporter in Cloudwatch.
 \end{itemize}
  The
-template will also contain the state machine definition. A YAML formatting extension from Redhat to format the YAML
+template also contains the state machine definition as one of the resources. A YAML formatting extension from Redhat to format the YAML
 file was used as it is not possible to deploy the YAML unless the formatting is accurate.
 
 \section{Environment Variables}
-The next objective is to supply the handler with the environment variables through the orchestration lambda.
-The final result is to have an array called TestSuite, consisting of elements, each of which contains two arrays: one for tests and the other for environment variables.
-The tests array can contain either a single test or an array of tests, but it is structured in a way that each element in the TestSuite array is also an array,
+The next objective was to supply the handler with the environment variables through the Orchestrator Lambda.
+The final result has an array called TestSuite, consisting of elements, each of which contains two arrays: one for tests and the other for environment variables.
+The tests array can contain either a single test or an array of tests, but it was structured in a way that each element in the TestSuite array is also an array,
 which leaves room for running multiple tests in one lambda or running each test separately in different lambda functions.
 
-Once it is possible to provide the environment variables to the handler via the orchestration lambda via an
-object containing the test file path and the environment variables the next step is to provide a shared environment
-between all lambda functions in the map. This can be achieved by providing the environment variables to the handler
+Once it was possible to provide the environment variables to the handler via the Orchestrator Lambda via an
+object containing the test file path and the environment variables the next step was to provide a shared environment
+between all lambda functions in the map. This was achieved by providing the environment variables to the handler
 at the same level as the array of tests and refactoring the state machine to use the environment variables for
 each test. This was necessary to implement as environments can grow and therefore can be resource heavy on the
 state machine. By providing one instance of environment variables rather than 40 test objects containing
 environment variables and a test file path.
 
-It is essential at this stage to ensure it is possible to flip between environments by either providing the JSON through the
-orchestrator lambda function or by providing it to the State machine initiation step. If the JSON is provided by both, then the tests should run twice.
-
-By providing the state machine with the environment variables and testSuite there is more control over the state
+It was essential at this stage to ensure it was possible to flip between environments by either providing the JSON through the
+Orchestrator Lambda or by providing it to the State machine initiation step. If the JSON was provided by both, then the tests should run twice.
+This was important to prove because providing the state machine with the environment variables and testSuite configuration there is more control over the state
 machine. What tests are run with what environment variables can be determined at any stage.
 
 \section{Refactor of State Machine to use a Shared Environment on Individual Test Instances }

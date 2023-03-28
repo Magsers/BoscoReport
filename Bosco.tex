@@ -515,13 +515,14 @@ Bosco's CloudFormation Template consists of the following resources:
 The environment variables are made up of the credentials needed to log into the ServisBOT CLI, the Log Level and the SSM credentials for the Lex V2 test which uses an external service.  
 Storing the log level in the environment variables allows for consistency across the application, better security, easier debugging and flexibility. 
 The log level can be changed without changing the code.
+
 Initially, the environment variables were passed to the Orchestrator through the event. Once this was working, the environment variables became part of the profile. However, a more 
 secure option was neccessary so they were subsequently removed from the profile and stored in AWS Systems Manager Parameter Store, an AWS service for storage, configuration, secrets and data management. 
 
 Two more classes were constructed in addition to the Environment class in order to resolve the environment variables. 
 \begin{description}
   \item[EnvironmentResolver:]A class with three functions: resolveEnvironment; resolveEnvironmentVariable; retrieveSSMParam
-  \item[resolveEnvironmentVariables:]A class which takes in the test profile and uses this to return the array of environment variables.
+  \item[resolveEnvironmentVariables:]A class which takes in the test profile and uses this to return an array of environment variables.
 \end{description}
 
 \begin{figure}[H]
@@ -593,39 +594,11 @@ The input to the Handler became the following:
   \begin{minted}{json}
     {
       "testProfileConfig": {
-        "profile": "eu-private-3-venus",
-        "organization": "bosco",
-        "sbRegion": "eu-private-3",
-        "awsRegion": "eu-west-1",
-        "messengerUrl": "some-url",
-        "testConfig": {
-          "endpoint": {
-            "create": {
-              "AutoFailover": true
-            }
-          }
-        }
+        "..."
       },
       "executionId": "...",
       "environment": [
-        {
-          "name": "SB_CLI_CREDENTIALS",
-          "value": {
-              "username": "some-username",
-              "password": "some-password"
-          }
-        },
-        {
-          "name": "LEX_V2_CROSS_ACCOUNT_ROLE_SECRET",
-          "value": {
-            "externalId": ...,
-            "crossAccountRole": ...
-          }
-        },
-        {
-          "name": "LOG_LEVEL",
-          "value": "INFO"
-        }
+        "..."
       ],
       "testSuite": {
         "tests": [

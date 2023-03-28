@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}profile\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}eu\PYGZhy{}private\PYGZhy{}3\PYGZhy{}venus\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}organization\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}bosco\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}sbRegion\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}eu\PYGZhy{}private\PYGZhy{}3\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}awsRegion\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}eu\PYGZhy{}west\PYGZhy{}1\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}messengerUrl\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}some\PYGZhy{}url\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}testConfig\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{l+s+s2}{\PYGZdq{}...\PYGZdq{}}
+\PYG{+w}{      }\PYG{p}{\PYGZcb{},}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}testSuite\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{p}{[}
+\PYG{+w}{        }\PYG{l+s+s2}{\PYGZdq{}...\PYGZdq{}}
+\PYG{+w}{      }\PYG{p}{]}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

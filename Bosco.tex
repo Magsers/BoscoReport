@@ -17,7 +17,7 @@
 
 % Document Info
 %
-\newcommand\AcademicTitle{Optimising Test Runner Performance through Serverless Computing}
+\newcommand\AcademicTitle{Optimising Test Runner Performance}
 \newcommand\CommercialTitle{Bosco}
 \newcommand\Author{Margaret McCarthy}
 \newcommand\StudentID{20095610}
@@ -486,6 +486,28 @@ To work around this, the CSV output option was used instead of JSON and the csv-
 \subsection{Interaction Test}
 % // TODO
 
+\subsection{NLP Worker Lex V2 Intent Publish Test}
+Many of the Frankenstein tests use secrets in order to run the tests. Secrets can be defined as secure documents containing access keys, api keys, api secrets or IDs to external systems. They can be created and stored in the ServisBOT system and then referenced by bots securely. 
+This is how ServisBOT manage API keys for AWS\@.
+
+The test that was chosen was the NLP worker, Lex V2, intent-publish test. A \textbf{Lex} worker is a remotely managed NLP worker which takes input and sends it to a Lex bot for Natural Language Processing. A Lex bot is an Amazon bot, users use ServisBOT to access, manage and run their Lexbots. 
+\textbf{NLP} is a form of Artificial Intelligence that transforms text that a user submits into language that the computer programme can understand. In order for ServisBOT to classify utterances using a remotely managed NLP, the correct API keys, access tokens or cross account roles need to be configured in the ServisBOT Secrets Vault.
+
+An AWS cross account role, ie a secret, is required in order to access Lex. An environment variable was created that the test could access called LEX\_V2\_CROSS\_ACCOUNT\_ROLE\_SECRET and to this was assigned the secret definition for dev in JSON format. 
+
+This test creates a long-living bot which is a bot that is not deleted after the test but is created the first time the test is run and then reused for every test. 
+The bot has a variable intent is updated with the timestamp every time to ensure the bot is publishing successfully. When the bot is publishing its status is polled every 5 seconds and when published its status is SUCCEEDED and so the test starts.
+
+A bot class was created so that a publish function which polled the status of the publishing and outputted the status to the console could be created. This was so 
+the test behaved the same way as Frankenstein but also because using the ServisBOT cli proxy does not have this functionality so in calling sbCli.publish we would 
+not have the polling outputted to the console.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=15cm]{./diagrams/nlp_worker_poll.png}
+ \caption{NLP worker test with polling}
+\end{figure}
+
 \section{CloudFormation}
 When deploying Bosco, a  CloudFormation template in the form of YAML is run.  CloudFormation is an AWS service that allows developers to define and deploy infrastructure as code.
 The Cloudformation template, which can be in either YAML or JSON format, is used to define and provision the AWS resources. When the CloudFormation template is uploaded to AWS it 
@@ -510,6 +532,82 @@ Bosco's CloudFormation Template consists of the following resources:
   \item [ResultsDynamoTable]: The DynamoDB table that the results are written to.
   \item [S3BucketScreenshots]: The S3 bucket that screenshots of failed tests are stored in.
 \end{description}
+
+\section{Test Profiles}
+One significant way in which Bosco differs to Frankenstein is in the capacity to run test profiles rather than 
+running all the tests, all the time, in all the regions. By creating a test profile it is possible to specify which 
+environment, region and frequency of the tests which Frankenstein does not have the ability to do. 
+
+A profiles folder was created which stores all the profiles defined by the ServisBOT region and the adapters Venus and Mercury in the Dev environment. 
+
+\begin{figure}[H]
+  \begin{tcolorbox}
+   \begin{minted}{json}
+    {
+      "profile": "eu-private-3-venus",
+      "organization": "bosco",
+      "sbRegion": "eu-private-3",
+      "awsRegion": "eu-west-1",
+      "messengerUrl": "some-url",
+      "testConfig": {
+        "..."
+      },
+      "testSuite": [
+        "..."
+      ]
+    }
+   \end{minted}
+  \end{tcolorbox}
+  \caption{Sample Profile: eu-private-3-venus}
+ \end{figure}
+
+Each profile contains the testSuite so the orchestrator needed to be updated in order to read the file paths from the JSON provided in the 
+event profile. The node module \textbf{file system(fs)} was used to read the contents of the profile. This was parsed to 
+a javascript object and a spreader operator was used to combine the contents of the profile and the contents of 
+the event inputted to the orchestrator and output these to the handler.
+
+\begin{figure}[H]
+ \begin{tcolorbox}
+  \begin{minted}[breaklines]{javascript}
+  const readProfile = fs.readFileSync(testProfile, (err, data) => {
+  if (err) throw err;
+  });
+  const profile = JSON.parse(readProfile);
+  const output = { ...profile, ...event };
+  \end{minted}
+ \end{tcolorbox}
+ \caption{Parsing a JSON string to a javascript object and use of the spreader (\dots) operator}
+\end{figure}
+
+\subsection{Singleton Class: TestRunnerConfig}
+It was a requirement for Bosco that the test configuration would be passed from the profile to the tests. 
+There was quite a lot of code build needed for this as Mocha is limiting in that it doesn't 
+allow the passing of parameters to the tests. 
+
+A singleton class was created to overcome this. A singleton class is a class that can only have one instance of 
+itself. It is used when there is going to be no change or update to the object for the duration it is used. 
+This would be the case with our tests as we would just be using the configuration for accessing the Lightning page to run the tests.
+
+Initially the TestRunnerConfig took in the runner event and created an instance of itself. 
+It had getters to get different variables from the event which at the time were just the profile, testConfig, testSuite and environment. 
+The tests ran but now the aim was to remove process.env to set the variables and use an Environment class that instead reads the environment variables from the TestRunnerConfig.
+
+An Environment class was created using the environment from the event. This could now be accessed in the tests by calling the getters from the Environment object.
+\begin{figure}[H]
+ \begin{tcolorbox}
+  \begin{minted}[breaklines]{javascript}
+const testRunnerConfig = TestRunnerConfig.getInstance();
+const environment = testRunnerConfig.getEnvironment();
+const params = {
+organization: environment.getOrganization(),
+username: environment.getUsername(),
+password: environment.getPassword(),
+region: environment.getSBRegion()
+};
+\end{minted}
+ \end{tcolorbox}
+ \caption{Replacing proccess.env with getters to an Environment class invoked by a singleton class, TestRunnerConfig}
+\end{figure}
 
 \section{Environment Variables}
 The environment variables are made up of the credentials needed to log into the ServisBOT CLI, the Log Level and the SSM credentials for the Lex V2 test which uses an external service.  
@@ -613,65 +711,14 @@ The input to the Handler became the following:
  \caption{Input to one Iteration of Map State with just the Test Path}
 \end{figure}
 
-
-\section{Test Profiles}
-One significant way in which Bosco will differ to Frankenstein is in the capability to run test profiles rather than 
-running all the tests, all the time, in all the regions. By creating a test profile it is possible to specify which 
-environment, region and frequency of the tests which Frankenstein does not have the ability to do. 
-
-A profiles folder was created with two different profiles for the adapters Venus and Mercury in the dev environment. Each profile 
-contained the test suite so the orchestrator needed to be updated in order to read the file paths from the JSON provided in the 
-event profile. The node module \textbf{file system\&(fs)} was used to read the contents of the profile, this was parsed to 
-a javascript object and a spreader operator was used to combine the contents of the profile and the contents of 
-the even inputted to the orchestrator and output these to the handler.
-
-\begin{figure}[H]
- \begin{tcolorbox}
-  \begin{minted}[breaklines]{javascript}
-  const readProfile = fs.readFileSync(testProfile, (err, data) => {
-  if (err) throw err;
-   logger.info(data);
-  });
-  const profile = JSON.parse(readProfile);
-  const output = { ...profile, ...event };
-  \end{minted}
- \end{tcolorbox}
- \caption{Parsing a JSON string to a javascript object and use of the spreader (\dots) operator}
-\end{figure}
-
-Next the global environment variables were removed so instead of reading them from the input to the orchestrator they would 
-be passed from the profile to the tests. There was quite a lot of code build needed for this as Mocha is limiting in that it doesn't 
-allow the passing of parameters to the tests. 
-
-\subsection{Singleton Class: TestRunnerConfig}
-A singleton class was created to overcome this. A siingleton class is a class that can only have one instance of 
-itself. It is used when there is going to be no change or update to the object for the duration it is used. This would be the case with our tests as we would just be using the configuration for accessing the lightning page to run the tests.
-
-Initially the TestRunnerConfig took in the runnerEvent and created an instance of itself. It had getters to get different variables from the event which at the time were just the profile, testConfig, testSuite and environment. The tests ran but now the aim was to remove process.env to set the variables and use an Environment class that instead reads the environment variables from the TestRunnerConfig.
-
-An Environment object was created using the environment from the event. This could now be accessed in the tests by calling the getters from the Environment object.
-\begin{figure}[H]
- \begin{tcolorbox}
-  \begin{minted}[breaklines]{javascript}
-const testRunnerConfig = TestRunnerConfig.getInstance();
-const environment = testRunnerConfig.getEnvironment();
-const params = {
-organization: environment.getOrganization(),
-username: environment.getUsername(),
-password: environment.getPassword(),
-region: environment.getSBRegion()
-};
-\end{minted}
- \end{tcolorbox}
- \caption{Replacing proccess.env with getters to an Environment class invoked by a singleton class, TestRunnerConfig}
-\end{figure}
-
 \section{Endpoint Proxy}
 
-Bosco needed to support both Mercury and Venus engagement adapters similar to Frankenstein. This is achieved through the endpoints whereby 
+Bosco needed to support both Mercury and Venus engagement adapters similar to Frankenstein. This was achieved through the endpoints whereby 
 each endpoint is suffixed by the test profile name. When the endpoint is created instead of creating it uniquely with the timestamp, middleware 
-in the form of an Endpoint proxy would instead suffix the endpoint with the profile and thereby point the tests to the url 
-containing the endpoint proxy. To prove the tests were making network calls to either Mercury or Venus, the tests were slowed down, run in headful mode and 
+in the form of an endpoint proxy would instead suffix the endpoint with the profile and thereby point the tests to the url 
+containing the endpoint proxy. 
+
+To prove the tests were making network calls to either Mercury or Venus, the tests were slowed down, run in headful mode and 
 the network tab examined. When the browser was talking to Venus there calls to \textbf{VendAnonConversation} and \textbf{ReadyForConversation} and when there were calls to Mercury, \textbf{graphql} calls were evident.
 
 \begin{figure}[H]
@@ -686,30 +733,11 @@ the network tab examined. When the browser was talking to Venus there calls to \
  \caption{Venus Network Calls}
 \end{figure}
 
-\section{Creating a Test with a Secret}
-Many of the Frankenstein tests use secrets in order to run the tests. Secrets can be defined as secure documents containing access keys, api keys, api secrets or IDs to external systems. They can be created and stored in the ServisBOT system and then referenced by bots securely. 
-This is how ServisBOT manage API keys for AWS\@.
 
-The test that was chosen was the NLP worker, Lex V2, intent-publish test. A \textbf{Lex} worker is a remotely managed NLP worker who takes input and sends it to a Lex bot for Natural Language Processing. A Lex bot is an Amazon bot, users use ServisBOT to access, manage and run their Lexbots. 
-\textbf{NLP} is a form of Artificial Intelligence that transforms text that a user submits into language that the computer programme can understand. In order for ServisBOT to classify utterances using a remote managed NLP, the correct API keys, access tokens or cross account roles need to be configured in the ServisBOT Secrets Vault.
-
-An AWS cross account role, ie a secret, is required in order to access Lex. An environment variable was created that the test could access called LEX\_V2\_CROSS\_ACCOUNT\_ROLE\_SECRET and to this was assigned the secret definition for dev in JSON format. 
-
-This test creates a long living bot which is a bot that is not deleted after the test but is created the first time the test is run and then reused for every test. The bot's variable intent is updated with the timestamp every time to ensure the bot is publishing successfully. When the bot is publishing its status is polled every 5 seconds and when published its status is SUCCEEDED and so the test starts.
-
-A bot class was created so that a publish function which polled the status of the publishing and outputted the status to the console could be created. This was so 
-the test behaved the same way as Frankenstein but also because using the ServisBOT cli proxy does not have this functionality so in calling sbCli.publish we would 
-not have the polling outputted to the console.
-
-\begin{figure}[H]
- \centering
- \includegraphics[width=15cm]{./diagrams/nlp_worker_poll.png}
- \caption{NLP worker test with polling}
-\end{figure}
 
 \section{SSM Parameters}
 The next task for Bosco was to build the environment in the orchestrator using SSM parameters. 
-SSM (Systems Manager) is a service provided by AWS that allows you to securely store and retrieve data for your application \cite{Halley}.
+SSM (Systems Manager) is a service provided by AWS that allows you to securely store and retrieve data for your application \autocite{Halley}.
 They can be encrypted and the service is easy and free to use. 
 A few lines of code can retrieve the parameters from the store. 
 

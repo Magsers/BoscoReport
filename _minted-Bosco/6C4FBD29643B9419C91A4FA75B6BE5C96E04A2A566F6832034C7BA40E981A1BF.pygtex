@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{  }\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{readProfile}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nx}{fs}\PYG{p}{.}\PYG{n+nx}{readFileSync}\PYG{p}{(}\PYG{n+nx}{testProfile}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{data}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{=\PYGZgt{}}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{throw}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{p}{;}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{});}
+\PYG{+w}{  }\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{profile}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{JSON}\PYG{p}{.}\PYG{n+nx}{parse}\PYG{p}{(}\PYG{n+nx}{readProfile}\PYG{p}{);}
+\PYG{+w}{  }\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{output}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{p}{...}\PYG{n+nx}{profile}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{...}\PYG{n+nx}{event}\PYG{+w}{ }\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

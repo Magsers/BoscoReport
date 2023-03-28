@@ -486,87 +486,27 @@ To work around this, the CSV output option was used instead of JSON and the csv-
 \subsection{Interaction Test}
 % // TODO
 
-\section{Cloudformation}
+\section{CloudFormation}
 When deploying Bosco, a  CloudFormation template in the form of YAML is run.  CloudFormation is an AWS service that allows developers to define and deploy infrastructure as code.
 The Cloudformation template, which can be in either YAML or JSON format, is used to create AWS resources like Lambda functions, State Machines, API-Gateways, DynamoDB tables and S3. 
-It specifies the necessary environment variables, parameters, conditionals and other resources such as IAM roles and policies.
+It specifies the necessary environment variables, parameters, conditionals and other resources such as IAM roles and policies. 
+A YAML formatting extension from Redhat to format the YAML file was used as it is not possible to deploy the YAML unless the formatting is accurate.
 
-The Step Function has three lambda functions. 
-\begin{itemize}
-  \item The Orchestrator which takes in the profile name as JSON. It reads the profile contents, resolves the environment variables and the test runner configuration and passes this information to the next Lambda function in the state machine, the handler.  
+Bosco's CloudFormation Template consists of the following resources:
 
-\begin{figure}[H]
-  \begin{tcolorbox}
-   \begin{minted}{json}
-    {
-      "profile": "eu-private-3-venus"
-    }
-   \end{minted}
-  \end{tcolorbox}
-  \caption{Expected input of State Machine / Start state / Orchestrator}
- \end{figure}
-
- \begin{figure}[H]
-  \begin{tcolorbox}
-   \begin{minted}{json}
-    {
-      "testProfileConfig": {
-        "profile": "eu-private-3-venus",
-        "organization": "bosco",
-        "sbRegion": "eu-private-3",
-        "awsRegion": "eu-west-1",
-        "messengerUrl": "https://exampleurl.html",
-        "testConfig": {
-          "endpoint": {
-            "create": {
-              "AutoFailover": true
-            }
-          }
-        }
-      },
-      "profile": "eu-private-3-venus",
-      "testSuite": [
-        {
-          "tests": [
-            {
-              "path": "interaction/puppeteer-interaction-test.js"
-            }
-          ]
-        },
-        {
-          "tests": [
-            {
-              "path": "goals/puppeteer-conversation-engaged.js"
-            }
-          ]
-        }
-      ],
-      "environment": [
-        {
-          "name": "SB_CLI_CREDENTIALS",
-          "value": {
-            "username": "some-username",
-            "password": "some-password"
-          }
-        },
-        {
-          "name": "LOG_LEVEL",
-          "value": "INFO"
-        }
-      ]
-    }
- \end{minted}
-  \end{tcolorbox}
-  \caption{Sample output of Start state of State Machine}
- \end{figure}
-
- \item The Handler which runs the Mocha tests using Puppeteer. The handler invokes a Lambda function for each test. It uses the testProfileConfig and the 
- enviroment variables and uses this information to apply parameters to the tests in the profile. 
- \item The Results Lambda which takes in an array of test results, stores them in DynamoDB and logs the results to the Log Reporter in Cloudwatch.
-\end{itemize}
- The
-template also contains the state machine definition as one of the resources. A YAML formatting extension from Redhat to format the YAML
-file was used as it is not possible to deploy the YAML unless the formatting is accurate.
+\begin{description}
+  \item [LambdaRole] IAM (Identity and Access Management) role in AWS that is used to grant permissions to AWS Lambda functions.
+  \item [ScheduledEventIAMRole] IAM role used to grant permissions to the cron in Cloudwatch Events that will run the state machine.
+  \item [BoscoIAMManagedPolicy] AWS managed policy that defines the permissions for the roles and users attached to the IAM role.
+  \item [ApiLambda] The Lambda function that serves as an API endpoint for retrieving test run results from DynmaoDB.
+  \item [TestOrchestrationLambda] The Lambda function that configures the input to the state machine based on the profile provided in the event.
+  \item [TestRunnerLambda] The Lambda function that runs the suite of tests and returns the results.
+  \item [TestResultsLambda] The Lambda function that processes, stores and logs the tests results.
+  \item [StateMachine] The AWS Step Function State Machine that is used to manage the orchestrator, runner and results Lambdas in a workflow based on a map inline state. 
+  \item [ApiGateway] The API Gateway created to access the DynamoDB results table.
+  \item [ResultsDynamoTable] The DynamoDB table that the results are written to.
+  \item [S3BucketScreenshots] The S3 bucket that screenshots of failed tests are stored in.
+\end{description}
 
 \section{Environment Variables}
 The next objective was to supply the handler with the environment variables through the Orchestrator Lambda.

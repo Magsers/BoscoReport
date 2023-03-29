@@ -89,7 +89,7 @@ The components of a chatbot and each of its functions are created using microser
   \item Organised around business capabilities
   \item Owned by a small team
 \end{itemize}
-The microservice architecture enables an organization to deliver large, complex applications rapidly, frequently, reliably and sustainably - a necessity for competing and winning in today's world. \autocite{Microservices}
+The microservice architecture enables an organisation to deliver large, complex applications rapidly, frequently, reliably and sustainably - a necessity for competing and winning in today's world. \autocite{Microservices}
 There is a suite of tests which ServisBOT have named Frankenstein which run against these micro services testing every component of the chatbot. They run several times an hour, every hour. 
 \subsection{TestCafe}
 The tests use a software package called Testcafe which is used for automated browser testing.  By opening messenger in a browser in order to run the tests, it simulates what a user would do by interacting with a chatbot. If the chatbot reacts in the expected way the test passes, otherwise the issue is investigated and resolved.
@@ -844,11 +844,11 @@ much more control over their testing suite and providing flexibility and control
   \caption{State Machine Executions on a CRON }
  \end{figure}
 
-\section{Dynamo DB}
-The next task for Bosco was to store the test results in a global Dynamo DB table. 
-Each test run would have a row in the table with details on the results of the test. 
-Initially the following attributes were chosen. The primary key was set to the test profile with the sort key which is unique set to the endTime of the test run. 
-The other values passed to the dynamo table would be the duration of the test run and the status of the test run. Once the step function would write to the dynamo table, additional attributes would be added.
+\section{DynamoDB}
+Bosco stores the latest test results of each profile in a global DynamoDB table. 
+Each profile has a row in the table with details on the results of the latest test run. 
+The attributes stored in the dynamo table are the duration, the end time and the status of the test run. 
+When the Bosco state machine is run, the test results are stored in this table overwriting the previous test run as the team are only interested in the latest result.
 
 \begin{figure}[ht]
   \centering
@@ -856,35 +856,36 @@ The other values passed to the dynamo table would be the duration of the test ru
   \caption{Dynamo DB Global Table Results}
  \end{figure}
 
-The learning path to achieving this began with:
+The process to completing this task was the following:
 \begin{itemize}
-\item Manually creating a dynamo table in dev and deciding the attributes that would be written to it.
-\item The handler was then refactored in order to pass the profile, the endTime and the duration to the results lambda.
+\item Manually creating a dynamo table in dev and deciding the attributes that would be written to it, namely \textbf{profile} would be the primary key.
+\item The handler was then refactored in order to pass the profile, the endTime and the duration to the results lambda. The status was already being passed through.
 \item The results lambda then used the aws-sdk to write to the Dynamo DB. It filtered through the status of all the tests and if there was a failed test then the overall test run was marked as a fail.
 \item Once the step function was writing to the table which was created manually, a new resource, a Global Dynamo table was added to the  CloudFormation template.
-\item A condition was added to the Dynamo table so that it was possible to interchange between deploying the table or not.
+\item A condition was added to the Dynamo table so that it is possible to choose what profiles to deploy the table in.
 \end{itemize}
 
 \chapter{Deployment}
-The deployment process was undertaken with help from the team as the initial plan needed to be altered. The triggers were removed from the 
- CloudFormation script and instead were put in a script specific to the AWS Region they would be deployed in. 
+The deployment process was undertaken with help from the team as the initial plan needed to be altered. 
+The CRON triggers which were initially in the CloudFormation template were removed and instead were put in a script specific to the AWS Region they would be deployed in which allowed for more control over what tests to run in what region. 
 
 \section{CICD Process}
-The steps to the CICD process for Bosco are as follows:
+CI/CD falls under DevOps (the joining of development and operations teams) and combines the practices of continuous integration and continuous delivery. CI/CD automates much or all of the manual human intervention traditionally needed to get new code from a commit into production, encompassing the build, test (including integration tests, unit tests, and regression tests), and deploy phases, as well as infrastructure provisioning. With a CI/CD pipeline, development teams can make changes to code that are then automatically tested and pushed out for delivery and deployment.
+The steps to the CICD process for Bosco were as follows:
 
 \begin{itemize}
-  \item Developer puts in a PR (pull request) with the changes they made to the project code.
-  \item Senior developer reviews the code and when ok, approves the merge.
+  \item The developer puts in a PR (pull request) with the changes they made to the project code.
+  \item A second developer reviews the code and when content with the changes, approves the merge.
   \item Developer merges branch which kicks off the CICD process. 
-  \item Unit tests are run, artefacts are built and the project code is deployed on lower/staging/testing.
-  \item If successful Slack will report on deployment, otherwise error needs to be located and debugged. 
-  \item Developer tests the code changes on lower/staging/testing.
-  \item When the changes are verified developer tags a release through deploybot on Slack.
-  \item This initiates the CICD process again which builds artifacts, runs unit tests, integration tests and deploys to lower/staging/testing again as a tagged release.
-  \item Developer tests on staging/lower/testing again.
-  \item Once verified developer requests a deploy to production/testing from deploybot on Slack.
-  \item CICD process is initiated once more with the project being deployed on production/upper.
-  \item Developer tests the code on upper and verifies.
+  \item Unit tests are run, artefacts are built and the project code is deployed in testing.
+  \item If successful Slack will report on staging releases channel, otherwise the error needs to be located and debugged. 
+  \item The developer tests the code changes on testing.
+  \item When the changes are verified, the developer tags a release through deploybot on Slack.
+  \item This initiates the CICD process again which builds artifacts, runs unit tests, integration tests and deploys to the testing account again as a tagged release.
+  \item The developer tests on testing again.
+  \item Once verified, the developer requests a deploy to production/testing from deploybot on Slack.
+  \item Operations trigger the deployment, the CICD process is initiated once more with the project being deployed on production/upper.
+  \item The developer tests the code on upper and verifies.
 \end{itemize}
 
 \section{Handling Multiple ServisBOT Regions}

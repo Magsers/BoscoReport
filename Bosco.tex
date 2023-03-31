@@ -8,7 +8,7 @@
 \fancyfoot{}
 \renewcommand{\headrulewidth}{0.4pt}
 \setlength{\headheight}{15pt}
-
+\fancyheadoffset[R]{0.5cm} 
 \lhead{\rmfamily \textcolor{gray}{\AcademicTitle}}
 \rhead{\rmfamily \textcolor{gray}{\Report}}
 \lfoot{\rmfamily \textcolor{gray}{\Author}{\StudentID}}
@@ -17,7 +17,7 @@
 
 % Document Info
 %
-\newcommand\AcademicTitle{Optimising Test Runner Performance}
+\newcommand\AcademicTitle{Optimising Test Runner Performance for Chatbot Technology}
 \newcommand\CommercialTitle{Bosco}
 \newcommand\Author{Margaret McCarthy}
 \newcommand\StudentID{20095610}
@@ -74,54 +74,70 @@
 
 \section{Background}
 
-The objective of this project is to create and execute a test runner for ServisBOT that focuses on specific features of the system, identifying those that are operational and those that are not. The proposed system has the working title Bosco.
+ServisBOT which is based in ArcLabs in Waterford, specialises in chatbot technology and
+conversational AI. ServisBOT provide customer service by allowing end users to
+communicate with a business or service through a pop up messenger on an online platform.
+The technology is cloud based and primarily serverless, meaning services are provided over
+the internet rather than by using storage on a physical computer or server. 
 
-ServisBOT is a company which specialise in chatbot technology and conversational AI. They provide customer service by allowing end users to communicate with a business or service through a pop up messenger on an online platform. 
-The technology is cloud based and mostly serverless, it is provided over the internet rather than using storage on a physical computer or server. ServisBOT has a global customer base so the system has to be consistently monitored and so tests are run continuously to ensure any problems are detected and resolved immediately. 
+The company has a global customer base so the system needs to be consistently monitored and therefore
+tests are run continuously to ensure any problems are detected and resolved immediately.
 
-Software testing is a critical element of software quality assurance and represents the ultimate review of specification, design and coding. Software testing is usually performed for one of two reasons: defect detection, and reliability estimation. \cite{Ahamed}
+% Software testing is a critical element of software quality assurance and represents the
+% ultimate review of specification, design and coding. Software testing is usually performed
+% for one of two reasons: defect detection, and reliability estimation.\cite{Ahamed}
+ServisBOT's current approach to software testing involves a system named Frankenstein. 
+However, there are numerous issues with Frankenstein, in particular the fact that the number of tests Frankenstein can handle is at its limit, so the test coverage of ServisBOT's platform is insufficient. 
+
+The objective of this project is to create and execute a test runner for
+ServisBOT that will replace Frankenstein. This will involve designing and implementing a system
+that can run each test independently without competing for memory. By doing so, the
+test suite could be scaled infinitely, perform faster, and potentially be more cost-effective.
 
 \subsection{Frankenstein}
-The components of a chatbot and each of its functions are created using microservice architecture. This is an architectural style that structures an application as a collection of services that are:
-\begin{itemize}
-  \item Independently deployable
-  \item Loosely coupled
-  \item Organised around business capabilities
-  \item Owned by a small team
-\end{itemize}
-The microservice architecture enables an organisation to deliver large, complex applications rapidly, frequently, reliably and sustainably - a necessity for competing and winning in today's world. \autocite{Microservices}
-There is a suite of tests which ServisBOT have named Frankenstein which run against these micro services testing every component of the chatbot. They run several times an hour, every hour. 
-\subsection{TestCafe}
-The tests use a software package called Testcafe which is used for automated browser testing.  By opening messenger in a browser in order to run the tests, it simulates what a user would do by interacting with a chatbot. If the chatbot reacts in the expected way the test passes, otherwise the issue is investigated and resolved.
-\subsection{EC2}
-The Frankenstein test suite is run on two EC2 instances in two different AWS regions. AWS Elastic Compute Cloud (EC2) is basically a virtual machine where developers can define the resources they need. For example, what regions the are to be run in. 
-\section{The Issue}
-
-Running the tests causes a lot of contention for CPU and memory. When a test run is instigated all tests are competing for CPU usage because each EC2 instance is running thirty plus tests on one server which has limited memory.
-
-Also there are numerous problems with Testcafe. 
-\begin{itemize}
- \item ServisBOT, when running the Frankenstein test suite, find Testcafe resource heavy, expensive and inefficient, causing slow CPU performance. 
- \item Because of the competing resources some tests affect the performance of others. 
- \item Debugging and monitoring of the tests is complex.
- \item The test suite does not scale. Scalability is essential in order to increase the number of tests according to the number of user interactions and alternatively to reduce the number of tests when interactions drop which would not only prove to be more cost effective but would mostly solve all the issues mentioned.
-\end{itemize}
-
- \begin{figure}[ht]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/frank_high_level.png}
   \caption{High level view of Frankenstein}
  \end{figure}
- \clearpage
+The components of a chatbot and each of its functions are created using microservice architecture. 
+This is an architectural style that structures an application as a collection of services that are typically independently deployable and loosely coupled.
+In essence its different parts can operate independently without being too dependent on each other.
 
-\section{Purpose and Requirements for Bosco}
+\textit{The microservice architecture enables an organisation to deliver large, complex applications rapidly, frequently, reliably and sustainably - a necessity for competing and winning in today's world.}\autocite{Microservices}
 
-The objective of this project is to create a new test runner, Bosco, that is more efficient, scalable, optimised, and cost-effective than Frankenstein. 
-The purpose is to completely revamp the existing test suite and develop AWS Lambda functions that can run each test independently without memory competition. 
-By doing so, the test suite could be scaled infinitely, perform faster, and potentially be more cost-effective. 
-Each test will eventually be migrated from Frankenstein to Bosco once the infrastructure has been developed.
+Frankenstein runs tests against these micro services, testing the functions of the chatbot. They run several times an hour, every hour. 
+\clearpage
+\subsection{TestCafe}
+The tests use a software package called Testcafe which is used for automated browser testing.  
+By opening messenger in a browser in order to run the tests, it simulates what a user would do by interacting with a chatbot. 
+If the chatbot reacts in the expected way the test passes, otherwise the issue is investigated and resolved.
+\subsection{EC2}
+The Frankenstein test suite is run on two EC2 instances, in two different Amazon Web Services (AWS) regions, the US and the EU. 
+AWS Elastic Compute Cloud instances (EC2) are virtual machines where developers can define the resources they need to run their programs. For example, what regions they are to be run in and how much memory they need. 
+\section{The Issue}
+Running the tests causes a lot of contention for CPU and memory. 
+When a test run is instigated, all tests are competing for CPU usage because each EC2 instance is running thirty plus tests on one server which has limited memory.
 
-In particular the migration will focus on an automation tool called Puppeteer which has been proven by ServisBOT to be more performant than Testcafe. The Puppeteer package includes its own browser, Chromium, whereas Testcafe launches an external browser which is slow and cumbersome. With Puppeteer there is more control over what the developer can test, it is more efficient, easier to debug and has a lot more functionality. It is widely chosen by developers now. (4.6 million weekly downloads, 2023-03-02) \cite{Puppeteer}
+Also there are numerous problems with Testcafe. 
+\begin{itemize}
+ \item ServisBOT finds Testcafe resource heavy, expensive and inefficient, causing slow CPU performance. 
+ \item Because of competing resources some tests affect the performance of others. 
+ \item Debugging and monitoring of Testcafe tests is complex, it uses a different syntax and approach to testing compared to other testing frameworks.
+\end{itemize}
+
+\section{Requirements for Bosco}
+
+The primary requirements for Bosco are as follows:
+\begin{itemize}
+  \item Create a new test runner, that is more optimised, scalable, and cost-efficient than Frankenstein. 
+  \item In particular, Bosco will focus on an automation tool called Puppeteer which has been proven by ServisBOT to be more performant than Testcafe. The Puppeteer package includes its own browser, Chromium, whereas Testcafe launches an external browser which is slow and cumbersome. With Puppeteer there is more control over what the developer can test, it is more efficient, easier to debug and has a lot more functionality. It is widely chosen by developers now. (4.6 million weekly downloads, 2023-03-02) \cite{Puppeteer}
+  \item Implement an AWS Lambda, Step Function, State Machine which will run each test independently and can be scaled infinitely.
+  \item Scheduled timed events will instigate test runs.
+  \item Bosco will have test profiles which can determine which tests are run in which regions and on which adapters. 
+  \item Bosco will report the latest results of the test runs to Cloudwatch and store them in a DynamoDB table.
+  \item Screenshots of failed test runs will be stored. 
+\end{itemize}
 
 \begin{figure}[ht]
  \centering
@@ -131,7 +147,7 @@ In particular the migration will focus on an automation tool called Puppeteer wh
 
 \chapter{Research and Development}
 
-In order to determine the best approach, technologies and methodology for Bosco, it was concluded that the research and analysis phase necessary for the implementation of this project was the following:
+In order to determine the best approach, technologies and methodology for Bosco, the research carried out for the implementation of this project was the following:
 
 \begin{itemize}
  \item Cost Analysis of Frankenstein
@@ -145,7 +161,9 @@ In order to determine the best approach, technologies and methodology for Bosco,
 
 \section{Cost Analysis of Frankenstein Tests}
 
-The following cost analysis was carried out on Frankenstein. There is two EC2 instances running the tests in the EU and the US costing ServisBOT on average \$20 per day for each region. This costs the company almost \$15,000 a year to run tests.
+Cost analysis was carried out on Frankenstein which is shown in Figure 2.1. There is two EC2 instances running the tests in the EU and the US with two ServisBOT regions eu-private-1 and eu-1 in the EU and us-1 and usscif-1 in the US. 
+All regions are in production except for eu-private-1 which is the testing region where most of the tests are run against before they are released to production. In summary the cost analysis concluded that Frankenstein is costing ServisBOT on average \$20 per day for each region. 
+This costs the company almost \$15,000 a year to run tests.
 
 \begin{figure}[ht]
  \centering
@@ -158,15 +176,14 @@ The following cost analysis was carried out on Frankenstein. There is two EC2 in
 Frankenstein uses Mocha as its testing framework but there are multiple frameworks that ServisBOT could choose from. The following is an investigation into what else is available as well as a review of the current framework, Mocha.
 \subsection{Mocha}
 
-According to Mocha documentation, Mocha is a feature-rich JavaScript test framework running on Node.js and in the browser, simplifying asynchronous
+According to Mocha documentation, \textit{Mocha is a feature-rich JavaScript test framework running on Node.js and in the browser, simplifying asynchronous
 testing. Mocha tests run serially, allowing for flexible and accurate reporting, while mapping uncaught
-exceptions to the correct test cases. \autocite{Mocha}
+exceptions to the correct test cases.}\autocite{Mocha}
 
-Asynchronous testing is a technique used in software testing to verify the behavior of code that relies on asynchronous programming or event driven architecture. Asynchronous programming allows the program to perform tasks concurrently or in parallel, rather than waiting for each task to complete before moving on to the next one. 
+Asynchronous testing is used to verify code behavior in software that relies on asynchronous programming. This programming allows tasks to be performed concurrently instead of waiting for each task to complete before moving on to the next one. 
 
-Mocha provides functions that execute in a specific order, logging the
-results in the terminal window. Mocha also cleans the state of the software being tested to ensure that test
-cases run independently of each other.
+Mocha, a testing framework, provides functions that execute in a specific order and logs results in the terminal. 
+Mocha also cleans the software state to ensure that test cases run independently.
 
 \begin{figure}[ht]
  \centering
@@ -205,44 +222,41 @@ library, there is no need to install and integrate additional libraries to be ab
 
 \section{Review of Puppeteer}
 
-Puppeteer is a popular test automation tool maintained by Google. It automates Chrome and Firefox and is relatively simple and stable to use.
-Fundamentally Puppeteer is an automation tool and not a test tool. 
-This means it is incredibly popular for use cases such as web scraping, generating PDFs, etc. \autocite{PuppvsSel}
+Puppeteer is a widely used test automation tool maintained by Google. Although it is not a dedicated test tool, it is popular for automating tasks such as web scraping and generating PDFs. 
+In testing user flows within web applications, headful or headless browsers are used. A headless browser is a browser that is working in the background without a user interface and a heaful browser will automate the actions while displaying the browser. 
+Headful browsers like Firefox with Selenium are slower but more reliable, while headless browsers like Testcafe sacrifice some reliability for speed.
 
-Testing user flows within web applications usually involves either using an automated headful
-browser (i.e. FireFox with Selenium) or a headless browser, one that presents no UI, that is built on top of its own unique JavaScript
-engine (i.e. Testcafe). This creates a situation where trade offs have to be made such as speed vs reliability.
-Puppeteer aims to remove this trade off by enabling developers to leverage the Chromium browser environment
-to run their tests and by giving them the flexibility to leverage headless or headful browsers that run on the same underlying platform as their users. \autocite{Crowther}
-
+Puppeteer aims to eliminate the need for developers to choose between speed and reliability when testing web applications. 
+It does this by providing access to the Chromium browser environment, allowing developers to use either headless or headful browsers that run on the same platform as their users.
 \subsection{Pros of using Puppeteer}
 
 \begin{itemize}
  \item Simple to set up.
  \item Good documentation with lots of tutorials.
- \item Promise based which allows for management of asynchronous code.
+ \item Promise-based which is a software technique that is designed to manage tasks that do not occur in a specific order. It allows these tasks to happen simultaneously without any issues.
  \item Programmable web browser.
  \item Installs Chrome in a working version automatically.
  \item Puppeteer has a thin wrapper which provides a simpler interface for an underlying complex system.
  \item Bi-Directional (events) \- automating console logs is easy.
  \item It uses JavaScript first, which is one of the most popular programming languages.
  \item Puppeteer also gives you direct access to the Chrome DevTools Protocol which allows for developers to feel like there are fewer moving parts.
- \item Works with multiple tabs and frames. It has an intuitive API
- \item Trusted Actions: This criterion means dispatching events by the user which allows for user behaviours like hovers.
- \item End to end tests are very fast in practice but people suffer misconceptions regarding the execution speed. Typically, it's the website or web-app that are slow and the tests end up waiting for the web app to be ready most of the time.
+ \item Works with multiple tabs and frames. 
+ \item It has an intuitive API.
+ \item Trusted actions which are events by a user, like hovers.
+ \item End to end tests are very fast.
  \item Pro and Con: Stability, which means how often tests fail after being authored other than when detecting a real application bug. Puppeteer waits for certain things but has to wait manually for others. 
  \item Debugging: Can write and debug Javascript from an IDE\@.
 \end{itemize}
 
 \subsection{Cons of using Puppeteer}
 \begin{itemize}
- \item Limited cross-browser support. Only Chrome and Firefox.
+ \item Limited cross-browser support, it only supports Chrome and Firefox.
  \item Feels like an automation tool and not a test framework. Often developers have to re-implement testing-related tools.
- \item Grids (running concurrently) in production are often a challenge
+ \item Grids (running concurrently) in production are often a challenge.
  \item The automatic browser set-up, downloads Chromium and not Chrome and there are subtle differences between the two.
- \item Smarter Locators: No support for selecting elements in multiple ways.
- \item Does not support parallelism, grids and infrastructure.
- \item Does not support self healing tests and automatically improving tests.
+ \item Smarter locators: No support for selecting elements in multiple ways.
+ \item The software lacks the ability to run tests simultaneously on multiple computers, which can cause inefficiencies when testing large applications.
+ \item The software cannot improve or fix test issues automatically, requiring manual intervention to correct problems.
  \item Does not support Autonomous testing which is testing without code or user intervention.
 \end{itemize}
 
@@ -309,7 +323,7 @@ Lambdas only run when executed yet are always available. They scale dynamically 
    \hline
    Billing increments& 100 milliseconds&1 second\\
    \hline
-   Configuration \&Function& Operating System\\
+   Configuration&Function& Operating System\\
    \hline
    Scaling Unit&Parallel function executions&Instances\\
    \hline
@@ -320,10 +334,10 @@ Lambdas only run when executed yet are always available. They scale dynamically 
  \end{table}
 
 \section{Conclusion}
-Based on the research and analysis conducted, it can be affirmed that ServisBOT's decision to use Puppeteer in conjunction 
-with Mocha instead of Testcafe is affirmed. Puppeteer will give the developers more control over the tests, testing will be more reliable 
-and easier to use and debug. Together with migrating the test runner from EC2 to Lambda, the test suite will become infinitely scalable and 
-more cost efficient. A revamp of the test runner will mean that issues encountered by Frankenstein can be resolved and unnecessary costs (for 
+After conducting research and analysis, it can be affirmed that ServisBOT's decision to use Puppeteer in conjunction 
+with Mocha, instead of using Testcafe will provide greater control, reliability, and ease of use for developers. 
+Together with migrating the test runner from EC2 to Lambda, the test suite will become infinitely scalable and 
+more cost efficient. Replacing Frankenstein with Bosco will mean that issues encountered by Frankenstein can be resolved and unnecessary costs (for 
 example running too many tests) can be eliminated.
 
 \chapter{Initial Design \& Implementation}
@@ -749,7 +763,7 @@ the network tab examined. When the browser was talking to Venus there calls to \
 
 \section{SSM Parameters}
 In order for Bosco to build the environment in the orchestrator, SSM parameter store was utilised. 
-SSM (Systems Manager) is a service provided by AWS that allows you to securely store and retrieve data for your application \autocite{Halley}.
+\textit{SSM (Systems Manager) is a service provided by AWS that allows you to securely store and retrieve data for your application.}\autocite{Halley}.
 They can be encrypted and the service is easy and free to use. 
 A few lines of code can retrieve the parameters from the store. 
 
@@ -870,7 +884,8 @@ The deployment process was undertaken with help from the team as the initial pla
 The CRON triggers which were initially in the CloudFormation template were removed and instead were put in a script specific to the AWS Region they would be deployed in which allowed for more control over what tests to run in what region. 
 
 \section{CICD Process}
-CI/CD falls under DevOps (the joining of development and operations teams) and combines the practices of continuous integration and continuous delivery. CI/CD automates much or all of the manual human intervention traditionally needed to get new code from a commit into production, encompassing the build, test (including integration tests, unit tests, and regression tests), and deploy phases, as well as infrastructure provisioning. With a CI/CD pipeline, development teams can make changes to code that are then automatically tested and pushed out for delivery and deployment.
+\textit{CI/CD falls under DevOps (the joining of development and operations teams) and combines the practices of continuous integration and continuous delivery. CI/CD automates much or all of the manual human intervention traditionally needed to get new code from a commit into production, encompassing the build, test (including integration tests, unit tests, and regression tests), and deploy phases, as well as infrastructure provisioning. With a CI/CD pipeline, development teams can make changes to code that are then automatically tested and pushed out for delivery and deployment.}\autocite{CICD}
+
 The steps to the CICD process for Bosco were as follows:
 
 \begin{itemize}

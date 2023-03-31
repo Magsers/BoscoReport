@@ -14,7 +14,7 @@ $(MAIN).pdf: $(MAIN).tex
 				pdflatex --shell-escape $(MAIN)
 
 clean:
-	rm -f $(MAIN).aux $(MAIN).bbl $(MAIN).bcf $(MAIN).blg \
+	rm -f $(MAIN).aux $(MAIN).bbl $(MAIN).bcf $(MAIN).sta $(MAIN).blg \
 	$(MAIN).lof $(MAIN).toc $(MAIN).log $(MAIN).lot \
 	$(MAIN).out $(MAIN).run.out $(MAIN).run.xml
 

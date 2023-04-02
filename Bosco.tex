@@ -162,7 +162,8 @@ In order to determine the best approach, technologies and methodology for Bosco,
 \section{Cost Analysis of Frankenstein Tests}
 
 Cost analysis was carried out on Frankenstein which is shown in Figure 2.1. There is two EC2 instances running the tests in the EU and the US with two ServisBOT regions eu-private-1 and eu-1 in the EU and us-1 and usscif-1 in the US. 
-All regions are in production except for eu-private-1 which is the testing region where most of the tests are run against before they are released to production. In summary the cost analysis concluded that Frankenstein is costing ServisBOT on average \$20 per day for each region. 
+All regions are in production except for eu-private-1 which is the testing region where most of the tests are run against before they are released to production. 
+In summary a Frankenstein test run takes an average of six seconds \ref{tab:frank} which is costing ServisBOT on average \$20 per day for each region. 
 This costs the company almost \$15,000 a year to run tests.
 
 \begin{figure}[ht]
@@ -173,7 +174,8 @@ This costs the company almost \$15,000 a year to run tests.
 
 \section{Research into Possible Testing Frameworks for Bosco}
 
-Frankenstein uses Mocha as its testing framework but there are multiple frameworks that ServisBOT could choose from. The following is an investigation into what else is available as well as a review of the current framework, Mocha.
+Frankenstein uses Mocha as its testing framework but there are multiple frameworks that ServisBOT could choose from. 
+The following is an investigation into what else is available as well as a review of the current framework, Mocha.
 \subsection{Mocha}
 
 According to Mocha documentation, \textit{Mocha is a feature-rich JavaScript test framework running on Node.js and in the browser, simplifying asynchronous
@@ -847,8 +849,7 @@ each execution, which is  given a unique ID and runs at regular intervals past t
 
 The working CRON instigated state machine was showcased to the team and they were 
 queried on whether they would like the introdcution of a profile that runs hourly as opposed to every twenty minutes. 
-The team agreed that the tests were already running too 
-frequently and costing a lot. Bosco will have more control over what tests are run, in what regions and how frequently through the test profiles, therefore giving ServisBOT 
+The team agreed that the tests were already running too frequently with excessive costs. Bosco will have more control over what tests are run, in what regions and how frequently through the test profiles, therefore giving ServisBOT 
 much more control over their testing suite and providing flexibility and control that Frankenstein seriously lacks in.
 
 \begin{figure}[ht]
@@ -871,8 +872,8 @@ When the Bosco state machine is run, the test results are stored in this table o
 
 The process to completing this task was the following:
 \begin{itemize}
-\item Manually creating a dynamo table in dev and deciding the attributes that would be written to it, namely \textbf{profile} would be the primary key.
-\item The handler was then refactored in order to pass the profile, the endTime and the duration to the results lambda. The status was already being passed through.
+\item Manually creating a DynamoDB table in the development environment and deciding the attributes that would be written to it, namely \textbf{profile} would be the primary key and there would be no other key identifiers as it is only the latest result per profile Bosco will store.
+\item The handler was then refactored in order to pass the profile, the endTime and the duration, along with the status to the results lambda. 
 \item The results lambda then used the aws-sdk to write to the Dynamo DB. It filtered through the status of all the tests and if there was a failed test then the overall test run was marked as a fail.
 \item Once the step function was writing to the table which was created manually, a new resource, a Global Dynamo table was added to the  CloudFormation template.
 \item A condition was added to the Dynamo table so that it is possible to choose what profiles to deploy the table in.
@@ -989,11 +990,12 @@ These reports can be viewed in Cloudwatch in the following format.
 
  \subsection{Cloudwatch Insights}
  A query was constructed and added to the READMe to make it easier for developers to be able to view failed test results.
- The following figure is the result of the query. 
- \begin{figure}[ht]
+ The following figure is the result of the query. \ref{fig:insight}
+ \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/insights.png}
   \caption{Cloudwatch Log Insight of Failed Tests for 1 week on Production}
+  \label{fig:insight}
  \end{figure}
 
 \subsection{Failed Test Screenshots stored in S3}
@@ -1014,64 +1016,86 @@ This is to save multiple buckets being deployed unnecessarily.
 
 \chapter{Conclusion}
 \section{Reflection}
-Bosco has proven to be a valuable addition to the ServisBOT testing process, streamlining the testing process and providing faster, more efficient results.
+The ServisBOT testing process will significantly benefit from the addition of Bosco, as it will streamline and enhance the testing procedure, leading to quicker and more effective outcomes.
 The project was developed to address limitations of the previous testing framework, Frankenstein which it has successfully achieved.
-The use of Puppeteer in Bosco allowed for more accurate and realistic testing of the ServisBOT Portal UI, while also improving the speed of the tests.
+The use of Puppeteer in Bosco allows for more accurate and realistic testing of the ServisBOT Portal UI, while also improving the speed of the tests.
 
-Running the tests on Lambda instead of EC2 provided several advantages for the Bosco project. 
-One of the most significant improvements was the reduced cost of running the tests. 
-While the exact cost at this time cannot be determined, there is strong indications that running tests on Lambda will be more cost-effective than using EC2 instances.
-
-Another advantage of using Lambda was the increased scalability and flexibility which will allow the team to add tests and manage resources more efficiently. 
+Running the tests on Lambda instead of EC2 provides several advantages for the Bosco project. 
+One of the most significant improvements is the increased scalability and flexibility which will allow the team to add tests and run them in parallel with each other instead of the tests competing for resources. 
 Additionally, Lambda can be easily integrated with other AWS services, such as S3 and CloudWatch, which provides a more streamlined and automated testing process.
 
+While the exact reduced cost of running the tests at this time cannot be determined, there is strong indications that running tests on Lambda will be more cost-effective than using EC2 instances.
+
 One of the main reasons why running tests on Lambda was a vast improvement over EC2 was the faster and more reliable performance. 
-Lambda functions can be invoked in milliseconds, which allows for faster test execution and improved overall test cycle time. 
+Lambda functions can be invoked in milliseconds which allows for faster test execution and improved overall test cycle time. 
+A test run can now be executed in under a minute compared to six minutes for Frankenstein. 
+Theoretically, the Step Function will take as long as the longest Mocha test event whether that contains one test or a number of tests. 
+
 Furthermore, Lambda provides high availability and fault tolerance, which means that tests are less likely to fail due to infrastructure issues or downtime.
 
-In conclusion the development of Bosco has been a valuable experience. It allowed me to explore and learn more about AWS Lambda, CloudFormation, and other related services. 
-It was satisfying to see that the tests ran smoothly on the Lambda function and that the cost was significantly reduced compared to EC2. 
-Although the actual cost is still uncertain, we can be confident that Lambda is more cost-effective. 
-The Bosco test runner has been integrated with the development workflow, and its effectiveness in testing the ServisBOT Portal UI has been demonstrated. 
-Overall, I am proud to have contributed to the ServisBOT team's efforts in improving the quality and reliability of their platform through Bosco.
+In summary, the development of Bosco has been a demanding but rewarding experience that has provided valuable insights into AWS Lambda, CloudFormation, and related services. 
+The seamless execution of tests on the Lambda function and the significant cost savings compared to EC2 were gratifying. 
+Despite uncertainty regarding the actual cost, Lambda's cost-effectiveness is assured. 
+The Bosco test runner has been seamlessly integrated into the development workflow and has demonstrated its efficacy in testing the ServisBOT Portal UI. 
+Overall, contributing to ServisBOT's platform quality and reliability through Bosco has been a source of pride.
 \section{Key skills}
 \begin{itemize}
   \item Sprint planning. 
-  \item Amazon Web services, in particular Lambda, Step Functions, CloudFormation, S3, DynmaoDB, AWS regions, SSM Parameters, 
-  \item Showcasing progress of the project to the team
-  \item LateX
+    \begin{itemize}
+      \item Using Jira for creating sprints.
+      \item Creating tickets/tasks for the project.
+      \item Pointing the tickets. Estimating how long they will take based on their complexity.
+      \item Keeping track of progress on each ticket and sprint.
+    \end{itemize}
+  \item Amazon Web servicesin particular 
+    \begin{itemize}
+      \item Lambda 
+      \item Step Functions 
+      \item CloudFormation 
+      \item S3 
+      \item DynmaoDB 
+      \item AWS regions 
+      \item SSM Parameters
+      \item IAM
+    \end{itemize}
+  \item Showcasing progress of the project to the team.
+  \item Docker
   \item CICD process
   \item Git
   \item Javascript fundamentals
-  \item Project design and infrastructure 
+  \item Project design and infrastructure
   \item Puppeteer and Mocha
-  \item Docker
+  \item Latex
 \end{itemize}
 \section{Challenges}
 Fortunately the team at ServisBOT were very supportive and as a result, working on this project posed very few challenges. 
-The following is a list of some of the challenges I did face however.
+Most of the challenges that were faced were with regards to inexperience working on such a complex project and practical knowledge of software design.
+The following list iterates some of the challenges that were encountered.
 \begin{itemize}
-  \item It became obvious early in the process that the fundamentals of Javascript and object orientated programming was still challenging and not fully comprehended by myself. However, from being tasked with new problems every day and week, which explored 
-  varioius components, AWS services, features and technologies, an immense learning curve was accomplished and skills achieved at a pace which inevitably sped up the process by the week.
-  \item As this was a work based project which was completed during an internship, the code had to be reviewed by a team member before being merged into the main branch. If the team was under pressure this could take a few days which disrupted the workflow.
-  \item The complexity of the project was incredibly challenging. Although I was given time to move at my own pace, trying to understand all the different components of Bosco was often overwhelming.  
-  \item Learning how to use LateX for the project report initially was very confusing and stunted the process. It was not a requirement but a challenge I set myself. 
+  \item It became obvious early in the process that the fundamentals of Javascript and object orientated programming were still challenging and not fully comprehended. However, from being assigned new tasks every week, which explored 
+  varioius components, AWS services, features and technologies, a steep learning curve was overcome and skills were achieved at a pace which inevitably sped up the process.
+  \item As this was a work based project which was completed during an internship, the code had to be reviewed by a team member before being approved. If the team was under pressure this could take a few days which disrupted the workflow.
+  \item The complexity of the project was incredibly challenging. Although given time to move at a pace that was reasonable, trying to understand all the different components of Bosco was often overwhelming.
+  \item Mastering Puppeteer. Accessing the selectors on the Lightning page was tricky in comparison to Testcafe which uses a variety of methods to access the elements and is in reality more straight forward and easier to read.
+  \item Passing data through the State Machine in the format required by ServisBOT.  
+  \item Learning how to use LateX for the project report initially was very confusing and stunted the process. It was not a requirement but a personal challenge that was undertaken. 
 \end{itemize}
 \section{Future Work}
 \subsection{Migrating the Remainder of the Tests}
 Incredibly at the end of the project, Bosco is at a state where the rest of the team can now add the remainder of the tests. 
-There is on average sixty tests that are yet to be transitioned from Frankenstein to Bosco which any team member once lightly versed in Puppeteer and Mocha can work on easily. 
-Bosco is running in production and testing the few tests that were written during this project. The tests in Frankenstein will be turned off one by one as 
+There is in total thirty Frankenstein Testcafe tests of which four are already transitioned to Bosco. Any team member once lightly versed in Puppeteer and Mocha can now transition easily. 
+Bosco is running in production and testing the four tests that were written during this project. The tests in Frankenstein will be turned off one by one as 
 they are migrated to Bosco. 
 
 \subsection{API}
-Currently an API for Bosco is being developed which will retrieve the latest test results for the DynamoDB table. Tests have been developed to health check the routes of this API.
+Currently an API for Bosco is being developed which will retrieve the latest test results for the DynamoDB table. 
+Tests have been developed to health check the routes of this API.
 
 \subsection{Alert of Test Failures}
 Alerts that are reported to the Slack channel are yet to be developed.
 
-Bosco will continue to be a work in progress for the ServisBOT team. The tasks related to Bosco will be migrated to the Core team's planning board as the enrire 
-team will take over the development of Bosco. 
+Bosco will continue to be a work in progress for the ServisBOT team. 
+The tasks related to Bosco will be migrated to the Core team's planning board as the entire team will take over the development of Bosco. 
 
 \appendix
 \chapter{Methodology}
@@ -1152,56 +1176,91 @@ The implementation of Bosco was carried out in one week sprints as was required 
 \subsection*{Sprint 10}
 \begin{itemize}
 \item Screenshots of failed tests upload to S3
-\item Alert of test failures and failed test runs
+\item Api to serve latest test results \textit{(In Review)}
+\item Alert of test failures and failed test runs \textit{(Not Complete)}
 \end{itemize}
 
 \begin{figure}[ht]
  \centering
- \includegraphics[width=15cm]{./diagrams/sprints1.png}
- \caption{R\&D Phase and Bosco Implementation Phase}
-\end{figure}
-
-\begin{figure}[ht]
- \centering
- \includegraphics[width=15cm]{./diagrams/sprints2.png}
- \caption{Bosco Dissemination Phase}
+ \includegraphics[width=15cm]{./diagrams/bosco_board.png}
+ \caption{Bosco Jira Board: Sprint Planning}
 \end{figure}
 
 \chapter{Dependencies and Dev-Dependencies}
 \subsection*{dependencies}
-\textbf{@aws-sdk/client-dynamodb}
-\textbf{@aws-sdk/lib-dynamodb}
-\textbf{@servisbot/servisbot-cli}
-\textbf{bluebird}
-\textbf{cors}
-\textbf{csv-parse}
-\textbf{express}
-\textbf{loglevel} was added to replace the console.logs.
-\textbf{luxon}
-\textbf{number-to-words-en}
-\textbf{puppeteer}
-\textbf{serverless-http}
-\textbf{sinon}
-\textbf{supertest}
+\begin{itemize}
+  \item \textbf{@aws-sdk/client-dynamodb}: Amazon software package for DynamoDB.
+  \item \textbf{@aws-sdk/lib-dynamodb}: Used in Bosco for Put command for writing to DynamoDB.
+  \item \textbf{@servisbot/servisbot-cli}: The ServisBOT command line interface.
+  \item \textbf{bluebird}: A fully featured promise library used in a test for delaying the test for 2 seconds.
+  \item \textbf{cors}: A NodeJS package for providing Connect/Express middleware.
+  \item \textbf{csv-parse}: For parsing JSON to CSV.
+  \item \textbf{express}: A NodeJS framework for web development.
+  \item \textbf{loglevel}: Logs context to the console and Cloudwatch.
+  \item \textbf{luxon}: Immutable date wrapper.
+  \item \textbf{number-to-words-en}: Transforms a number to words in English.
+  \item \textbf{puppeteer}: Bosco's automation tool.
+  \item \textbf{serverless-http}: For use with the API in a serverless environment.
+  \item \textbf{sinon}: Test spies, stubs and mocks.
+  \item \textbf{supertest}: Superagent driven library for testing HTTP servers.
+\end{itemize}
 
 \subsection*{dev-dependencies}
-\textbf{aws-sdk}
-\textbf{depcheck}: a dependency check package which checks for unused dependencies before commits.
-\textbf{eslint}: a linting tool that ensures all the code is formatted consistently by anyone who makes changes to the code.
-\textbf{lambda-local}, a node module was used for testing purposes. This allowed for the running of the lamdas locally rather than having 
+\begin{itemize}
+  \item \textbf{aws-sdk}: Amazon software dependency kit.
+  \item \textbf{depcheck}: a dependency check package which checks for unused dependencies before commits.
+  \item \textbf{eslint}: a linting tool that ensures all the code is formatted consistently by anyone who makes changes to the code.
+  \item \textbf{lambda-local}, a node module was used for testing purposes. This allowed for the running of the lamdas locally rather than having 
 to deploy each time they were to be tested. 
-\textbf{mocha}
-\textbf{pre-commit}
+  \item \textbf{mocha}: testing framework
+  \item \textbf{pre-commit}: module to check for linting errors and dependency errors before committing to git.
+\end{itemize}
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=15cm]{./diagrams/dependencies.png}
+  \includegraphics[width=11cm]{./diagrams/dependencies.png}
   \caption{dependencies and dev dependencies used for Bosco}
  \end{figure}
+
+ \begin{table}[H]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+  \hline \textbf
+  \textbf{Time} & \textbf{TotalDurationInMs} & \textbf{SbRegion} & \textbf{Type} \\
+  \hline 
+  Mar 1, 2023 @ 12:06:29.052 & 319,344 & us1 & completion \\
+  Mar 1, 2023 @ 12:07:40.376 & 401,819 & eu-1 & completion \\
+  Mar 1, 2023 @ 12:10:42.724 & 598,784 & eu-private-1 & completion \\
+  Mar 1, 2023 @ 12:14:59.371 & 218,456 & eu-1 & completion \\
+  Mar 1, 2023 @ 12:16:07.944 & 320,090 & usscif1 & completion \\
+  Mar 1, 2023 @ 12:16:09.875 & 301,098 & us1 & completion \\
+  Mar 1, 2023 @ 12:17:27.389 & 398,329 & eu-private-1 & completion \\
+  Mar 1, 2023 @ 12:26:32.122 & 322,127 & us1 & completion \\
+  Mar 1, 2023 @ 12:27:25.214 & 390,314 & eu-1 & completion \\
+  Mar 1, 2023 @ 12:30:51.696 & 602,877 & eu-private-1 & completion \\
+  Mar 1, 2023 @ 12:34:58.503 & 218,544 & eu-1 & completion \\
+  Mar 1, 2023 @ 12:35:32.092 & 282,295 & eu-private-1 & completion \\
+  Mar 1, 2023 @ 12:36:28.552 & 343,885 & usscif1 & completion \\
+  Mar 1, 2023 @ 12:36:28.624 & 319,462 & us1 & completion \\
+  Mar 1, 2023 @ 12:46:36.648 & 326,957 & us1 & completion \\
+  Mar 1, 2023 @ 12:47:23.415 & 386,681 & eu-1 & completion \\
+  Mar 1, 2023 @ 12:50:51.373 & 608,557 & eu-private-1 & completion \\
+  Mar 1, 2023 @ 12:55:00.374 & 220,826 & eu-1 & completion \\
+  Mar 1, 2023 @ 12:55:58.806 & 311,210 & eu-private-1 & completion \\
+  Mar 1, 2023 @ 12:56:36.230 & 325,104 & us1 & completion \\
+  Mar 1, 2023 @ 12:56:38.795 & 354,038 & usscif1 & completion \\
+  \hline
+  \textbf{Average Time in ms} & 360,514 & & \\
+  \hline
+  \end{tabular}
+  \caption{Frankenstein Test Runner times in ms over 1 hour}
+  \label{tab:frank}
+  \end{table}
 
 \printbibliography[title={References}]
 
 \chapter{Bibliography}
+\textbf{Online}
 \begin{enumerate}
 \item https://www.opsramp.com/guides/aws-monitoring-tool/cloudwatch-synthetics/
 \item https://www.functionize.com/automated-testing/assertion
@@ -1213,18 +1272,27 @@ to deploy each time they were to be tested.
 \item https://www.testim.io/blog/webinar-summary-is-ai-taking-over-front-end-testing/
 \item https://aws.amazon.com/blogs/architecture/field-notes-scaling-browser-automation-with-puppeteer-on-aws-lambda-with-container-image-support/
 \item https://moiva.io/
+\item https://www.chaijs.com/api/assert/
 \item https://docs.aws.amazon.com/AmazonCloudWatch/
 \item https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html
 \item https://oxylabs.io/blog/puppeteer-on-aws-lambda
 \item https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/
 \item https://www.npmjs.com/package/chrome-aws-lambda
 \item https://www.docker.com/resources/what-container/
+\item https://docs.aws.amazon.com/step-functions/latest/dg/concepts-input-output-filtering.html
 \item https://blog.logrocket.com/testing-node-js-mocha-chai/
 \item https://www.ponicode.com/shift-left/
+\item https://www.tutorialspoint.com/puppeteer/
 \item https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
-\item https://evanhalley.dev/post/aws- SSM-node/
+\item https://evanhalley.dev/post/aws-ssm-node/
 \item https://dockerlabs.collabnix.com/beginners/components/what-is-container.html
 \item https://www.youtube.com/watch?v=rQijrDj1wCQ
+\item https://www.npmjs.com/
+\item https://nodejs.org/
+\item https://aws.amazon.com/blogs/containers/cross-region-replication-in-amazon-ecr-has-landed/
 \end{enumerate}
-
+\textbf{Paperback}
+\begin{itemize}
+  \item Rediscovering Javascript, Master ES6, ES7 and ES8. Author: Venkat Subramaniam. Edited by Jacquelyn Carter
+\end{itemize}
 \end{document}

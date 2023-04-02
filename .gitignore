@@ -18,3 +18,5 @@ pygmentize
 *.sty
 .DS_Store
 .chktexrc
+
+acronyms.tex

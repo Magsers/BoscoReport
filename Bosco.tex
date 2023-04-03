@@ -1,20 +1,5 @@
 \documentclass[12pt,a4paper,titlepage]{report}
 
-% Page setup
-%
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhead{}
-\fancyfoot{}
-\renewcommand{\headrulewidth}{0.4pt}
-\setlength{\headheight}{15pt}
-\fancyheadoffset[R]{0.5cm} 
-\lhead{\rmfamily \textcolor{gray}{\AcademicTitle}}
-\rhead{\rmfamily \textcolor{gray}{\Report}}
-\lfoot{\rmfamily \textcolor{gray}{\Author}{\StudentID}}
-\rfoot{\rmfamily \thepage}
-
-
 % Document Info
 %
 \newcommand\AcademicTitle{Optimising Test Runner Performance for Chatbot Technology}
@@ -29,6 +14,7 @@
 \newcommand\University{South East Technological University}
 
 \usepackage{Bosco}
+
 
 \begin{document}
 
@@ -60,10 +46,13 @@
 \clearpage
 
 \tableofcontents
-
+\addcontentsline{toc}{chapter}{List of Tables}
 \listoftables
-
+\addcontentsline{toc}{chapter}{List of Figures}
 \listoffigures
+\clearpage
+\addcontentsline{toc}{chapter}{Abbreviations}
+\input{acronyms}
 
 % start of main matter
 \clearpage
@@ -113,10 +102,10 @@ The tests use a software package called Testcafe which is used for automated bro
 By opening messenger in a browser in order to run the tests, it simulates what a user would do by interacting with a chatbot. 
 If the chatbot reacts in the expected way the test passes, otherwise the issue is investigated and resolved.
 \subsection{EC2}
-The Frankenstein test suite is run on two EC2 instances, in two different Amazon Web Services (AWS) regions, the US and the EU. 
-AWS Elastic Compute Cloud instances (EC2) are virtual machines where developers can define the resources they need to run their programs. For example, what regions they are to be run in and how much memory they need. 
+The Frankenstein test suite is run on two \ac{EC2} instances, in two different \ac{AWS} regions, the US and the EU. 
+EC2 instances are virtual machines where developers can define the resources they need to run their programs. For example, what regions they are to be run in and how much memory they need. 
 \section{The Issue}
-Running the tests causes a lot of contention for CPU and memory. 
+Running the tests causes a lot of contention for \ac{CPU} and memory. 
 When a test run is instigated, all tests are competing for CPU usage because each EC2 instance is running thirty plus tests on one server which has limited memory.
 
 Also there are numerous problems with Testcafe. 
@@ -128,12 +117,13 @@ Also there are numerous problems with Testcafe.
 
 \section{Requirements for Bosco}
 
-The primary requirements for Bosco are as follows:
+The main requirements for Bosco are listed as follows:
 \begin{itemize}
   \item Create a new test runner that is more optimised, scalable, and cost-efficient than Frankenstein. 
   \item In particular, Bosco will focus on an automation tool called Puppeteer which has been proven by ServisBOT to be more performant than Testcafe. The Puppeteer package includes its own browser, Chromium, whereas Testcafe launches an external browser which is slow and cumbersome. With Puppeteer there is more control over what the developer can test, it is more efficient, easier to debug and has a lot more functionality. It is widely chosen by developers now. (4.6 million weekly downloads, 2023-03-02) \cite{Puppeteer}
   \item Implement an AWS Lambda, Step Function, State Machine which will run each test independently and can be scaled infinitely.
   \item Scheduled timed events will instigate test runs.
+  \item The environment variables that Bosco will use will be retrieved from \ac{SSM} parameter store. 
   \item Bosco will have test profiles which can determine which tests are run in which regions and on which adapters. 
   \item Bosco will report the latest results of the test runs to Cloudwatch and store them in a DynamoDB table.
   \item Screenshots of failed test runs will be stored. 
@@ -147,29 +137,27 @@ The primary requirements for Bosco are as follows:
 
 \chapter{Research and Development}
 
-In order to determine the best approach, technologies and methodology for Bosco, the research carried out for the implementation of this project was the following:
+In order to determine the best approach, technologies and methodology for Bosco, the following research was carried out for the implementation of this project.
 
 \begin{itemize}
- \item Cost Analysis of Frankenstein
+ \item Cost analysis of Frankenstein
  \item Research into possible testing frameworks for Bosco
  \item Puppeteer comparison to Testcafe
  \item Lambda vs EC2 comparison
- \item Possible implementations and modelling of Bosco
- \item Additional requirements for implementing Bosco
- \item Scope of the project
 \end{itemize}
 
 \section{Cost Analysis of Frankenstein Tests}
 
-Cost analysis was carried out on Frankenstein which is shown in Figure 2.1. There are two EC2 instances running the tests in the EU and the US with two ServisBOT regions eu-private-1 and eu-1 in the EU and us-1 and usscif-1 in the US. 
+Cost analysis was carried out on Frankenstein which is evident in Figure \ref{frank:cost}. There are two EC2 instances running the tests in the EU and the US with two ServisBOT regions eu-private-1 and eu-1 in the EU and us-1 and usscif-1 in the US. 
 All regions are in production except for eu-private-1 which is the testing region where most of the tests are run against before they are released to production. 
-In summary a Frankenstein test run takes an average of six seconds \ref{tab:frank} which is costing ServisBOT on average \$20 per day for each region. 
+In summary a Frankenstein test run takes an average of six minutes \ref{tab:frank} which is costing ServisBOT on average \$20 per day for each region. 
 This costs the company almost \$15,000 a year to run tests.
 
-\begin{figure}[ht]
+\begin{figure}[H]
  \centering
  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./diagrams/frank_cost_analysis.png}
  \caption{Frankenstein Cost Analysis}
+ \label{frank:cost}
 \end{figure}
 
 \section{Research into Possible Testing Frameworks for Bosco}
@@ -222,7 +210,7 @@ library, there is no need to install and integrate additional libraries to be ab
 \label{table:mocha:jest}
 \end{table}
 
-\section{Review of Puppeteer}
+\section{Puppeteer and Testcafe Comparison}
 
 Puppeteer is a widely used test automation tool maintained by Google. Although it is not a dedicated test tool, it is popular for automating tasks such as web scraping and generating PDFs. 
 In testing user flows within web applications, headful or headless browsers are used. A headless browser is a browser that is working in the background without a user interface and a heaful browser will automate the actions while displaying the browser. 
@@ -301,15 +289,15 @@ supports mobile, remote and cloud browsers (UI or headless). It is also free and
  \caption{Puppeteer vs Testcafe NPM statistics}
 \end{figure}
 
-\section{EC2 vs Lambda comparison}
+\section{Lambda and EC2 Comparison}
 
-AWS Elastic Compute Cloud (EC2) is basically a virtual machine called an instance. Users can create an instance and define
+AWS Elastic Compute Cloud \ac{EC2} is basically a virtual machine called an instance. Users can create an instance and define
 the resources necessary for the task at hand. For example the type and number of CPU, memory, local storage and scalability. EC2 instances
 are intended for consistent, static operations and users pay a recurring monthly charge based on the size of the instance, the operating
 system and the region. The instances run until they are deliberately stopped.
 
 Lambda on the other hand is billed per execution and per millisecond in use with the amount of memory the user allocates to the function.
-When a lambda function is invoked, the code is run without the need to deploy or manage a VM\@. It is an event based service that is
+When a lambda function is invoked, the code is run without the need to deploy or manage a \ac{VM}. It is an event based service that is
 designed to deliver extremely short-term compute capability. AWS handles the back-end provisioning, loading, execution, scaling and unloading of the user's code.
 Lambdas only run when executed yet are always available. They scale dynamically in response to traffic.
 
@@ -337,12 +325,14 @@ Lambdas only run when executed yet are always available. They scale dynamically 
 
 \section{Conclusion}
 After conducting research and analysis, it was affirmed that ServisBOT's decision to use Puppeteer in conjunction 
-with Mocha, instead of using Testcafe will provide greater control, reliability, and ease of use for developers. 
+with Mocha, will provide greater control, reliability, and ease of use for developers. Mocha is more suitable for backend development and large projects than Jest. 
+Puppeteer is the chosen automation tool by developers now, mainly for its performance, reliability and ease of use.
+
 Together with migrating the test runner from EC2 to Lambda, the test suite will become infinitely scalable and 
 more cost efficient. Replacing Frankenstein with Bosco will mean that issues encountered by Frankenstein can be resolved and unnecessary costs (for 
 example running too many tests) can be eliminated.
 
-\chapter{Initial Design \& Implementation}
+\chapter{Design \& Analysis}
 
 \section{Proof of Concept - Running Puppeteer on a Lambda}
 
@@ -376,7 +366,7 @@ Once mocha was configured and run without errors the next step was to run the sc
 \end{figure}
 However, there are problems running Puppeteer in a lambda. Lambda has a 50 MB limit on the zip file you can upload. 
 Due to the fact that it installs Chromium, the Puppeteer package is significantly larger than 50 {MB}. This 
-limit does not apply when uploaded from an S3 bucket but there are other issues. 
+limit does not apply when uploaded from an \ac{S3} bucket but there are other issues. 
 The default setup of some Linux distributions, including the ones used by AWS Lambda do not include the necessary libraries required to allow Puppeteer to function.
 
 \subsection{Node Modules}
@@ -409,7 +399,7 @@ This significantly sped up the testing process, running a test in as little as s
 This process provides more control over the testing environment and can target specific tests through the event handler input parameters.
 The results validate the feasibility of running tests in a Lambda environment using Puppeteer.
 
-\section{Initial Stepfunction Research and Development}
+\section{Stepfunction Design and Analysis}
 
 The use of a Step Function in order to run the tests was considered by ServisBOT to be a viable option for Bosco. 
 A step functions is a workflow that can be created through a sequence of lambda functions with each step being a state within
@@ -422,25 +412,25 @@ state in that workflow that another AWS service performs.
  \captionof{figure}{Bosco Initial Possible Implementations}
 \end{figure}
 
-\section{State Machine Transitions}
+\subsection{State Machine Transitions}
 
 The Bosco test suite runs through five state transitions. 
-\begin{itemize}
+\begin{enumerate}
   \item Start 
   \item StartState 
   \item Map 
   \item Done 
   \item End 
-\end{itemize}
-Plus an additional transition per test that is run in the \textbf{Running} state. 
+\end{enumerate}
+In addition to these five transitions there is a transition per test that is run in the \textbf{Running} state. 
 For example three tests, there are eight states as the \textbf{Running} state is executed three times. 
 
 The first state is the \textbf{Start} state which initiates the run and then the \textbf{StartState} is invoked, creating an array of tests and passing the payload to the \textbf{Map} state.
 
-Bosco uses an Inline Map state which is suitable for fewer than forty parallel iterations which is appropriate for the number of tests that Bosco will run. 
+Bosco uses an Inline Map state which is suitable for fewer than forty parallel iterations which is appropriate for Bosco at this time. 
 The object structure passed to the \textbf{Running} lambda has been designed to enable the running of an array of tests or a single test, providing flexibility for the team to add tests as needed.
 
-The lambdas run in parallel with each other with the results of the tests outputted to the \textbf{Done} lambda function which processes the results. The \textbf{End} state completes the workflow.
+The lambdas run in parallel with each other with the results of the tests outputted to the \textbf{Done} lambda function which process the results. The \textbf{End} state completes the workflow.
 
 \begin{figure}[H]
  \centering
@@ -453,12 +443,14 @@ The lambdas run in parallel with each other with the results of the tests output
  \includegraphics[width=15cm]{./diagrams/tablestepfx.png}
  \caption{Results of Execution of State Machine}
 \end{figure}
+
 \clearpage
-\subsection{Initial Cost Analysis of Bosco Step Function State Machine}
+\section{Cost Analysis of Bosco Step Function State Machine}
 
 The cost of running the test suite in a state machine using AWS Step Functions was based on the number of state transitions.\autocite{Amazon} 
 This cost analysis does not account for error handling, which may increase the cost due to retries. The cost per transition is \$0.000025 according to the AWS pricing calculator. 
 The analysis was based on the current number of Frankenstein tests and the frequency they are run (three times an hour), which at the time of conducting the cost analysis may vary for Bosco tests.
+This analysis is soley based on state machine transitions and does not account for other costs that Bosco may incur.
 
 \begin{figure}[H]
  \centering
@@ -487,28 +479,30 @@ The tests were subsequently refactored to call the functions in the Lightning Pa
 \end{figure}
 
 \section{Tests}
+Five tests were written during the design and implementation stage of Bosco. 
 \subsection{Context Test}
 The initial Frankenstein test that was migrated to Bosco was the Context test. 
 This test establishes the context from the URL and verifies whether it is displayed along with the rest of the context in the messenger. 
+It was a relatively simple test to tackle at the early stages of Bosco.
 
 \subsection{Conversation Engaged Test}
 The next test was the Conversation Engaged test. Whenever a user interacts with a bot, a goal is generated, which is a default or custom event that's tracked to measure the success of the bot's interactions.
 At first, it was believed that this test would be simple, but changes were requested after a pull request was submitted for review, including removing nested if statements and improving the code's formatting.
 
-This created a need to parse the exported goal JSON result. However, an error was encountered in the Servisbot CLI proxy, where the outputted JSON was not formatted correctly and could not be parsed. 
-To work around this, the CSV output option was used instead of JSON and the csv-parse node module was imported.
+This created a need to parse the exported goal \ac{JSON} result. However, an error was encountered in the Servisbot \ac{CLI} proxy, where the outputted JSON was not formatted correctly and could not be parsed. 
+To work around this, the \ac{CSV} output option was used instead of JSON and the \textit{csv-parse} node module was imported.
 
 \subsection{Interaction Test}
 This is a test designed to check the functionality of a multi-select list node in a chatbot.
 
 \subsection{NLP Worker Lex V2 Intent Publish Test}
-The NLP Worker Lex V2 test uses a secret. Secrets can be defined as secure documents containing access keys, api keys, api secrets or IDs to external systems. 
+The \ac{NLP} Worker Lex V2 test uses a secret. Secrets can be defined as secure documents containing access keys, api keys, api secrets or IDs to external systems. 
 They can be created and stored in the ServisBOT system and then referenced by bots securely. 
-This is how ServisBOT manage API keys for AWS\@.
+This is how ServisBOT manage \ac{API} keys for AWS\@.
 
 A \textbf{Lex} worker is a remotely managed NLP worker which takes input and sends it to a Lex bot for Natural Language Processing. 
 A Lex bot is an Amazon bot, users use ServisBOT to access, manage and run their Lexbots. 
-\textbf{NLP} is a form of Artificial Intelligence that transforms text that a user submits into language that the computer programme can understand. 
+\ac{NLP} is a form of \ac{AI} that transforms text that a user submits into language that the computer programme can understand. 
 In order for ServisBOT to classify utterances using a remotely managed NLP, the correct API keys, access tokens or cross account roles need to be configured in the ServisBOT Secrets Vault.
 
 An AWS cross account role is required in order to access Lex. An environment variable was created that the test could access called LEX\_V2\_CROSS\_ACCOUNT\_ROLE\_SECRET and to this was assigned the secret definition in JSON format. 
@@ -524,21 +518,21 @@ When the bot is publishing its status is polled every 5 seconds until it succeed
 \end{figure}
 
 \subsection{CLI Test: Content}
-Frankenstein also has a number of tests that test the functionality of the ServisBOT CLI. The cli has most of the functionality if not more of the ServisBOT UI. 
+Frankenstein also has a number of tests that test the functionality of the ServisBOT \ac{CLI}. The CLI has most of the functionality if not more of the ServisBOT UI. 
 The tests do not use a web scraper like Testcafe as it is not needed. 
 Instead the tests just run the cli commands and use an assertion to ensure they were carried out successfully. 
 
 The CLI test chosen was the Content, create-describe-update-delete-list test. It was a basic test that tests a Content node by creating a content node object and then performing an update, describe and delete on it.
 
-When the question of whether to incorporate CLI tests into Bosco was posed to the team, it was agreed that it was unnecessary to include the CLI tests. Bosco was to test Portal specifically, the UI that the users would 
+When the question of whether to incorporate CLI tests into Bosco was posed to the team, it was agreed that it was unnecessary to include the CLI tests. Bosco was to test Portal, specifically the \ac{UI} that the users would 
 be using first hand. CLI tests are basically only for developers and there is less of a need to test them. The goal is to have full Frankenstein coverage with Bosco and testing the ServisBOT CLI proxy has 95\% coverage. 
 The CLI test was removed from Bosco.
 
 \section{CloudFormation}
-When deploying Bosco, a  CloudFormation template in the form of YAML is run.  CloudFormation is an AWS service that allows developers to define and deploy infrastructure as code.
+When deploying Bosco, a  CloudFormation template in the form of YAML which is a human readable data language is run.  CloudFormation is an AWS service that allows developers to define and deploy infrastructure as code.
 The Cloudformation template, which can be in either YAML or JSON format, is used to define and provision the AWS resources. When the CloudFormation template is uploaded to AWS it 
 creates a CloudFormation stack which is a collection of AWS resources that can be managed as one unit. 
-The template specifies the necessary environment variables, parameters, conditionals and other resources such as IAM roles and policies. 
+The template specifies the necessary environment variables, parameters, conditionals and other resources such as \ac{IAM} roles and policies. 
 
 CloudFormation saves time and reduces errors as the same resources can be created multiple times once the template is defined.
 A YAML formatting extension from Redhat to format the YAML file was used for Bosco as it is not possible to deploy the YAML unless the formatting is accurate.
@@ -560,8 +554,8 @@ Bosco's CloudFormation Template consists of the following resources:
 \end{description}
 
 \section{Test Profiles}
-One significant way in which Bosco differs to Frankenstein is in the capacity to run test profiles rather than 
-running all the tests, all the time, in all the regions. By creating a test profile it is possible to specify which 
+One significant way in which Bosco differs to Frankenstein is in its capacity to define test profiles. 
+Frankenstein is built to run all the tests, all the time. By creating a test profile it is possible to specify which 
 environment, region and frequency of the tests which Frankenstein does not have the ability to do. 
 
 A profiles folder was created which stores all the profiles defined by the ServisBOT region and the adapters Venus and Mercury in the Dev environment. 
@@ -641,7 +635,7 @@ Storing the log level in the environment variables allows for consistency across
 The log level can be changed without changing the code.
 
 Initially, the environment variables were passed to the Orchestrator through the event. Once this was proven to work, the environment variables became part of the profile. However, a more 
-secure option was necessary so they were subsequently removed from the profile and stored in AWS Systems Manager Parameter Store, an AWS service for storage, configuration, secrets and data management. 
+secure option was necessary so they were subsequently removed from the profile and stored in \ac{SSM} Parameter Store, an AWS service for storage, configuration, secrets and data management. 
 More information on SSM parameter store in Bosco is provided at a later stage in this report.
 
 Two more classes were constructed in addition to the Environment class in order to resolve the environment variables. 
@@ -678,7 +672,7 @@ Two more classes were constructed in addition to the Environment class in order 
   \caption{Environment Variables Inputted to Handler}
  \end{figure}
 
-The environment variables are provided to the handler at the same level as the testSuite and the testProfileConfig. 
+The environment variables are provided to the handler at the same level as the \textit{testSuite} and the \textit{testProfileConfig}. 
 By fetching and resolving the environment variables in the Orchestrator, this allows for a shared environment between the tests rather 
 than providing the environment to each test which would be inefficient and resource heavy. Environments can grow and so this allows 
 for flexibility in the development of Bosco.
@@ -771,8 +765,8 @@ A few lines of code can retrieve the parameters from the store.
 The steps to this task were as follows:
 \begin{itemize}
 \item The parameters were created in the SSM parameter store in the same format as the Frankenstein parameters.
-\item Code was added to the orchestrator to read the SSM parameters using the AWS SDK (Software Development Package) \textbf{aws-sdk}.
-\item A new policy was added to the  CloudFormation template in order to give IAM permissions to read from the parameter store
+\item Code was added to the orchestrator to read the SSM parameters using the \ac{aws-sdk}.
+\item A new policy was added to the  CloudFormation template in order to give \ac{IAM} permissions to read from the parameter store
 \item The environment was built in the orchestrator by retrieving the SSM parameters in the orchestrator, building the environment object and returning this in the output.
 \item A Secrets was added in order to retrieve the SSM parameters from the parameter store to extract that work from the orchestrator. Later to be renamed EnvironmentResolver. 
 \item The README was updated to reflect the changes for future development from the ServisBOT team.
@@ -883,13 +877,13 @@ The process to completing this task was the following:
 The deployment process was undertaken with help from the team as the initial plan needed to be altered. 
 The CRON triggers which were initially in the CloudFormation template were removed and instead were put in a script specific to the AWS Region they would be deployed in which allowed for more control over what tests to run in what region. 
 
-\section{CICD Process}
+\section{\ac{CI/CD} Process}
 \textit{CI/CD falls under DevOps (the joining of development and operations teams) and combines the practices of continuous integration and continuous delivery. CI/CD automates much or all of the manual human intervention traditionally needed to get new code from a commit into production, encompassing the build, test (including integration tests, unit tests, and regression tests), and deploy phases, as well as infrastructure provisioning. With a CI/CD pipeline, development teams can make changes to code that are then automatically tested and pushed out for delivery and deployment.}\autocite{CICD}
 
 The steps to the CICD process for Bosco were as follows:
 
 \begin{itemize}
-  \item The developer puts in a PR (pull request) with the changes they made to the project code.
+  \item The developer puts in a \ac{PR} with the changes they made to the project code.
   \item A second developer reviews the code and when content with the changes, approves the merge.
   \item Developer merges the branch which initiates the CICD process. 
   \item Unit tests are run, artefacts are built and the project code is deployed in testing.
@@ -1057,14 +1051,20 @@ Overall, contributing to ServisBOT's platform quality and reliability through Bo
       \item AWS regions 
       \item SSM Parameters
       \item IAM
+      \item Codebuild
+      \item Cloudwatch
     \end{itemize}
-  \item Showcasing progress of the project to the team.
-  \item Docker
+  \item Showcasing remotely the progress of the project to the team.
+  \item Isolating code to test it. Providing the desired input and testing a small script until the desired output was achieved.
+  \item Removing boilerplate code
+  \item Eliminating nested loops
+  \item Using Docker containers
   \item CICD process
   \item Git
   \item Javascript fundamentals
   \item Project design and infrastructure
   \item Puppeteer and Mocha
+  \item Academic Writing
   \item Latex
 \end{itemize}
 \section{Challenges}
@@ -1077,19 +1077,19 @@ The following list iterates some of the challenges that were encountered.
   \item As this was a work based project which was completed during an internship, the code had to be reviewed by a team member before being approved. If the team was under pressure this could take a few days which disrupted the workflow.
   \item The complexity of the project was incredibly challenging. Although given time to move at a pace that was reasonable, trying to understand all the different components of Bosco was often overwhelming.
   \item Mastering Puppeteer. Accessing the selectors on the Lightning page was tricky in comparison to Testcafe which uses a variety of methods to access the elements and is in reality more straightforwardward and easier to read.
-  \item Passing data through the State Machine in the format required by ServisBOT.  
+  \item Passing data through the State Machine in the format required by ServisBOT. It was time consuming to test the state machine and tricky to figure out how to pass parameters. Despite extensive documentation, it was challenging to find resolutions specific to Bosco. 
   \item Learning how to use LateX for the project report initially was very confusing and stunted the process. It was not a requirement but a personal challenge that was undertaken. 
 \end{itemize}
 \section{Future Work}
 \subsection{Migrating the Remainder of the Tests}
-Incredibly at the end of the project, Bosco is at a state where the rest of the team can now add the remainder of the tests. 
+At the end of the project, Bosco is at a state where the rest of the team can now add the remainder of the tests. 
 There are in total thirty Frankenstein Testcafe tests of which four are already transitioned to Bosco. Any team member once lightly versed in Puppeteer and Mocha can now transition easily. 
 Bosco is running in production and testing the four tests that were written during this project. The tests in Frankenstein will be turned off one by one as 
 they are migrated to Bosco. 
 
 \subsection{API}
 Currently an API for Bosco is being developed which will retrieve the latest test results for the DynamoDB table. 
-Tests have been developed to health check the routes of this API.
+Tests have been developed to health check the routes of this API. 
 
 \subsection{Alert of Test Failures}
 Alerts that are reported to the Slack channel are yet to be developed.

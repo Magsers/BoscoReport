@@ -1,0 +1,364 @@
+\glsdefs@newdocentry{aws}%
+{%
+name={AWS},%
+sort={AWS},%
+type={main},%
+first={Amazon Web Services\glsspace (AWS)},%
+firstplural={Amazon Web Services\acrpluralsuffix \glsspace (AWS\acrpluralsuffix )},%
+text={AWS},%
+plural={AWS\acrpluralsuffix },%
+description={Amazon Web Services},%
+descriptionplural={Amazon Web Services\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Amazon Web Services},%
+longplural={Amazon Web Servicess},%
+short={AWS},%
+shortplural={AWSs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{EC2}%
+{%
+name={ec2},%
+sort={ec2},%
+type={main},%
+first={Elastic Cloud Compute\glsspace (ec2)},%
+firstplural={Elastic Cloud Compute\acrpluralsuffix \glsspace (ec2\acrpluralsuffix )},%
+text={ec2},%
+plural={ec2\acrpluralsuffix },%
+description={Elastic Cloud Compute},%
+descriptionplural={Elastic Cloud Compute\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Elastic Cloud Compute},%
+longplural={Elastic Cloud Computes},%
+short={ec2},%
+shortplural={ec2s},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{AI}%
+{%
+name={ai},%
+sort={ai},%
+type={main},%
+first={Artificial Intelligence\glsspace (ai)},%
+firstplural={Artificial Intelligence\acrpluralsuffix \glsspace (ai\acrpluralsuffix )},%
+text={ai},%
+plural={ai\acrpluralsuffix },%
+description={Artificial Intelligence},%
+descriptionplural={Artificial Intelligence\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Artificial Intelligence},%
+longplural={Artificial Intelligences},%
+short={ai},%
+shortplural={ais},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{ML}%
+{%
+name={ml},%
+sort={ml},%
+type={main},%
+first={Machine Learning\glsspace (ml)},%
+firstplural={Machine Learning\acrpluralsuffix \glsspace (ml\acrpluralsuffix )},%
+text={ml},%
+plural={ml\acrpluralsuffix },%
+description={Machine Learning},%
+descriptionplural={Machine Learning\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Machine Learning},%
+longplural={Machine Learnings},%
+short={ml},%
+shortplural={mls},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{NLP}%
+{%
+name={nlp},%
+sort={nlp},%
+type={main},%
+first={Natural Language Processing\glsspace (nlp)},%
+firstplural={Natural Language Processing\acrpluralsuffix \glsspace (nlp\acrpluralsuffix )},%
+text={nlp},%
+plural={nlp\acrpluralsuffix },%
+description={Natural Language Processing},%
+descriptionplural={Natural Language Processing\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Natural Language Processing},%
+longplural={Natural Language Processings},%
+short={nlp},%
+shortplural={nlps},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{CI/CD}%
+{%
+name={ci/cd},%
+sort={ci/cd},%
+type={main},%
+first={Continuous Integration/Continuous Deployment\glsspace (ci/cd)},%
+firstplural={Continuous Integration/Continuous Deployment\acrpluralsuffix \glsspace (ci/cd\acrpluralsuffix )},%
+text={ci/cd},%
+plural={ci/cd\acrpluralsuffix },%
+description={Continuous Integration/Continuous Deployment},%
+descriptionplural={Continuous Integration/Continuous Deployment\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Continuous Integration/Continuous Deployment},%
+longplural={Continuous Integration/Continuous Deployments},%
+short={ci/cd},%
+shortplural={ci/cds},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{ecs}%
+{%
+name={ECS},%
+sort={ECS},%
+type={main},%
+first={EC2 Container Service\glsspace (ECS)},%
+firstplural={EC2 Container Service\acrpluralsuffix \glsspace (ECS\acrpluralsuffix )},%
+text={ECS},%
+plural={ECS\acrpluralsuffix },%
+description={EC2 Container Service},%
+descriptionplural={EC2 Container Service\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={EC2 Container Service},%
+longplural={EC2 Container Services},%
+short={ECS},%
+shortplural={ECSs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{iam}%
+{%
+name={IAM},%
+sort={IAM},%
+type={main},%
+first={Identity and Access Managment\glsspace (IAM)},%
+firstplural={Identity and Access Managment\acrpluralsuffix \glsspace (IAM\acrpluralsuffix )},%
+text={IAM},%
+plural={IAM\acrpluralsuffix },%
+description={Identity and Access Managment},%
+descriptionplural={Identity and Access Managment\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Identity and Access Managment},%
+longplural={Identity and Access Managments},%
+short={IAM},%
+shortplural={IAMs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{s3}%
+{%
+name={S3},%
+sort={S3},%
+type={main},%
+first={Simple Storage Service\glsspace (S3)},%
+firstplural={Simple Storage Service\acrpluralsuffix \glsspace (S3\acrpluralsuffix )},%
+text={S3},%
+plural={S3\acrpluralsuffix },%
+description={Simple Storage Service},%
+descriptionplural={Simple Storage Service\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Simple Storage Service},%
+longplural={Simple Storage Services},%
+short={S3},%
+shortplural={S3s},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{json}%
+{%
+name={JSON},%
+sort={JSON},%
+type={main},%
+first={Javascript Object Notation\glsspace (JSON)},%
+firstplural={Javascript Object Notation\acrpluralsuffix \glsspace (JSON\acrpluralsuffix )},%
+text={JSON},%
+plural={JSON\acrpluralsuffix },%
+description={Javascript Object Notation},%
+descriptionplural={Javascript Object Notation\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Javascript Object Notation},%
+longplural={Javascript Object Notations},%
+short={JSON},%
+shortplural={JSONs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{sdk}%
+{%
+name={AWS},%
+sort={AWS},%
+type={main},%
+first={Software Development Kit\glsspace (AWS)},%
+firstplural={Software Development Kit\acrpluralsuffix \glsspace (AWS\acrpluralsuffix )},%
+text={AWS},%
+plural={AWS\acrpluralsuffix },%
+description={Software Development Kit},%
+descriptionplural={Software Development Kit\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Software Development Kit},%
+longplural={Software Development Kits},%
+short={AWS},%
+shortplural={AWSs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{vm}%
+{%
+name={VM},%
+sort={VM},%
+type={main},%
+first={Virtual Machine\glsspace (VM)},%
+firstplural={Virtual Machine\acrpluralsuffix \glsspace (VM\acrpluralsuffix )},%
+text={VM},%
+plural={VM\acrpluralsuffix },%
+description={Virtual Machine},%
+descriptionplural={Virtual Machine\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Virtual Machine},%
+longplural={Virtual Machines},%
+short={VM},%
+shortplural={VMs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{cron}%
+{%
+name={CRON},%
+sort={CRON},%
+type={main},%
+first={a command to an operating system or server for a job that is to be executed at a specified time\glsspace (CRON)},%
+firstplural={a command to an operating system or server for a job that is to be executed at a specified time\acrpluralsuffix \glsspace (CRON\acrpluralsuffix )},%
+text={CRON},%
+plural={CRON\acrpluralsuffix },%
+description={a command to an operating system or server for a job that is to be executed at a specified time},%
+descriptionplural={a command to an operating system or server for a job that is to be executed at a specified time\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={a command to an operating system or server for a job that is to be executed at a specified time},%
+longplural={a command to an operating system or server for a job that is to be executed at a specified times},%
+short={CRON},%
+shortplural={CRONs},%
+counter={page},%
+parent={},%
+%
+}%
+

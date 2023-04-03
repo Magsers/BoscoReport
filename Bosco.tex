@@ -326,6 +326,7 @@ Lambdas only run when executed yet are always available. They scale dynamically 
 \section{Conclusion}
 After conducting research and analysis, it was affirmed that ServisBOT's decision to use Puppeteer in conjunction 
 with Mocha, will provide greater control, reliability, and ease of use for developers. Mocha is more suitable for backend development and large projects than Jest. 
+It allows the team to choose their own assertion library and is a more flexible and customisable framework.
 Puppeteer is the chosen automation tool by developers now, mainly for its performance, reliability and ease of use.
 
 Together with migrating the test runner from EC2 to Lambda, the test suite will become infinitely scalable and 
@@ -373,7 +374,7 @@ The default setup of some Linux distributions, including the ones used by AWS La
 
 A developer named Hansen\autocite{Hansen}, developed a work-around for this in the form of the node modules, \textit{puppeteer-core} and \textit{chrome-aws-lambda}.
 Both these modules installed allow for a version of Chromium that is built to run for AWS Lambda. Incorporating
-these ensured the tests ran successfully. Unfortunately these modules need to be in parody with each other.
+these ensured the tests ran successfully. Unfortunately these modules need to be in parallel with each other.
 
 The \textit{aws-chrome-lambda} module has not been updated since June 2021 so its latest version is 10.1.0 whereas
 \textit{puppeteer-core} has been updated regularly and at time of writing (26/03/23) is at version 19.8.0. When the version numbers are
@@ -461,7 +462,8 @@ This analysis is soley based on state machine transitions and does not account f
 \chapter{Bosco Implementation}
 \section{Lightning Page}
 The implementation of Bosco began after finalising the proof of concept. 
-The first step involved creating a Lightning page class which is the page the tests are running against. 
+The first step involved creating a LightningPage class which is a utility class for testing the web page with the chatbot or messenger widget. 
+It is the page the Bosco tests are running against and contains various functions that interact with the page's messenger widget. 
 The class serves as the source for accessing the selectors and functions that have been added specifically for the Lightning page. 
 Confining this functionality to a class reduces boilerplate code, a term for repetitive code. 
 The tests were subsequently refactored to call the functions in the Lightning Page.
@@ -1015,17 +1017,14 @@ The project was developed to address limitations of the previous testing framewo
 The use of Puppeteer in Bosco allows for more accurate and realistic testing of the ServisBOT Portal UI, while also improving the speed of the tests.
 
 Running the tests on Lambda instead of EC2 provides several advantages for the Bosco project. 
-One of the most significant improvements is the increased scalability and flexibility which will allow the team to add tests and run them in parallel with each other instead of the tests competing for resources. 
-Additionally, Lambda can be easily integrated with other AWS services, such as S3 and CloudWatch, which provides a more streamlined and automated testing process.
-
-While the exact reduced cost of running the tests at this time cannot be determined, there is strong indications that running tests on Lambda will be more cost-effective than using EC2 instances.
-
-One of the main reasons why running tests on Lambda was a vast improvement over EC2 was the faster and more reliable performance. 
-Lambda functions can be invoked in milliseconds which allows for faster test execution and improved overall test cycle time. 
-A test run can now be executed in under a minute compared to six minutes for Frankenstein. 
+\begin{itemize}
+  \item One of the most significant improvements is the increased scalability and flexibility which will allow the team to add tests and run them in parallel with each other instead of the tests competing for resources. 
+  \item Additionally, Lambda can be easily integrated with other AWS services, such as S3 and CloudWatch, which provides a more streamlined and automated testing process.
+  \item While the exact reduced cost of running the tests at this time cannot be determined, there is strong indications that running tests on Lambda will be more cost-effective than using EC2 instances.
+  \item One of the main reasons why running tests on Lambda was a vast improvement over EC2 was the faster and more reliable performance. Lambda functions can be invoked in milliseconds which allows for faster test execution and improved overall test cycle time. A test run can now be executed in under a minute compared to six minutes for Frankenstein. 
 Theoretically, the Step Function will take as long as the longest Mocha test event whether that contains one test or a number of tests. 
-
-Furthermore, Lambda provides high availability and fault tolerance, which means that tests are less likely to fail due to infrastructure issues or downtime.
+\item Furthermore, Lambda provides high availability and fault tolerance, which means that tests are less likely to fail due to infrastructure issues or downtime.
+\end{itemize}
 
 In summary, the development of Bosco has been a demanding but rewarding experience that has provided valuable insights into AWS Lambda, CloudFormation, and related services. 
 The seamless execution of tests on the Lambda function and the significant cost savings compared to EC2 were gratifying. 

@@ -24,6 +24,18 @@ The command to run the Makefile is
 ``` 
 $ make
 ```
+
+If errors are encountered generating the report multiple times the following command 
+will remove any temporary files and clean the project build.
+```
+$ make clean
+```
+# Project Landing Page
+All other resources for this project are available on the following landing page:
+
+[Bosco Webpage](https://bosco.surge.sh)
+
+
 ## Author
 * Margaret McCarthy
 
